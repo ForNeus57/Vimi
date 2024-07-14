@@ -1,0 +1,34 @@
+python-implementation = "CPython"
+
+[project]
+name = "app"
+version = "1.0.0.0"
+requires-python = ">=3.12.4"
+authors = [{ name="Dominik Breksa", email="dominikbreksa@gmail.com" }]
+description = "Small Backend for neural networks visualisations."
+readme = { file = "README.md", content-type = "text/markdown" }
+license = {file = "LICENSE"}
+dynamic = ["dependencies"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/ForNeus57/Vimi"
+Repository = "https://github.com/ForNeus57/vimi.git"
+Issues = "https://github.com/ForNeus57/Vimi/issues"
+
+[project.scripts]
+backend = "app.main:main"
+
+[build-system]
+requires = ["setuptools>=70.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.pylint.messages_control]
+max-line-length = 120
