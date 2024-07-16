@@ -1,0 +1,10 @@
+.git
+.gitignore
+.vscode
+.containers
+node_modules
+build
+
+docs
+*.md
+LICENSE
