@@ -1,13 +1,12 @@
 <div class="app-outer">
-    <input type="file"
-           name="model"
-           style="display: none"
+    <input style="display: none"
+           type="file"
+           (change)="onFileSelected($event)"
            #fileUpload/>
 
     <div class="upload-file-status">
         {{ fileStatus || 'No file selected' }}
-        <button type="submit"
-                class="upload-btn"
+        <button class="upload-btn"
                 (click)="fileUpload.click()">
             Upload
         </button>

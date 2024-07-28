@@ -11,6 +11,6 @@ RUN pip install -r requirements.txt
 COPY ../.. .
 RUN pip install -e .
 
-EXPOSE 8000
+EXPOSE 5000
 CMD [ "backend" ]
 
