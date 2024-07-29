@@ -46,11 +46,11 @@ class Application:
             try:
                 file = request.files['model']
                 if file is None:
-                    return {'message': 'No file uploaded'}, 400
+                    return {'error': 'No file uploaded'}, 400
 
                 extention: str = os.path.splitext(file.filename)[-1]
                 if extention not in app.config['ALLOWED_EXTENSIONS']:
-                    return {'message': f'File extention {extention} not allowed'}, 400
+                    return {'error': f'File extention {extention} not allowed'}, 400
 
                 path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file.filename))
 
@@ -58,11 +58,11 @@ class Application:
                 return {'message': 'Model uploaded successfully', 'model_size': get_model_size(path)}
 
             except RequestEntityTooLarge:
-                return {'message': f'File too large, exeded the {app.config['MAX_CONTENT_LENGTH']} limit'}, 413
+                return {'error': f'File too large, exeded the {app.config['MAX_CONTENT_LENGTH']} limit'}, 413
 
             except ModelNotLoaded as error:
                 os.remove(error.path)
-                return {'message': 'File is not the correct format'}, 400
+                return {'error': 'File is not the correct format'}, 400
 
         return app
 
