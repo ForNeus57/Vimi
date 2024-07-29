@@ -3,14 +3,14 @@ export interface CorrectFileMessage {
     readonly model_size: Array<Array<number>>
 }
 export function isCorrectFileMessage(obj: any): obj is CorrectFileMessage {
-    return obj.message !== undefined && obj.model_size !== undefined;
+    return obj !== undefined && obj.message !== undefined && obj.model_size !== undefined;
 }
 
 export interface ErrorFileMessage {
-    readonly message: string
+    readonly error: string
 }
 export function isErrorFileMessage(obj: any): obj is ErrorFileMessage {
-    return obj.message !== undefined;
+    return obj !== undefined && obj.error !== undefined;
 }
 
 export type FileMessageResponse = CorrectFileMessage | ErrorFileMessage;
