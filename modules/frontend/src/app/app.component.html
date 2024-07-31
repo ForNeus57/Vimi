@@ -1,14 +1,19 @@
 <div class="app-outer">
-    <input style="display: none"
-           type="file"
-           (change)="onFileSelected($event)"
-           #fileUpload/>
-
-    <div class="upload-file-status">
-        {{ fileStatus }}
-        <button class="upload-btn"
-                (click)="fileUpload.click()">
-            Upload
-        </button>
+    <div class="app-inner-navbar">
+        <app-navbar></app-navbar>
+    </div>
+    <div class="app-inner-file-manager">
+        <app-file-manager></app-file-manager>
+    </div>
+   <div class="app-inner-editor">
+        @defer (when isEditorVisible) {
+            <app-editor></app-editor>
+        } @placeholder {
+            <div class="app-inner-editor-placeholder-text">
+                <span>
+                    Open a file to start editing
+                </span>
+            </div>
+        }
     </div>
 </div>

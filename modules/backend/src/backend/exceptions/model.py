@@ -4,6 +4,6 @@ class ModelNotLoaded(Exception):
     """Model cannot be loaded."""
 
     def __init__(self, path: str) -> None:
-        super().__init__(f'Model cannot be loaded from path \'{path}\'')
+        super().__init__('File binary is not the correct format')
 
         self.path = path

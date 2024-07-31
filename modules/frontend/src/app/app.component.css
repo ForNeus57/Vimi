@@ -2,13 +2,24 @@
     width: 100vw;
     height: 100vh;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: grid;
+    gap: min(1rem, 5%);
+
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 1fr 14fr;
+    grid-template-areas:
+        'navbar navbar'
+        'file-manager editor';
 }
 
-.upload-btn {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 10px 20px;
+.app-inner-navbar {
+    grid-area: navbar;
+}
+
+.app-inner-file-manager {
+    grid-area: file-manager;
+}
+
+.app-inner-editor {
+    grid-area: editor;
 }

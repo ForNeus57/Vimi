@@ -1,1 +1,18 @@
-<p>file-manager works!</p>
+<div class="file-manager-outer">
+    <div class="file-manager-upload"
+         (click)="fileUpload.click()">
+
+        <input style="display: none"
+            type="file"
+            (change)="onFileSelected($event)"
+            [accept]="acteptableExtentions"
+            #fileUpload/>
+
+        <div class="upload-file-status">
+            {{ fileStatus }}
+            <button class="upload-btn">
+                Upload
+            </button>
+        </div>
+    </div>
+</div>

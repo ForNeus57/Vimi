@@ -1,9 +1,8 @@
+import { ModelStructure } from "./model";
+
 export interface CorrectFileMessage {
     readonly message: string
-    readonly model_size: Array<Array<number>>
-}
-export function isCorrectFileMessage(obj: any): obj is CorrectFileMessage {
-    return obj !== undefined && obj.message !== undefined && obj.model_size !== undefined;
+    readonly model_size: ModelStructure
 }
 
 export interface ErrorFileMessage {
@@ -13,4 +12,6 @@ export function isErrorFileMessage(obj: any): obj is ErrorFileMessage {
     return obj !== undefined && obj.error !== undefined;
 }
 
-export type FileMessageResponse = CorrectFileMessage | ErrorFileMessage;
+export interface ExtensionsMessage {
+    readonly extension: Array<string>
+}
