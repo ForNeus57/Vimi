@@ -1,5 +1,6 @@
 import { Component, ElementRef, viewChild, AfterViewInit } from '@angular/core';
 import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 import { ModelStructure } from '../../model/model';
 import { ModelCompositionService } from '../../services/model-compositions/model-composition.service';
@@ -40,35 +41,44 @@ export class EditorComponent implements AfterViewInit {
     }
 
     public ngAfterViewInit() {
-        this.resizeCanvas({
-            target: {
-                innerWidth: this.editorOuterDiv().nativeElement.clientWidth,
-                innerHeight: this.editorOuterDiv().nativeElement.clientHeight
-            }
-        });
+        this.resizeCanvas();
 
-        this.initializeEditor();
+        // this.initializeEditor();
     }
 
-    public resizeCanvas(event: any) {
-        this.editorCanvas().nativeElement.width = event.target.innerWidth;
-        this.editorCanvas().nativeElement.height = event.target.innerWidth;
+    public resizeCanvas() {
+        const editorOuterDivElement = this.editorOuterDiv().nativeElement;
+        const canvasWidth = Math.max(0, editorOuterDivElement.clientWidth - 1);
+        const canvasHeight = Math.max(0, editorOuterDivElement.clientHeight - 1);
+
+        this.editorCanvas().nativeElement.width = canvasWidth;
+        this.editorCanvas().nativeElement.height = canvasHeight;
+
+        console.log({
+            width: canvasWidth,
+            height: canvasHeight
+        });
 
         if (this.camera === null || this.renderer === null) {
             return;
         }
 
-        this.camera.aspect = this.editorCanvas().nativeElement.width / this.editorCanvas().nativeElement.height;
-        this.camera.updateProjectionMatrix();
+        // this.camera.aspect = canvasWidth / canvasHeight;
+        // this.camera.updateProjectionMatrix();
 
-        this.renderer.setSize(this.editorCanvas().nativeElement.width, this.editorCanvas().nativeElement.height);
-        this.renderer.render(this.scene, this.camera);
+        // this.renderer.setSize(canvasWidth, canvasHeight);
+        // this.renderer.render(this.scene, this.camera);
     }
 
     public initializeEditor() {
+        const canvasElement = this.editorCanvas().nativeElement;
+        const canvasWidth = canvasElement.width;
+        const canvasHeight = canvasElement.height;
+
         const material = new THREE.MeshToonMaterial();
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        this.scene.add(ambientLight);
+        this.scene.add(
+            new THREE.AmbientLight(0xffffff, 0.5)
+        );
 
         const pointLight = new THREE.PointLight(0xffffff, 0.5);
         pointLight.position.x = 2;
@@ -90,7 +100,7 @@ export class EditorComponent implements AfterViewInit {
 
         this.camera = new THREE.PerspectiveCamera(
             75,
-            this.editorCanvas().nativeElement.width / this.editorCanvas().nativeElement.height,
+            canvasWidth / canvasHeight,
             0.001,
             1000
         );
@@ -98,24 +108,16 @@ export class EditorComponent implements AfterViewInit {
         this.scene.add(this.camera);
 
         this.renderer = new THREE.WebGLRenderer({
-            canvas: this.editorCanvas().nativeElement,
+            canvas: canvasElement,
         });
         this.renderer.setClearColor(0xe232222, 1);
-        this.renderer.setSize(this.editorCanvas().nativeElement.width, this.editorCanvas().nativeElement.height);
+        this.renderer.setSize(canvasWidth, canvasHeight);
 
-        const clock = new THREE.Clock();
+        const controls = new OrbitControls(this.camera, this.renderer.domElement);
+        controls.update();
 
         const animateGeometry = () => {
-            const elapsedTime = clock.getElapsedTime();
-
-            // Update animation objects
-            box.rotation.x = elapsedTime;
-            box.rotation.y = elapsedTime;
-            box.rotation.z = elapsedTime;
-
-            torus.rotation.x = -elapsedTime;
-            torus.rotation.y = -elapsedTime;
-            torus.rotation.z = -elapsedTime;
+            controls.update();
 
             // Render
             this.renderer!.render(this.scene, this.camera!);

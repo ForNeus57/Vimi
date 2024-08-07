@@ -1,0 +1,13 @@
+:host {
+    flex: 1 90px;
+}
+
+.navbar {
+    background-color: white;
+    border-radius: 0 var(--navbar-corner-radius) var(--navbar-corner-radius) 0;
+
+    height: 100vh;
+
+    position: sticky;
+    top: 0;
+}

@@ -1,25 +1,17 @@
-.app-outer {
-    width: 100vw;
-    height: 100vh;
+.outer {
+    background: var(--primary-color-pale);
+    background-image: linear-gradient(315deg, rgba(255, 255, 255, 0.5) 0%, rgba(0, 0, 0, 0.3) 100%);
 
-    display: grid;
-    gap: min(1rem, 5%);
+    height: 300vh;
 
-    grid-template-columns: 1fr 4fr;
-    grid-template-rows: 1fr 14fr;
-    grid-template-areas:
-        'navbar navbar'
-        'file-manager editor';
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+
+
 }
 
-.app-inner-navbar {
-    grid-area: navbar;
-}
-
-.app-inner-file-manager {
-    grid-area: file-manager;
-}
-
-.app-inner-editor {
-    grid-area: editor;
+.main {
+    flex: 24;
 }
