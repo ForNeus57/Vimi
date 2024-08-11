@@ -1,0 +1,13 @@
+:host {
+    height: 100vh;
+    width: 20vw;
+
+    position: fixed;
+    top: 0;
+    right: 0;
+
+    padding: 2vh 2vw;
+
+    display: flex;
+
+}

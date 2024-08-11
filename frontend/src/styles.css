@@ -1,0 +1,46 @@
+:root {
+    --primary-color: #079c6a;
+    --primary-color-background: rgba(0, 255, 0,0.25);
+
+    --secondary-color: #909090;
+    --secondary-color-pale: #D3D3D3;
+
+    --error-color-primary: #ff0000;
+    --error-color-secondary: #ff0000;
+
+    --success-color-primary: #00ff00;
+    --success-color-secondary: #00ff00;
+
+    --warning-color-primary: #ff0000;
+    --warning-color-secondary: #ff0000;
+
+    --info-color-primary: #ff0000;
+    --info-color-secondary: #ff0000;
+
+    --navbar-corner-radius: 60px;
+
+    --border-radius-small: 12px;
+
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Roboto, sans-serif;
+
+    box-sizing: border-box;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+}
+
+a {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+body {
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}

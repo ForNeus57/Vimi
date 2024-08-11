@@ -1,0 +1,21 @@
+services:
+  vimi.database:
+    image: postgres:11
+    environment:
+      POSTGRES_USER: vimi
+      POSTGRES_PASSWORD: vimi
+      POSTGRES_DB: vimi
+    ports:
+      - "5432:5432"
+  vimi.backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - vimi.database
+  vimi.frontend:
+    build: ./frontend
+    ports:
+      - "4200:4200"
+    depends_on:
+      - vimi.backend

@@ -1,0 +1,16 @@
+<nav class="navbar">
+    <menu class="menu">
+        @for (element of navigationElements; track element.route) {
+            <li class="menu-item">
+                <a [routerLink]="element.route"
+                   routerLinkActive="active"
+                   ariaCurrentWhenActive="page">
+                    <i class="bi bi-{{element.icon}} menu-item-icon"></i>
+                    <span class="menu-item-display-text">
+                        {{ element.displayText }}
+                    </span>
+                </a>
+            </li>
+        }
+    </menu>
+</nav>

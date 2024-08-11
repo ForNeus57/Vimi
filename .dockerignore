@@ -1,10 +1,9 @@
 .git
 .gitignore
-.vscode
 .containers
 node_modules
-build
 
+/backend/models
 docs
-*.md
+.md
 LICENSE
