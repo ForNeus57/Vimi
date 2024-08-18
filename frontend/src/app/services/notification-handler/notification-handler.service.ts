@@ -12,23 +12,25 @@ export class NotificationHandlerService implements ErrorHandler {
         this.notificationSubject = new BehaviorSubject<Notification | null>(null);
     }
 
-    public handleSuccess(success: string): void {
+    public handleSuccess(success: string) {
         this.notificationSubject.next(new Notification(NotificationType.Success, success));
     }
 
-    public handleError(error: Error): void {
+    public handleError(error: Error) {
+        console.error(error);
         this.notificationSubject.next(new Notification(NotificationType.Error, error.message));
     }
 
-    public handleWarning(warning: string): void {
+    public handleWarning(warning: string) {
         this.notificationSubject.next(new Notification(NotificationType.Warning, warning));
     }
 
-    public handleInfo(info: string): void {
+    public handleInfo(info: string) {
+        console.log(info);
         this.notificationSubject.next(new Notification(NotificationType.Info, info));
     }
 
-    public getNotificationObservable(): Observable<Notification | null> {
+    public getNotificationObservable() {
         return this.notificationSubject.asObservable();
     }
 }

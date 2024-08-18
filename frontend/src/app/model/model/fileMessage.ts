@@ -11,7 +11,3 @@ export interface ErrorFileMessage {
 export function isErrorFileMessage(obj: any): obj is ErrorFileMessage {
     return obj !== undefined && obj.error !== undefined;
 }
-
-export interface ExtensionsMessage {
-    readonly extension: Array<string>
-}

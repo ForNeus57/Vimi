@@ -1,7 +1,7 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {NavigationService} from "../../services/navigation/navigation.service";
-import {NavbarElement} from "../../model/navbar_elements";
+import {NavbarElement} from "../../model/navbarElements";
 
 @Component({
     selector: 'app-navbar',

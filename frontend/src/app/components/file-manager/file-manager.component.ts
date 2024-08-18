@@ -2,8 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 
-import { isErrorFileMessage, ExtensionsMessage, CorrectFileMessage } from '../../model/file_message';
+import { isErrorFileMessage, CorrectFileMessage } from '../../model/model/fileMessage';
 import { ModelCompositionService } from '../../services/model-compositions/model-composition.service';
+import {ConfigService} from "../../services/config/config.service";
 
 @Component({
     selector: 'app-file-manager',
@@ -14,16 +15,19 @@ import { ModelCompositionService } from '../../services/model-compositions/model
 })
 export class FileManagerComponent implements OnInit {
     public fileStatus = 'Upload your model';
+    public maxModelSize = 0;
     public acceptableExtensions = '';
 
     constructor(
         private http: HttpClient,
+        private configService: ConfigService,
         private modelCompositionService: ModelCompositionService,
     ) {}
 
     ngOnInit() {
-        this.http.get<ExtensionsMessage>('http://localhost:5000/model/extension').subscribe(response => {
-            this.acceptableExtensions = response.extension.join(',');
+        this.configService.getModelUploadConfig().subscribe(config => {
+            this.acceptableExtensions = config.modelAllowedExtensions.join(',');
+            this.maxModelSize = config.maxModelSize;
         });
     }
 
@@ -36,6 +40,11 @@ export class FileManagerComponent implements OnInit {
         }
 
         const uploadedFile: File = input.files[0];
+
+        if (uploadedFile.size > this.maxModelSize) {
+            this.fileStatus = 'Model size exceeds the limit';
+            return;
+        }
         this.fileStatus = uploadedFile.name;
 
         const formData = new FormData();

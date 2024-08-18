@@ -2,7 +2,7 @@ import {Component, ElementRef, viewChild, AfterViewInit, OnInit} from '@angular/
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-import { ModelStructure } from '../../model/model';
+import { ModelStructure } from '../../model/model/model';
 import { ModelCompositionService } from '../../services/model-compositions/model-composition.service';
 
 @Component({

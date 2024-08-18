@@ -1,7 +1,29 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest
 
-# Create your views here.
+from vimi_web.api.authentication import RedisTokenBlacklist
+from vimi_web.logic.settings import Settings
 
-def frontend_config(request) -> JsonResponse:
-    return JsonResponse({'extension': ['jpg', 'jpeg', 'png', 'gif']}, safe=False)
-    # return JsonResponse({'extension': list(app.config['ALLOWED_EXTENSIONS'])}, safe=False)
+
+def config_frontend(request) -> JsonResponse:
+    return JsonResponse(
+        Settings().get_config_frontend(),
+    )
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
+
+class LogoutView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request: HttpRequest) -> Response:
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            RedisTokenBlacklist.add(token.access_token)
+            token.blacklist()
+
+            return Response({"message": "Successfully logged out."}, status=200)
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)

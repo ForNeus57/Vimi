@@ -66,7 +66,7 @@ services:
     env_file:
       - database/database.env
     volumes:
-      - vimi-database:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/data
     restart: always
     pull_policy: build
     ports:
@@ -83,7 +83,7 @@ services:
     env_file:
       - cache/cache.env
     volumes:
-      - vimi-cache:/data
+      - cache:/data
     restart: always
     pull_policy: build
     ports:
@@ -100,7 +100,7 @@ services:
     env_file:
       - sftp-server/sftp-server.env
     volumes:
-      - vimi-sftp-server:/upload
+      - sftp-server:/upload
     restart: always
     pull_policy: build
     ports:
@@ -109,21 +109,21 @@ services:
       - backend-net
 
 volumes:
-  vimi-database:
+  database:
     driver: local
     driver_opts:
       type: none
       device: ./.containers/database
       o: bind
 
-  vimi-cache:
+  cache:
     driver: local
     driver_opts:
       type: none
       device: ./.containers/cache
       o: bind
 
-  vimi-sftp-server:
+  sftp-server:
     driver: local
     driver_opts:
       type: none
