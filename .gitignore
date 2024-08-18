@@ -1,35 +1,51 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+### Django template
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
+# If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
+# in your Git repository. Update and uncomment the following line accordingly.
+# <django-project-name>/staticfiles/
 
-# Node
-/frontend/node_modules
-/frontend/.angular
-npm-debug.log
-yarn-error.log
+### Angular template
+## Angular ##
+# compiled output
+dist/
+tmp/
+app/**/*.js
+app/**/*.js.map
+
+# dependencies
+node_modules/
+bower_components/
 
 # IDEs and editors
-.project
-.classpath
-.c9/
-*.launch
-.settings/
+.idea/
 
-# Miscellaneous
-/.angular/cache
+# misc
 .sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
+connect.lock/
+coverage/
+libpeerconnection.log/
+npm-debug.log
 testem.log
-/typings
+typings/
+.angular/
 
+# e2e
+e2e/*.js
+e2e/*.map
+
+# System Files
+.DS_Store/
+
+### Python template
 # Byte-compiled / optimized / DLL files
-__pycache__/
 *.py[cod]
 *$py.class
 
@@ -40,7 +56,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -83,13 +98,6 @@ cover/
 
 # Translations
 *.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
 
 # Flask stuff:
 instance/
@@ -187,9 +195,6 @@ cython_debug/
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-.idea/
+#.idea/
 
-resources/**
-
-.containers
-.run
+.containers/

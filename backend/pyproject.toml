@@ -1,13 +1,11 @@
 python-implementation = "CPython"
 
 [project]
-name = "backend"
-version = "0.0.0.5"
+name = "vimi-backend"
+version = "0.0.1.0"
 requires-python = ">=3.12.4"
 authors = [{ name="Dominik Breksa", email="dominikbreksa@gmail.com" }]
 description = "Small Backend for neural networks visualisations."
-readme = { file = "README.md", content-type = "text/markdown" }
-license = {file = "LICENSE"}
 dynamic = ["dependencies"]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -21,7 +19,8 @@ Repository = "https://github.com/ForNeus57/vimi.git"
 Issues = "https://github.com/ForNeus57/Vimi/issues"
 
 [project.scripts]
-backend = "backend.app:main"
+vimi-backend = "vimi_web.manage:main"
+vimi-worker = "vimi_worker.app:main"
 
 [build-system]
 requires = ["setuptools>=70.0"]

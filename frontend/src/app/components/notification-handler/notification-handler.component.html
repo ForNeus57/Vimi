@@ -1,3 +1,16 @@
-@for (notification of notifications; track notification.message) {
+@for (notification of notifications; track notifications.indexOf(notification)) {
+  <div @notificationFade [ngClass]="['notification', notification.getClass()]">
 
+    <header>
+      <p class="notification-header-text">
+        {{notification.message}}
+      </p>
+    </header>
+    <footer>
+
+    </footer>
+    <button (click)="removeNotification(notification)">
+      <i class="bi bi-x-square-fill" [ngStyle]="{}"></i>
+    </button>
+  </div>
 }

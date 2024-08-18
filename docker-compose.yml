@@ -1,21 +1,142 @@
 services:
-  vimi.database:
-    image: postgres:11
-    environment:
-      POSTGRES_USER: vimi
-      POSTGRES_PASSWORD: vimi
-      POSTGRES_DB: vimi
+  vimi.worker:
+    image: vimi-worker:latest
+    build:
+      context: .
+      dockerfile: backend/worker.Dockerfile
+    container_name: vimi-worker
+    env_file:
+      - backend/worker.env
+    restart: always
+    pull_policy: build
     ports:
-      - "5432:5432"
+      - "80:80"
+    networks:
+      - backend-net
+
   vimi.backend:
-    build: ./backend
+    image: vimi-backend:latest
+    build:
+      context: .
+      dockerfile: backend/backend.Dockerfile
+    container_name: vimi-backend
+    env_file:
+      - backend/backend.env
+    restart: always
+    pull_policy: build
     ports:
       - "5000:5000"
     depends_on:
-      - vimi.database
+      vimi.worker:
+        condition: service_started
+      vimi.database:
+        condition: service_started
+      vimi.cache:
+        condition: service_started
+      vimi.sftp-server:
+        condition: service_started
+    networks:
+      - backend-net
+      - frontend-net
+
   vimi.frontend:
-    build: ./frontend
+    image: vimi-frontend:latest
+    build:
+      context: .
+      dockerfile: ./frontend/frontend.Dockerfile
+    container_name: vimi-frontend
+    env_file:
+      - frontend/frontend.env
+    restart: always
+    pull_policy: build
     ports:
-      - "4200:4200"
+      - "3000:3000"
     depends_on:
-      - vimi.backend
+      vimi.backend:
+        condition: service_healthy
+    networks:
+      - frontend-net
+
+  vimi.database:
+    image: vimi-database:latest
+    build:
+      context: .
+      dockerfile: database/database.Dockerfile
+    container_name: vimi-database
+    env_file:
+      - database/database.env
+    volumes:
+      - vimi-database:/var/lib/postgresql/data
+    restart: always
+    pull_policy: build
+    ports:
+      - "5432:5432"
+    networks:
+      - backend-net
+
+  vimi.cache:
+    image: vimi-cache:latest
+    build:
+      context: .
+      dockerfile: cache/cache.Dockerfile
+    container_name: vimi-cache
+    env_file:
+      - cache/cache.env
+    volumes:
+      - vimi-cache:/data
+    restart: always
+    pull_policy: build
+    ports:
+      - "6379:6379"
+    networks:
+      - backend-net
+
+  vimi.sftp-server:
+    image: vimi-sftp-server:latest
+    build:
+      context: .
+      dockerfile: ./sftp-server/sftp-server.Dockerfile
+    container_name: vimi-sftp-server
+    env_file:
+      - sftp-server/sftp-server.env
+    volumes:
+      - vimi-sftp-server:/upload
+    restart: always
+    pull_policy: build
+    ports:
+      - "2222:22"
+    networks:
+      - backend-net
+
+volumes:
+  vimi-database:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./.containers/database
+      o: bind
+
+  vimi-cache:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./.containers/cache
+      o: bind
+
+  vimi-sftp-server:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./.containers/sftp-server
+      o: bind
+
+secrets:
+  vimi-database-password:
+    file: ./database/database.password
+
+networks:
+  backend-net:
+    driver: bridge
+
+  frontend-net:
+    driver: bridge

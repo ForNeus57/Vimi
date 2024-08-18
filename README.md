@@ -1,4 +1,10 @@
 # Vimi
 
-Author:
+### Author:
 - Dominik Breksa
+ 
+# Description
+
+# Installation
+
+# Usage

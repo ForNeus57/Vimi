@@ -1,4 +1,0 @@
-# Vimi
-
-Author:
-- Dominik Breksa

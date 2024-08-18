@@ -1,13 +1,30 @@
 import {Component, OnInit} from '@angular/core';
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {Notification} from "../../model/notification";
+import {NgClass, NgStyle} from "@angular/common";
+import {trigger, state, style, animate, transition} from '@angular/animations';
 
 @Component({
     selector: 'app-notification-handler',
     standalone: true,
-    imports: [],
+    imports: [
+        NgClass,
+        NgStyle
+    ],
     templateUrl: './notification-handler.component.html',
-    styleUrl: './notification-handler.component.css'
+    styleUrl: './notification-handler.component.css',
+    animations: [
+        trigger('notificationFade', [
+            transition(':enter', [
+                style({opacity: 0}),
+                animate('0.4s ease', style({opacity: 1}))
+            ]),
+            transition(':leave', [
+                style({opacity: 1}),
+                animate('0.4s ease', style({opacity: 0}))
+            ])
+        ])
+    ],
 })
 export class NotificationHandlerComponent implements OnInit {
     public notifications: Array<Notification> = [];

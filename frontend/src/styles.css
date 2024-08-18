@@ -17,10 +17,11 @@
     --info-color-primary: #ff0000;
     --info-color-secondary: #ff0000;
 
-    --navbar-corner-radius: 60px;
-
+    --border-radius-big: 60px;
     --border-radius-small: 12px;
 
+    --gap-medium: 3vh;
+    --gap-small: 1.5vh;
 }
 
 * {
