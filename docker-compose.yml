@@ -38,6 +38,8 @@ services:
     networks:
       - backend-net
       - frontend-net
+    secrets:
+      - vimi-backend-jwt-signing
 
   vimi.frontend:
     image: vimi-frontend:latest
@@ -131,8 +133,10 @@ volumes:
       o: bind
 
 secrets:
-  vimi-database-password:
-    file: ./database/database.password
+  vimi-backend-jwt-signing:
+    file: backend/secrets/jwt_signing_private_key.pem
+#  vimi-backend-jwt-signing-password:
+#    file: backend/secrets/jwt_signing_password.txt
 
 networks:
   backend-net:

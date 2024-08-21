@@ -202,4 +202,5 @@ README.md
 .containers/
 
 backend/test
-
+backend/src/vimi_web/api/migrations
+backend/secrets/

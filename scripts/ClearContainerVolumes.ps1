@@ -1,8 +1,7 @@
-$originalDirectory = Get-Location
 $projectRoot = "C:\Users\domin\PycharmProjects\Vimi"
 
 $volumes = docker volume ls --format '{{.Name}}' | Where-Object { $_ -like "vimi*" }
-$directoriesToRemove = @("\.containers\sftp-server\**", "\.containers\database\**", "\.containers\cache\**")
+$directoriesToRemove = @("\.containers\sftp-server\**", "\.containers\database\**", "\.containers\cache\**", "\backend\src\vimi_web\api\migrations\00*")
 
 foreach ($volume in $volumes) {
     docker volume rm $volume

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 from os import environ
 
@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = environ['DJANGO_DEBUG'] == "True"
+DEBUG = environ['DJANGO_DEBUG'] == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -34,48 +34,48 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_simplejwt',
-    "vimi_web.api",
+    'vimi_web.api',
+    'vimi_web.auth',
 ]
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "vimi_web.api.middleware.MaxUploadSizeMiddleware",
-    "vimi_web.api.middleware.CorsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'vimi_web.api.middleware.MaxUploadSizeMiddleware',
+    'vimi_web.api.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = "vimi_web.core.urls"
+ROOT_URLCONF = 'vimi_web.core.urls'
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = "vimi_web.core.wsgi.application"
+WSGI_APPLICATION = 'vimi_web.core.wsgi.application'
 
 
 # Database
@@ -83,7 +83,7 @@ WSGI_APPLICATION = "vimi_web.core.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': "django.db.backends.postgresql",
+        'ENGINE': 'django.db.backends.postgresql',
 
         'USER': environ['POSTGRES_USERNAME'],
         'PASSWORD': environ['POSTGRES_PASSWORD'],
@@ -93,19 +93,48 @@ DATABASES = {
     }
 }
 
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "default"
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
 
 CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://{environ['REDIS_USERNAME']}:{environ['REDIS_USER_PASSWORD']}@{environ['REDIS_HOST']}:{environ['REDIS_PORT']}/1",
-    }
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'redis://{environ['REDIS_USERNAME']}:{environ['REDIS_USER_PASSWORD']}@{environ['REDIS_HOST']}:{environ['REDIS_PORT']}/0',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {
+                'max_connections': 100,
+                'retry_on_timeout': True,
+            },
+        }
+    },
+    'authentication': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'redis://{environ['REDIS_USERNAME']}:{environ['REDIS_USER_PASSWORD']}@{environ['REDIS_HOST']}:{environ['REDIS_PORT']}/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {
+                'max_connections': 100,
+                'retry_on_timeout': True,
+            },
+        }
+    },
+    'data': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'redis://{environ['REDIS_USERNAME']}:{environ['REDIS_USER_PASSWORD']}@{environ['REDIS_HOST']}:{environ['REDIS_PORT']}/2',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {
+                'max_connections': 100,
+                'retry_on_timeout': True,
+            },
+        }
+    },
 }
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'vimi_web.auth.authentication.JWTAuthentication'
         # 'vimi_web.api.authentication.RedisJWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
@@ -113,55 +142,63 @@ REST_FRAMEWORK = {
     ),
 }
 
+AUTHENTICATION_BACKENDS = [
+    'vimi_web.auth.authentication.JWTAuthentication',
+    # 'django.contrib.auth.backends.ModelBackend',
+]
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
-    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
-    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
-    "django.contrib.auth.hashers.Argon2PasswordHasher",
-    "django.contrib.auth.hashers.ScryptPasswordHasher",
+    # 'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    # 'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    # 'django.contrib.auth.hashers.Argon2PasswordHasher',
+    # 'django.contrib.auth.hashers.ScryptPasswordHasher',
 ]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-        "OPTIONS": {
-            "min_length": Settings().minimum_password_length,
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': Settings().minimum_password_length,
         },
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
     {
-        "NAME": "vimi_web.api.validators.MaximumLengthValidator",
-        "OPTIONS": {
-            "max_length": Settings().maximum_password_length,
+        'NAME': 'vimi_web.api.validators.MaximumLengthValidator',
+        'OPTIONS': {
+            'max_length': Settings().maximum_password_length,
         }
     },
     {
-        "NAME": "vimi_web.api.validators.SymbolsPresentsValidator",
+        'NAME': 'vimi_web.api.validators.SymbolsPresentsValidator',
         # TODO: Make options from Setting singleton pls.
-        # "OPTIONS": {
+        # 'OPTIONS': {
         #
         # }
     },
 ]
 
+SECURE_SSL_REDIRECT = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = "UTC"
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -170,9 +207,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

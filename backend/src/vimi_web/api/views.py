@@ -1,18 +1,19 @@
 from django.http import JsonResponse, HttpRequest
-
-from vimi_web.api.authentication import RedisTokenBlacklist
-from vimi_web.logic.settings import Settings
-
-
-def config_frontend(request) -> JsonResponse:
-    return JsonResponse(
-        Settings().get_config_frontend(),
-    )
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from vimi_web.logic.settings import Settings
+
+
+class ConfigFrontendView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request: HttpRequest) -> JsonResponse:
+        return JsonResponse(
+            Settings().get_config_frontend(),
+        )
 
 class LogoutView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -21,7 +22,7 @@ class LogoutView(APIView):
         try:
             refresh_token = request.data["refresh_token"]
             token = RefreshToken(refresh_token)
-            RedisTokenBlacklist.add(token.access_token)
+            # RedisTokenBlacklist.add(token.access_token)
             token.blacklist()
 
             return Response({"message": "Successfully logged out."}, status=200)
