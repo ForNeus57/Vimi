@@ -1,0 +1,34 @@
+:host {
+  width: 100%;
+  height: 100%;
+
+}
+
+.h-navbar-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    height: var(--horizontal-navigation-bar-height);
+    color: var(--secondary-color);
+}
+
+.nav-menu {
+  flex: 1;
+  list-style-type: none;
+
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+
+  gap: var(--standard-gap);
+}
+
+.left-menu {
+  justify-content: flex-start;
+}
+
+.right-menu {
+  justify-content: flex-end;
+}

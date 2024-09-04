@@ -1,1 +1,0 @@
-export type ModelStructure = Array<Array<number>>;

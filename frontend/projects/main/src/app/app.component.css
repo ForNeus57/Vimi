@@ -1,0 +1,49 @@
+:host {
+  --horizontal-navigation-bar-height: 10vh;
+  --footer-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  background-color: var(--background-color);
+}
+
+.horizontal-navigation-container {
+  flex: var(--horizontal-navigation-bar-height);
+  background-color: var(--secondary-background-color);
+  color: var(--secondary-color);
+  box-shadow: var(--primary-dark-color) 0 0 var(--standard-gap);
+  border-radius: 0 0 var(--standard-border-radius) var(--standard-border-radius);
+  padding: 0 var(--horizontal-navigation-bar-height) 0 var(--horizontal-navigation-bar-height);
+  position: sticky;
+  top: 0;
+}
+
+.main {
+  flex: 1;
+  min-height: 100vh;
+}
+
+.footer-container {
+  flex: var(--footer-height);
+  padding: var(--standard-border-radius);
+  background-color: var(--secondary-background-color);
+  color: var(--secondary-color);
+  box-shadow: var(--primary-dark-color) 0 0 var(--standard-gap);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: var(--double-gap);
+  border-radius: var(--standard-border-radius) var(--standard-border-radius) 0 0;
+}
+
+.footer-container-divider {
+  flex: 1;
+  border-top: var(--background-color) 1px solid;
+  border-bottom: var(--background-color) 1px solid;
+}
+
+/*# sourceMappingURL=app.component.css.map */

@@ -17,8 +17,8 @@ media
 # compiled output
 dist/
 tmp/
-app/**/*.js
-app/**/*.js.map
+frontend/projects/main/src/app/**/*.js
+frontend/projects/main/src/app/**/*.js.map
 
 # dependencies
 node_modules/
@@ -203,4 +203,5 @@ README.md
 
 backend/test
 backend/src/vimi_web/api/migrations
+backend/src/vimi_web/worker/migrations
 backend/secrets/

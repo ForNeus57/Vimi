@@ -13,6 +13,11 @@ from datetime import timedelta
 from pathlib import Path
 from os import environ
 
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.serialization import load_pem_private_key
+
+from vimi_lib.crypto.rsa_key_reader import generate_rsa_private_key
 from vimi_web.logic.settings import Settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,8 +46,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'vimi_web.api',
-    'vimi_web.auth',
+    'vimi_web.authentication',
+    'vimi_web.worker',
 ]
 
 MIDDLEWARE = [
@@ -76,6 +84,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'vimi_web.core.wsgi.application'
+
+FTP_USER = environ['DJANGO_FTP_USER']
+FTP_PASSWORD = environ['DJANGO_FTP_PASSWORD']
+FTP_HOST = environ['DJANGO_FTP_HOST']
+FTP_PORT = environ['DJANGO_FTP_PORT']
+
+DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
+FTP_STORAGE_LOCATION = f'ftp://{FTP_USER}:{FTP_PASSWORD}@{FTP_HOST}:{FTP_PORT}/'
 
 
 # Database
@@ -134,17 +150,44 @@ CACHES = {
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'vimi_web.auth.authentication.JWTAuthentication'
-        # 'vimi_web.api.authentication.RedisJWTAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
 
+SIGNING_KEY = generate_rsa_private_key(8192).private_bytes(
+    encoding=serialization.Encoding.PEM,
+    format=serialization.PrivateFormat.TraditionalOpenSSL,
+    encryption_algorithm=serialization.NoEncryption(),
+)
+VERIFIER_KEY = load_pem_private_key(
+    SIGNING_KEY,
+    password=None,
+    backend=default_backend(),
+).public_key().public_bytes(
+    encoding=serialization.Encoding.PEM,
+    format=serialization.PublicFormat.SubjectPublicKeyInfo,
+)
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "REFRESH_TOKEN_LIFETIME": timedelta(hours=12),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+
+    "ALGORITHM": "RS512",
+    "SIGNING_KEY": SIGNING_KEY,
+    "VERIFYING_KEY": VERIFIER_KEY,
+    "ISSUER": environ['DJANGO_JWT_ISSUER'],
+    "AUDIENCE": environ['DJANGO_JWT_AUDIENCE'],
+}
+
 AUTHENTICATION_BACKENDS = [
-    'vimi_web.auth.authentication.JWTAuthentication',
-    # 'django.contrib.auth.backends.ModelBackend',
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 # Password validation
@@ -160,19 +203,19 @@ PASSWORD_HASHERS = [
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.authentication.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.authentication.password_validation.MinimumLengthValidator',
         'OPTIONS': {
             'min_length': Settings().minimum_password_length,
         },
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.authentication.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.authentication.password_validation.NumericPasswordValidator',
     },
     {
         'NAME': 'vimi_web.api.validators.MaximumLengthValidator',
@@ -189,7 +232,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-SECURE_SSL_REDIRECT = True
+# SECURE_SSL_REDIRECT = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 

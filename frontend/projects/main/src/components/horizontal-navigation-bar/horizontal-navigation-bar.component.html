@@ -1,0 +1,39 @@
+<nav class="h-navbar-container">
+  <menu class="nav-menu left-menu">
+    @if (!this.isLoggedIn) {
+      <li>
+        <a routerLink="/home" routerLinkActive="active">
+          <span>
+            Home
+          </span>
+        </a>
+      </li>
+    }
+  </menu>
+  <menu class="nav-menu right-menu">
+    @if (!this.isLoggedIn) {
+      <li>
+        <a routerLink="/account/register" routerLinkActive="active">
+          <span>
+            Sign Up
+          </span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/account/login" routerLinkActive="active">
+          <span>
+            Log In
+          </span>
+        </a>
+      </li>
+    } @else {
+      <li>
+        <button (click)="logout()">
+          <span>
+            Log Out
+          </span>
+        </button>
+      </li>
+    }
+  </menu>
+</nav>

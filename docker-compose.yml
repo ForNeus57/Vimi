@@ -33,13 +33,13 @@ services:
         condition: service_started
       vimi.cache:
         condition: service_started
-      vimi.sftp-server:
+      vimi.ftp-server:
         condition: service_started
     networks:
       - backend-net
       - frontend-net
-    secrets:
-      - vimi-backend-jwt-signing
+#    secrets:
+#      - vimi-backend-jwt-signing
 
   vimi.frontend:
     image: vimi-frontend:latest
@@ -93,20 +93,21 @@ services:
     networks:
       - backend-net
 
-  vimi.sftp-server:
-    image: vimi-sftp-server:latest
+  vimi.ftp-server:
+    image: vimi-ftp-server:latest
     build:
       context: .
-      dockerfile: ./sftp-server/sftp-server.Dockerfile
-    container_name: vimi-sftp-server
+      dockerfile: ./ftp-server/ftp-server.Dockerfile
+    container_name: vimi-ftp-server
     env_file:
-      - sftp-server/sftp-server.env
+      - ftp-server/ftp-server.env
     volumes:
-      - sftp-server:/upload
+      - ftp-server:/upload
     restart: always
     pull_policy: build
     ports:
-      - "2222:22"
+      - "21:21"
+      - "21000-21010:21000-21010"
     networks:
       - backend-net
 
@@ -125,16 +126,16 @@ volumes:
       device: ./.containers/cache
       o: bind
 
-  sftp-server:
+  ftp-server:
     driver: local
     driver_opts:
       type: none
-      device: ./.containers/sftp-server
+      device: ./.containers/ftp-server
       o: bind
 
-secrets:
-  vimi-backend-jwt-signing:
-    file: backend/secrets/jwt_signing_private_key.pem
+#secrets:
+#  vimi-backend-jwt-signing:
+#    file: backend/secrets/jwt_signing_private_key.pem
 #  vimi-backend-jwt-signing-password:
 #    file: backend/secrets/jwt_signing_password.txt
 

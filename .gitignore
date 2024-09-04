@@ -199,5 +199,7 @@ cython_debug/
 
 .containers/
 backend/src/vimi_web/api/migrations
+backend/src/vimi_web/worker/migrations
 
 /backend/secrets/
+backend/tmp

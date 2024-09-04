@@ -25,7 +25,10 @@ def main() -> None:
             author_email=emails,
 
             packages=find_packages(where='src'),
-            package_dir={"": "src"},
+            package_dir={'': 'src'},
+            package_data={
+                '': ['py.typed'],
+            },
         )
 
 

@@ -3,39 +3,42 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "frontend": {
+    "main": {
       "projectType": "application",
-      "schematics": {},
-      "root": "",
-      "sourceRoot": "src",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/main",
+      "sourceRoot": "projects/main/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/frontend",
-            "index": "src/index.html",
-            "browser": "src/main.ts",
+            "outputPath": "dist/main",
+            "index": "projects/main/src/index.html",
+            "browser": "projects/main/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "tsconfig.app.json",
+            "tsConfig": "projects/main/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "projects/main/public"
               }
             ],
             "styles": [
-              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
-              "src/custom-theme.scss",
-              "src/styles.css"
+              "projects/main/src/styles.scss"
             ],
             "scripts": [],
-            "server": "src/main.server.ts",
+            "server": "projects/main/src/main.server.ts",
             "prerender": true,
             "ssr": {
-              "entry": "server.ts"
+              "entry": "projects/main/server.ts"
             }
           },
           "configurations": {
@@ -66,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "frontend:build:production"
+              "buildTarget": "main:build:production"
             },
             "development": {
-              "buildTarget": "frontend:build:development"
+              "buildTarget": "main:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -84,15 +87,16 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "tsconfig.spec.json",
+            "tsConfig": "projects/main/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "projects/main/public"
               }
             ],
             "styles": [
-              "src/styles.css"
+              "projects/main/src/styles.scss"
             ],
             "scripts": []
           }

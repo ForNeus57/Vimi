@@ -28,3 +28,12 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
+
+[tool.pytest.ini_options]
+addopts = [
+    "--cov=vimi_web",
+    "--cov=vimi_worker",
+    "--cov=vimi_lib",
+    "--cov-report=term-missing",
+]
+testpaths = ["test"]

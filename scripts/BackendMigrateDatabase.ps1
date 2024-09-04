@@ -8,7 +8,7 @@ $envVars = Get-Content backend.env | Foreach-Object {
 }
 
 & {
-    vimi-backend makemigrations api;
+    vimi-backend makemigrations;
     vimi-backend migrate;
     vimi-backend createsuperuser --username "$env:DJANGO_SUPERUSER_USERNAME" --email "$env:DJANGO_SUPERUSER_EMAIL" --noinput;
 }
