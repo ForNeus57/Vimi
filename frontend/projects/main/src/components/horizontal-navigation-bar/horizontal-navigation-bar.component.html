@@ -2,9 +2,11 @@
   <menu class="nav-menu left-menu">
     @if (!this.isLoggedIn) {
       <li>
-        <a routerLink="/home" routerLinkActive="active">
+        <a routerLink="/home"
+           routerLinkActive="active"
+           ariaCurrentWhenActive="page">
           <span>
-            Home
+            Vimi
           </span>
         </a>
       </li>
@@ -13,14 +15,18 @@
   <menu class="nav-menu right-menu">
     @if (!this.isLoggedIn) {
       <li>
-        <a routerLink="/account/register" routerLinkActive="active">
+        <a routerLink="/account/register"
+           routerLinkActive="active"
+           ariaCurrentWhenActive="page">
           <span>
             Sign Up
           </span>
         </a>
       </li>
       <li>
-        <a routerLink="/account/login" routerLinkActive="active">
+        <a routerLink="/account/login"
+           routerLinkActive="active"
+           ariaCurrentWhenActive="page">
           <span>
             Log In
           </span>

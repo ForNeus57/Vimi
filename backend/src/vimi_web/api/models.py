@@ -6,12 +6,11 @@ from django.db import models
 
 User = get_user_model()
 
-file_storage = FTPStorage()
+# file_storage = FTPStorage()
 
 class UserDetail(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
-    image_path = models.CharField(max_length=100)
 
 
 class Model(models.Model):
@@ -19,7 +18,7 @@ class Model(models.Model):
     name = models.CharField(max_length=100)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     extension = models.CharField(max_length=16)
-    file = models.FileField(upload_to='srv/ftp/models/', storage=)
+    # file = models.FileField(upload_to='srv/ftp/models/')
 
     # model = models.FileField(upload_to='models/')
     created_at = models.DateTimeField(auto_now_add=True)

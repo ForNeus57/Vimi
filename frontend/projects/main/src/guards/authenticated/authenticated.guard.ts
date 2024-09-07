@@ -3,6 +3,10 @@ import {AuthenticationService} from "../../services/authentication/authenticatio
 import {inject} from "@angular/core";
 
 export const AuthenticatedGuard: CanActivateFn = (route, state) => {
-  const authenticationService = inject(AuthenticationService);
-  return authenticationService.getIsLoggedIn();
+  const authentication = inject(AuthenticationService);
+
+  return authentication.getIsLoggedIn()
+    && authentication.getAuthToken() !== null
+    && authentication.getUserId() !== null
+    && authentication.getUserId() === route.params['id'];
 };

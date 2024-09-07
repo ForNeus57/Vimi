@@ -48,6 +48,10 @@ export class AuthenticationService {
     return this.token;
   }
 
+  public getUserId() {
+    return this.userId;
+  }
+
   public getIsLoggedInObs() {
     return this.isLoggedIn.asObservable();
   }

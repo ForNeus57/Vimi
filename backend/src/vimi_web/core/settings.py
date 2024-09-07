@@ -85,13 +85,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'vimi_web.core.wsgi.application'
 
-FTP_USER = environ['DJANGO_FTP_USER']
-FTP_PASSWORD = environ['DJANGO_FTP_PASSWORD']
-FTP_HOST = environ['DJANGO_FTP_HOST']
-FTP_PORT = environ['DJANGO_FTP_PORT']
-
-DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
-FTP_STORAGE_LOCATION = f'ftp://{FTP_USER}:{FTP_PASSWORD}@{FTP_HOST}:{FTP_PORT}/'
+# FTP_USER = environ['DJANGO_FTP_USER']
+# FTP_PASSWORD = environ['DJANGO_FTP_PASSWORD']
+# FTP_HOST = environ['DJANGO_FTP_HOST']
+# FTP_PORT = environ['DJANGO_FTP_PORT']
+#
+# DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
+# FTP_STORAGE_LOCATION = f'ftp://{FTP_USER}:{FTP_PASSWORD}@{FTP_HOST}:{FTP_PORT}/'
 
 
 # Database
@@ -203,19 +203,19 @@ PASSWORD_HASHERS = [
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.authentication.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.authentication.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
         'OPTIONS': {
             'min_length': Settings().minimum_password_length,
         },
     },
     {
-        'NAME': 'django.contrib.authentication.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.authentication.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
     {
         'NAME': 'vimi_web.api.validators.MaximumLengthValidator',
