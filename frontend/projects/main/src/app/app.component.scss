@@ -1,6 +1,5 @@
 :host {
   --horizontal-navigation-bar-height: 10vh;
-  --footer-height: 50vh;
 
   display: flex;
   flex-direction: column;
@@ -10,6 +9,10 @@
 
 
   background-color: var(--background-color);
+}
+
+.container {
+  min-height: 100vh;
 }
 
 .horizontal-navigation-container {
@@ -28,32 +31,4 @@
 
 .main {
   flex: 1;
-
-  min-height: 100vh;
-}
-
-.footer-container {
-  flex: var(--footer-height);
-  padding: var(--standard-border-radius);
-
-  background-color: var(--secondary-background-color);
-  color: var(--secondary-color);
-  box-shadow: var(--primary-dark-color) 0 0 var(--standard-gap);
-
-  // TODO: Change to grid
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  align-items: stretch;
-
-  gap: var(--double-gap);
-  border-radius: var(--standard-border-radius) var(--standard-border-radius) 0 0;
-}
-
-.footer-container-divider {
-  flex: 1;
-
-  border-top: var(--background-color) 1px solid;
-  border-bottom: var(--background-color) 1px solid;
 }
