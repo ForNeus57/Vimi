@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {RouterLink, RouterLinkActive} from "@angular/router";
+import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {AuthenticationService} from "../../services/authentication/authentication.service";
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'app-horizontal-navigation-bar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive,],
+  imports: [RouterLink, RouterLinkActive, NgClass,],
   templateUrl: './horizontal-navigation-bar.component.html',
   styleUrl: './horizontal-navigation-bar.component.scss'
 })
@@ -14,6 +15,7 @@ export class HorizontalNavigationBarComponent implements OnInit {
 
   constructor(
       private AuthenticationService: AuthenticationService,
+      private router: Router,
   ) {
   }
 
@@ -25,6 +27,11 @@ export class HorizontalNavigationBarComponent implements OnInit {
 
   public logout() {
     this.AuthenticationService.logout();
+  }
+
+  public checkIfActive(route: string): boolean {
+    // TODO: Fix that the selected link is not highlighted
+    return this.router.url === route;
   }
 
 }

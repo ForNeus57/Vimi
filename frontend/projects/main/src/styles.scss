@@ -19,6 +19,8 @@
 
   --double-border-radius: 8rem;
   --standard-border-radius: 4rem;
+
+  --standard-outline-width: 3px;
 }
 
 * {
@@ -33,6 +35,14 @@
 *::-webkit-scrollbar {
   // Remove scrollbars
   display: none;
+}
+
+body {
+  // Set default font for the whole app
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
 }
 
 button {
@@ -60,4 +70,5 @@ a:active {
 a:focus {
   color: inherit;
 }
+
 

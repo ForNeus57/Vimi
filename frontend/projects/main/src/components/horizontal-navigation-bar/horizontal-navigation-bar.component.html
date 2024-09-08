@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="horizontal-navigation-bar.component.scss">
 <nav class="h-navbar-container">
   <menu class="nav-menu left-menu">
     @if (!this.isLoggedIn) {
@@ -18,7 +19,7 @@
         <a routerLink="/account/register"
            routerLinkActive="active"
            ariaCurrentWhenActive="page">
-          <span>
+          <span [ngClass]="{'menu-anchor': true, 'anchor-active': checkIfActive('/account/register'),}">
             Sign Up
           </span>
         </a>
@@ -27,18 +28,18 @@
         <a routerLink="/account/login"
            routerLinkActive="active"
            ariaCurrentWhenActive="page">
-          <span>
+          <span [ngClass]="{'menu-anchor': true, 'anchor-active': checkIfActive('/account/login'),}">
             Log In
           </span>
         </a>
       </li>
     } @else {
       <li>
-        <button (click)="logout()">
-          <span>
+        <a (click)="logout()">
+          <span class="menu-anchor">
             Log Out
           </span>
-        </button>
+        </a>
       </li>
     }
   </menu>
