@@ -2,33 +2,36 @@ from typing import Dict, Optional
 import string
 
 from django.contrib.auth.models import User
+from django.core import exceptions
 from django.utils.translation import gettext
-from rest_framework.exceptions import ValidationError
 
 
 class SymbolsPresentsValidator:
     def __init__(self, symbols: Optional[Dict[str, frozenset[str]]] = None) -> None:
         if symbols is None:
             symbols = {
-                "uppercase": frozenset(string.ascii_uppercase),
-                "lowercase": frozenset(string.ascii_lowercase),
-                "digit": frozenset(string.digits),
-                "punctuation": frozenset(string.punctuation),
+                'uppercase': frozenset(string.ascii_uppercase),
+                'lowercase': frozenset(string.ascii_lowercase),
+                'digit': frozenset(string.digits),
+                'punctuation': frozenset(string.punctuation),
             }
 
         self.symbols = symbols
 
+    def __call__(self, *args, **kwargs) -> None:
+        self.validate(*args, **kwargs)
+
     def validate(self, password: str, user: Optional[User] = None) -> None:
         for symbol_name, symbol_set in self.symbols.items():
             if not any(char in symbol_set for char in password):
-                raise ValidationError(
+                raise exceptions.ValidationError(
                     gettext(f"Password must contain at least one {symbol_name.title()}."),
                     code="password_bad_content",
                 )
 
         for character in password:
             if character not in string.printable:
-                raise ValidationError(
+                raise exceptions.ValidationError(
                     gettext("Password must contain only printable characters."),
                     code="password_bad_content",
                 )
@@ -43,12 +46,45 @@ class MaximumLengthValidator:
     def __init__(self, max_length: int) -> None:
         self.max_length = max_length
 
+    def __call__(self, *args, **kwargs) -> None:
+        self.validate(*args, **kwargs)
+
     def validate(self, password: str, user: Optional[User] = None) -> None:
         if len(password) > self.max_length:
-            raise ValidationError(
+            raise exceptions.ValidationError(
                 gettext(f"Password must not exceed {self.max_length} characters."),
                 code="password_too_long",
             )
 
     def get_help_text(self) -> str:
         return gettext(f"Your password must not exceed {self.max_length} characters.")
+
+
+class UsernameUniquenessValidator:
+    def __call__(self, *args, **kwargs) -> None:
+        self.validate(*args, **kwargs)
+
+    def validate(self, username: str, user: Optional[User] = None) -> None:
+        if User.objects.filter(username=username).exists():
+            raise exceptions.ValidationError(
+                gettext("Username is already in use."),
+                code="username_in_use",
+            )
+
+    def get_help_text(self) -> str:
+        return gettext("Username must be unique.")
+
+
+class EmailUniquenessValidator:
+    def __call__(self, *args, **kwargs) -> None:
+        self.validate(*args, **kwargs)
+
+    def validate(self, email: str, user: Optional[User] = None) -> None:
+        if User.objects.filter(email=email).exists():
+            raise exceptions.ValidationError(
+                gettext("Email is already in use."),
+                code="email_in_use",
+            )
+
+    def get_help_text(self) -> str:
+        return gettext("Email must be unique.")

@@ -4,10 +4,10 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from vimi_web.authentication.views import RegisterUser
 
 urlpatterns = [
-    path('register/user/', RegisterUser.as_view(), name='register_user'),
+    path('user/register/', RegisterUser.as_view(), name='user-register'),
 
-    path('token/jwt/', TokenObtainPairView.as_view(), name='token_jwt_obtain_pair'),
-    path('token/jwt/refresh/', TokenRefreshView.as_view(), name='token_jwt_refresh'),
-    path('token/jwt/verify/', TokenVerifyView.as_view(), name='token_verify'),
-    path('token/jwt/blacklist/', TokenBlacklistView.as_view(), name='token_jwt_blacklist'),
+    path('token/jwt/', TokenObtainPairView.as_view(), name='token-jwt-obtain_pair'),
+    path('token/jwt/refresh/', TokenRefreshView.as_view(), name='token-jwt-refresh'),
+    path('token/jwt/verify/', TokenVerifyView.as_view(), name='token-verify'),
+    path('token/jwt/blacklist/', TokenBlacklistView.as_view(), name='token-jwt-blacklist'),
 ]

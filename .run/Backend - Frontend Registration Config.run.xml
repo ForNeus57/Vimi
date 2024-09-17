@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Backend - Frontend Registration Config" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" folderName="Config" environment="backend" path="$PROJECT_DIR$/http/backend/frontend_registration_config.http" requestIdentifier="#1">
+    <method v="2" />
+  </configuration>
+</component>

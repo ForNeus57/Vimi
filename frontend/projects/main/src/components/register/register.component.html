@@ -1,5 +1,15 @@
 <div class="register-form-container">
-  <form>
-
+  <div class="register-form-text">
+    <span>
+      Registration Form
+    </span>
+  </div>
+  <form [formGroup]="registrationForm">
+    <button type="reset" (click)="onReset()">
+      Cancel
+    </button>
+    <button type="submit" (click)="onSubmit()">
+      Submit
+    </button>
   </form>
 </div>

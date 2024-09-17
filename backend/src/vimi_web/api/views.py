@@ -4,16 +4,6 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from vimi_web.logic.settings import Settings
-
-
-class ConfigFrontendView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request: HttpRequest) -> JsonResponse:
-        return JsonResponse(
-            Settings().get_config_frontend(),
-        )
 
 class LogoutView(APIView):
     permission_classes = (IsAuthenticated,)

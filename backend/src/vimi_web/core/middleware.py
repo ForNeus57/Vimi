@@ -3,15 +3,13 @@ from typing import Callable
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest, HttpResponse
 
-from vimi_web.logic.settings import Settings
-
 
 class MaxUploadSizeMiddleware:
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
-        max_upload_size: int = max(Settings().max_model_size, 0) # TODO: LATER CHANGE TO TAKE MAX AS A TOTAL.
+        max_upload_size: int = max(16 * 1024 * 1024, 0) # TODO: LATER CHANGE TO TAKE MAX AS A TOTAL.
 
         if request.method == "POST" and request.META.get('CONTENT_LENGTH'):
             if int(request.META['CONTENT_LENGTH']) > max_upload_size:

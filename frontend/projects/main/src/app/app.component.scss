@@ -32,3 +32,9 @@
 .main {
   flex: 1;
 }
+
+@media (min-height: 1000px) {
+  :host {
+    --horizontal-navigation-bar-height: 7vh;
+  }
+}

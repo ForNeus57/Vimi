@@ -1,21 +1,47 @@
 from typing import MutableMapping
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import validate_password, get_password_validators
+from django.core import exceptions
 from rest_framework import serializers
 
 from vimi_web.api.models import UserDetail
+from vimi_web.authentication.settings import (
+    USERNAME_VALIDATORS,
+    FIRST_NAME_VALIDATORS,
+    LAST_NAME_VALIDATORS,
+    EMAIL_VALIDATORS,
+    PASSWORD_VALIDATORS,
+)
 
 User = get_user_model()
 
 class RegisterUserSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(required=True, min_length=8, max_length=32)
-    first_name = serializers.CharField(required=True, min_length=2, max_length=32)
-    last_name = serializers.CharField(required=True, min_length=2, max_length=32)
-    email = serializers.EmailField(required=True)
-    password = serializers.CharField(required=True, min_length=8, write_only=True)
-    password_confirm = serializers.CharField(required=True, min_length=8, write_only=True)
+    username = serializers.CharField(
+        **USERNAME_VALIDATORS['general'],
+        validators=get_password_validators(USERNAME_VALIDATORS['validators']))
+
+    first_name = serializers.CharField(
+        **FIRST_NAME_VALIDATORS['general'],
+        validators=get_password_validators(FIRST_NAME_VALIDATORS['validators']))
+
+    last_name = serializers.CharField(
+        **LAST_NAME_VALIDATORS['general'],
+        validators=get_password_validators(LAST_NAME_VALIDATORS['validators']))
+
+    email = serializers.EmailField(
+        **EMAIL_VALIDATORS['general'],
+        validators=get_password_validators(EMAIL_VALIDATORS['validators']))
+
+    password = serializers.CharField(
+        **PASSWORD_VALIDATORS['general'],
+        **PASSWORD_VALIDATORS['specific'],
+        validators=[validate_password])
+
+    password_confirm = serializers.CharField(
+        **PASSWORD_VALIDATORS['general'],
+        **PASSWORD_VALIDATORS['specific'],
+    )
 
     class Meta:
         model = User
@@ -42,39 +68,3 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Passwords do not match.")
 
         return data
-
-    def validate_username(self, value):
-        if not value.isalnum():
-            raise serializers.ValidationError("Username must contain alphanumeric.")
-
-        if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError("Username is already in use.")
-
-        return value
-
-    def validate_first_name(self, value):
-        if not value.isalpha():
-            raise serializers.ValidationError("First name must contain only letters.")
-
-        return value.title()
-
-    def validate_last_name(self, value):
-        if not value.isalpha():
-            raise serializers.ValidationError("Last name must contain only letters.")
-
-        return value.title()
-
-    def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Email is already in use.")
-
-        return value
-
-    def validate_password(self, value):
-        # TODO: check if ValidationError is the same as serializers.ValidationError ?
-        try:
-            validate_password(value)
-        except ValidationError as error:
-            raise serializers.ValidationError(str(error))
-
-        return value

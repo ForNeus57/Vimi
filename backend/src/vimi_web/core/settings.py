@@ -18,7 +18,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
 from vimi_lib.crypto.rsa_key_reader import generate_rsa_private_key
-from vimi_web.logic.settings import Settings
+from vimi_web.authentication.settings import PASSWORD_VALIDATORS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -48,9 +48,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+
     'vimi_web.api',
     'vimi_web.authentication',
     'vimi_web.worker',
+    'vimi_web.config',
 ]
 
 MIDDLEWARE = [
@@ -61,8 +63,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'vimi_web.api.middleware.MaxUploadSizeMiddleware',
-    'vimi_web.api.middleware.CorsMiddleware',
+
+    'vimi_web.core.middleware.MaxUploadSizeMiddleware',
+    'vimi_web.core.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'vimi_web.core.urls'
@@ -195,42 +198,9 @@ AUTHENTICATION_BACKENDS = [
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
-    # 'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    # 'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-    # 'django.contrib.auth.hashers.Argon2PasswordHasher',
-    # 'django.contrib.auth.hashers.ScryptPasswordHasher',
 ]
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS': {
-            'min_length': Settings().minimum_password_length,
-        },
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-    {
-        'NAME': 'vimi_web.api.validators.MaximumLengthValidator',
-        'OPTIONS': {
-            'max_length': Settings().maximum_password_length,
-        }
-    },
-    {
-        'NAME': 'vimi_web.api.validators.SymbolsPresentsValidator',
-        # TODO: Make options from Setting singleton pls.
-        # 'OPTIONS': {
-        #
-        # }
-    },
-]
+AUTH_PASSWORD_VALIDATORS = PASSWORD_VALIDATORS['validators']
 
 # SECURE_SSL_REDIRECT = True
 CSRF_COOKIE_SECURE = True
