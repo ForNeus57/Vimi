@@ -41,7 +41,6 @@ class RegistrationConfigView(APIView):
             'password': {
                 **PASSWORD_VALIDATORS['general'],
                 **PASSWORD_VALIDATORS['html'],
-                **PASSWORD_VALIDATORS['specific'],
                 **dict(ChainMap(*[validator['OPTIONS'] for validator in PASSWORD_VALIDATORS['validators'] if 'OPTIONS' in validator])),
             },
         }, status=200)

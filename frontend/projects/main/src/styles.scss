@@ -13,6 +13,7 @@
   --primary-error-color: #ec7063;
   --light-error-color: #fadbd8;
 
+  --quadrouple-gap: 4rem;
   --double-gap: 2rem;
   --standard-gap: 1rem;
   --half-gap: 0.5rem;
@@ -27,6 +28,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  border: none;
 
   // Remove scrollbars
   -ms-overflow-style: none;
@@ -71,4 +73,10 @@ a:focus {
   color: inherit;
 }
 
+.standard-shadow {
+  box-shadow: var(--primary-dark-color) 0 0 var(--standard-gap);
+}
 
+.standard-button {
+
+}

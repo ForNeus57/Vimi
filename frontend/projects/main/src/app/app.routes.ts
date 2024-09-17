@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import {HomeComponent} from "../components/home/home.component";
-import {AccountComponent} from "../components/account/account.component";
 import {RegisterComponent} from "../components/register/register.component";
 import {LoginComponent} from "../components/login/login.component";
 import {ProfileComponent} from "../components/profile/profile.component";
@@ -10,7 +9,6 @@ export const routes: Routes = [
   {
     path: 'account',
     title: 'Account',
-    component: AccountComponent,
     children: [
       {
         path: 'register',

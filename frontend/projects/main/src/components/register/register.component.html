@@ -1,15 +1,61 @@
-<div class="register-form-container">
+<div class="register-form-container standard-shadow">
   <div class="register-form-text">
-    <span>
+    <span class="register-form-text">
       Registration Form
     </span>
   </div>
-  <form [formGroup]="registrationForm">
-    <button type="reset" (click)="onReset()">
-      Cancel
-    </button>
-    <button type="submit" (click)="onSubmit()">
-      Submit
-    </button>
+  <form class="register-form standard-shadow" [formGroup]="registrationForm">
+    <fieldset class="register-form-fields">
+      <div class="register-form-row">
+        <div class="form-floating">
+          <label for="username">
+            Username
+          </label>
+          <input type="text" id="username" formControlName="username" required/>
+        </div>
+        <div class="form-floating">
+          <label for="email">
+            Email
+          </label>
+          <input type="email" id="email" formControlName="email" required/>
+        </div>
+      </div>
+      <div class="register-form-row">
+        <div class="form-floating">
+          <label for="firstName">
+            First Name
+          </label>
+          <input type="text" id="firstName" formControlName="firstName" required/>
+        </div>
+        <div class="form-floating">
+          <label for="lastName">
+            Last Name
+          </label>
+          <input type="text" id="lastName" formControlName="lastName" required/>
+        </div>
+      </div>
+      <div class="register-form-row">
+        <div class="form-floating">
+          <label for="password">
+            Password
+          </label>
+          <input type="password" id="password" formControlName="password" required/>
+        </div>
+        <div class="form-floating">
+          <label for="confirmPassword">
+            Confirm Password
+          </label>
+          <input type="password" id="confirmPassword" formControlName="confirmPassword" required/>
+        </div>
+      </div>
+    </fieldset>
+    <div class="register-form-lower-buttons">
+      <button type="reset" class="" (click)="onReset()">
+        Reset
+      </button>
+      <button type="submit" class="" (click)="onSubmit()">
+        Submit
+      </button>
+    </div>
   </form>
 </div>

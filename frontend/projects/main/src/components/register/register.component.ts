@@ -13,15 +13,16 @@ import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent implements OnInit {
-  private readonly url = 'http://localhost:8000/api/1/authentication/register/user/';
+  // TODO: Implement client side validation
+  private readonly url = 'http://localhost:8000/api/1/authentication/user/register/';
 
   public registrationForm = new FormGroup({
     username: new FormControl(''),
-    first_name: new FormControl(''),
-    last_name: new FormControl(''),
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
     email: new FormControl(''),
     password: new FormControl(''),
-    confirm_password: new FormControl(''),
+    confirmPassword: new FormControl(''),
   })
 
   constructor(
@@ -33,10 +34,18 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
-
+    this.http.post(this.url, this.registrationForm.value).subscribe(
+      (response) => {
+        console.log(response);
+        // this.authentication.login(this.registrationForm.value);
+      },
+      (error) => {
+        console.log(error);
+      }
+    )
   }
 
   onReset() {
-
+    this.registrationForm.reset();
   }
 }

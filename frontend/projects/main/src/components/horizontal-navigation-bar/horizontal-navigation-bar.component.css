@@ -40,7 +40,7 @@
 }
 
 .anchor-active {
-  background-color: var(--primary-color);
+  background-color: var(--quaternary-color);
   color: var(--secondary-color);
   outline: solid var(--secondary-color) var(--standard-outline-width);
 }

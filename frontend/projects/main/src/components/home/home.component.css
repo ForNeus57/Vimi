@@ -21,7 +21,6 @@
   padding: var(--standard-border-radius);
   background-color: var(--secondary-background-color);
   color: var(--secondary-color);
-  box-shadow: var(--primary-dark-color) 0 0 var(--standard-gap);
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;

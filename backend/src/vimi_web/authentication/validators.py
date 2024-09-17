@@ -43,7 +43,9 @@ class SymbolsPresentsValidator:
 
 
 class MaximumLengthValidator:
-    def __init__(self, max_length: int) -> None:
+    def __init__(self, max_length: Optional[int]) -> None:
+        if max_length is None:
+            max_length = 32
         self.max_length = max_length
 
     def __call__(self, *args, **kwargs) -> None:
