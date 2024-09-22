@@ -4,7 +4,7 @@ import {BehaviorSubject} from "rxjs";
 import {Router} from "@angular/router";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthenticationService {
   private isLoggedIn = new BehaviorSubject<boolean>(false);

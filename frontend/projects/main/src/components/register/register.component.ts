@@ -42,8 +42,6 @@ export class RegisterComponent implements OnInit {
   }
 
   public onSubmit() {
-    throw new Error("AAAAAAA");
-    // this.notificationHandler.handleError(new Error("AAAAAAA"));
     // this.http.post(this.url, this.registrationForm.value).pipe(
     //   catchError(err => {
     //     // return throwError(err);

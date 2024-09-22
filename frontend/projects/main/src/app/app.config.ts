@@ -5,7 +5,7 @@ import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import {provideHttpClient, withFetch} from "@angular/common/http";
 import {provideAnimationsAsync} from "@angular/platform-browser/animations/async";
-import {NotificationHandlerService} from "../services/notification-handler/notification-handler.service";
+import {NotificationErrorHandler} from "../services/notification-handler/notification-error-handler";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     {
       provide: ErrorHandler,
-      useClass: NotificationHandlerService,
+      useClass: NotificationErrorHandler,
     },
   ],
 };

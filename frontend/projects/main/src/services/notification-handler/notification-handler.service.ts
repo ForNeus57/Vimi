@@ -4,14 +4,13 @@ import {BehaviorSubject} from "rxjs";
 import {Notification, NotificationType} from "../../models/notification";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class NotificationHandlerService implements ErrorHandler {
-  private notificationSubject: BehaviorSubject<Notification | null>;
+export class NotificationHandlerService {
+  private notificationSubject = new BehaviorSubject<Notification | null>(null);
 
   public constructor(
   ) {
-    this.notificationSubject = new BehaviorSubject<Notification | null>(null);
   }
 
   public handleSuccess(success: string) {
