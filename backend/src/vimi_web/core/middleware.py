@@ -9,7 +9,7 @@ class MaxUploadSizeMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
-        max_upload_size: int = max(16 * 1024 * 1024, 0) # TODO: LATER CHANGE TO TAKE MAX AS A TOTAL.
+        max_upload_size: int = 16 * 1024 * 1024 # TODO: LATER CHANGE TO TAKE MAX AS A TOTAL.
 
         if request.method == "POST" and request.META.get('CONTENT_LENGTH'):
             if int(request.META['CONTENT_LENGTH']) > max_upload_size:

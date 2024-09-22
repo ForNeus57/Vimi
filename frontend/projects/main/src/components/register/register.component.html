@@ -4,20 +4,29 @@
       Registration Form
     </span>
   </div>
-  <form class="register-form standard-shadow" [formGroup]="registrationForm">
+  <form class="register-form standard-shadow"
+        [formGroup]="registrationForm">
     <fieldset class="register-form-fields">
       <div class="register-form-row">
         <div class="form-floating">
           <label for="username">
             Username
           </label>
-          <input type="text" id="username" formControlName="username" required/>
+          <input id="username"
+                 class="form-input"
+                 type="text"
+                 required
+                 formControlName="username"/>
         </div>
         <div class="form-floating">
           <label for="email">
             Email
           </label>
-          <input type="email" id="email" formControlName="email" required/>
+          <input id="email"
+                 class="form-input"
+                 type="email"
+                 required
+                 formControlName="email"/>
         </div>
       </div>
       <div class="register-form-row">
@@ -25,13 +34,21 @@
           <label for="firstName">
             First Name
           </label>
-          <input type="text" id="firstName" formControlName="firstName" required/>
+          <input id="firstName"
+                 class="form-input"
+                 type="text"
+                 required
+                 formControlName="firstName"/>
         </div>
         <div class="form-floating">
           <label for="lastName">
             Last Name
           </label>
-          <input type="text" id="lastName" formControlName="lastName" required/>
+          <input id="lastName"
+                 class="form-input"
+                 type="text"
+                 required
+                 formControlName="lastName"/>
         </div>
       </div>
       <div class="register-form-row">
@@ -39,23 +56,47 @@
           <label for="password">
             Password
           </label>
-          <input type="password" id="password" formControlName="password" required/>
+          <div class="form-floating-inner">
+            <input id="password"
+                   class="form-input"
+                   required
+                   [type]="passwordInputType"
+                   formControlName="password"/>
+            <button class="toggle-btn"
+                    (click)="onPasswordToggle()">
+              <i class="bi" [ngClass]="passwordInputType === 'password' ? 'bi-eye-fill' : 'bi-eye-slash-fill'"></i>
+            </button>
+          </div>
         </div>
         <div class="form-floating">
           <label for="confirmPassword">
             Confirm Password
           </label>
-          <input type="password" id="confirmPassword" formControlName="confirmPassword" required/>
+          <div class="form-floating-inner">
+            <input id="confirmPassword"
+                   class="form-input"
+                   required
+                   [type]="confirmPasswordInputType"
+                   formControlName="confirmPassword"/>
+            <button class="toggle-btn"
+                    (click)="onConfirmPasswordToggle()">
+              <i class="bi" [ngClass]="confirmPasswordInputType === 'password' ? 'bi-eye-fill' : 'bi-eye-slash-fill'"></i>
+            </button>
+          </div>
         </div>
       </div>
+      <div class="register-form-row">
+        <button class="btn btn-secondary form-btn"
+                type="reset"
+                (click)="onReset()">
+          Reset
+        </button>
+        <button class="btn btn-primary form-btn"
+                type="submit"
+                (click)="onSubmit()">
+          Submit
+        </button>
+      </div>
     </fieldset>
-    <div class="register-form-lower-buttons">
-      <button type="reset" class="" (click)="onReset()">
-        Reset
-      </button>
-      <button type="submit" class="" (click)="onSubmit()">
-        Submit
-      </button>
-    </div>
   </form>
 </div>

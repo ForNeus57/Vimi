@@ -1,0 +1,11 @@
+@for (notification of notifications; track notifications.indexOf(notification)) {
+  <div class="notification half-shadow"
+       @notificationFade
+       [ngClass]="notification.getClass()">
+    <p class="notification-header-text">
+      <i class="bi"
+         [ngClass]="notification.getIcon()"></i>
+      {{ notification.message }}
+    </p>
+  </div>
+}

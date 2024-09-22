@@ -1,7 +1,8 @@
-import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
+import {mergeApplicationConfig, ApplicationConfig} from '@angular/core';
 import { provideServerRendering } from '@angular/platform-server';
-import { appConfig } from './app.config';
 import {provideHttpClient, withInterceptors} from "@angular/common/http";
+import { appConfig } from './app.config';
+
 import {authenticationInterceptor} from "../interceptors/authentication/authentication.interceptor";
 
 const serverConfig: ApplicationConfig = {
@@ -9,10 +10,10 @@ const serverConfig: ApplicationConfig = {
     provideServerRendering(),
     provideHttpClient(
       withInterceptors([
-        authenticationInterceptor
-      ])
-    )
-  ]
+        authenticationInterceptor,
+      ]),
+    ),
+  ],
 };
 
 export const config = mergeApplicationConfig(appConfig, serverConfig);

@@ -1,5 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Register User Backend" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" environment="dev" path="$APPLICATION_CONFIG_DIR$/scratches/Vimi-endpoints.http" requestIdentifier="#1" runType="Run single request">
-    <method v="2" />
-  </configuration>
-</component>

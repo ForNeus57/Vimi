@@ -6,8 +6,17 @@
         <a routerLink="/home"
            routerLinkActive="active"
            ariaCurrentWhenActive="page">
-          <span style="font-size: xx-large">
+          <span style="font-size: xx-large;">
             Vimi
+          </span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/home"
+           routerLinkActive="active"
+           ariaCurrentWhenActive="page">
+          <span style="font-size: large; text-decoration: underline">
+            Home
           </span>
         </a>
       </li>
@@ -19,7 +28,7 @@
         <a routerLink="/account/register"
            routerLinkActive="active"
            ariaCurrentWhenActive="page">
-          <span [ngClass]="{'menu-anchor': true, 'anchor-active': checkIfActive('/account/register'),}">
+          <span class="btn btn-secondary menu-anchor" [ngClass]="{'anchor-active': checkIfActive('/account/register'),}">
             Sign Up
           </span>
         </a>
@@ -28,7 +37,7 @@
         <a routerLink="/account/login"
            routerLinkActive="active"
            ariaCurrentWhenActive="page">
-          <span [ngClass]="{'menu-anchor': true, 'anchor-active': checkIfActive('/account/login'),}">
+          <span class="btn btn-secondary menu-anchor" [ngClass]="{'anchor-active': checkIfActive('/account/login'),}">
             Log In
           </span>
         </a>
@@ -36,7 +45,7 @@
     } @else {
       <li>
         <a (click)="logout()">
-          <span class="menu-anchor">
+          <span class="btn btn-secondary menu-anchor">
             Log Out
           </span>
         </a>
