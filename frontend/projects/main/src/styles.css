@@ -3,6 +3,7 @@
   --secondary-color: #ffffff;
   --tertiary-color: #2e4053;
   --quaternary-color: #3498db;
+  --light-quaternary-color: #88c2ea;
   --background-color: #ffffff;
   --secondary-background-color: #1b4f72;
   --primary-dark-color: #212f3c;
@@ -77,6 +78,10 @@ a:focus {
 
 .half-shadow {
   box-shadow: var(--primary-dark-color) 0 0 var(--half-gap);
+}
+
+.light-shadow {
+  box-shadow: #bbbbbb 0 0 var(--half-gap);
 }
 
 .btn {

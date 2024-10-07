@@ -1,4 +1,4 @@
-import {ErrorHandler, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 
 import {Notification, NotificationType} from "../../models/notification";
@@ -9,26 +9,25 @@ import {Notification, NotificationType} from "../../models/notification";
 export class NotificationHandlerService {
   private notificationSubject = new BehaviorSubject<Notification | null>(null);
 
-  public constructor(
-  ) {
-  }
-
-  public handleSuccess(success: string) {
+  public success(success: string) {
     console.info(success);
     this.notificationSubject.next(new Notification(NotificationType.Success, success));
   }
 
-  public handleError(error: Error) {
+  public error(error: Error | string) {
     console.error(error);
-    this.notificationSubject.next(new Notification(NotificationType.Error, error.message));
+    if (error instanceof Error) {
+      error = error.message;
+    }
+    this.notificationSubject.next(new Notification(NotificationType.Error, error));
   }
 
-  public handleWarning(warning: string) {
+  public warning(warning: string) {
     console.warn(warning);
     this.notificationSubject.next(new Notification(NotificationType.Warning, warning));
   }
 
-  public handleInfo(info: string) {
+  public info(info: string) {
     console.log(info);
     this.notificationSubject.next(new Notification(NotificationType.Info, info));
   }

@@ -9,6 +9,6 @@ export class NotificationErrorHandler implements ErrorHandler {
   }
 
   public handleError(error: Error) {
-    this.notificationHandler.handleError(error);
+    this.notificationHandler.error(error);
   }
 }

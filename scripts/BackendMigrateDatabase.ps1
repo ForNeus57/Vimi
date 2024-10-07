@@ -10,6 +10,7 @@ $envVars = Get-Content backend.env | Foreach-Object {
 & {
     vimi-backend makemigrations;
     vimi-backend migrate;
+    vimi-backend loaddata $(Get-ChildItem -Path './fixtures' -Filter '*.json' | ForEach-Object { $_.FullName });
     vimi-backend createsuperuser --username "$env:DJANGO_SUPERUSER_USERNAME" --email "$env:DJANGO_SUPERUSER_EMAIL" --noinput;
 }
 

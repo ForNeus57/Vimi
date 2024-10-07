@@ -15,7 +15,7 @@ class UserDetail(models.Model):
 
 class Model(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=512)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     extension = models.CharField(max_length=16)
     # file = models.FileField(upload_to='srv/ftp/models/')
@@ -24,10 +24,16 @@ class Model(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class Architecture(models.Model):
+    name = models.CharField(max_length=64, unique=True)
+    python_path = models.CharField(max_length=256, unique=True)
+
+    class Meta:
+        ordering = ['name']
 
 class ModelInput(models.Model):
     model = models.ForeignKey(Model, on_delete=models.CASCADE)
-    path = models.CharField(max_length=100)
+    path = models.CharField(max_length=512)
     # input = models.FileField(upload_to='inputs/')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -18,47 +18,25 @@
 }
 
 .notification {
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-
+  background: var(--background-color);
   padding: var(--standard-gap);
 
   border: 1px solid rgba(255, 255, 255, 0.29);
   border-radius: var(--standard-border-radius);
 }
 
-$success-light: var(--light-success-color);
 .notification-success {
-  background: rgba($success-light, var(--opacity));
-}
-
-.notification-success > p {
   color: var(--primary-success-color);
 }
 
-$error-light: var(--light-error-color);
 .notification-error {
-  background: rgba($error-light, var(--opacity));
-}
-
-.notification-error > p {
   color: var(--primary-error-color);
 }
 
-$warning-light: var(--light-warning-color);
 .notification-warning {
-  background: rgba($warning-light, var(--opacity));
-}
-
-.notification-warning > p {
   color: var(--primary-warning-color);
 }
 
-$info-light: var(--light-info-color);
 .notification-info {
-  background: rgba($info-light, var(--opacity));
-}
-
-.notification-info > p {
   color: var(--primary-info-color);
 }

@@ -11,16 +11,6 @@ USERNAME_VALIDATORS = {
     },
     'validators': [
         {
-            'NAME': 'vimi_web.authentication.validators.SymbolsPresentsValidator',
-            'OPTIONS': {
-                'symbols': {
-                    'uppercase': frozenset(string.ascii_uppercase),
-                    'lowercase': frozenset(string.ascii_lowercase),
-                    'digit': frozenset(string.digits),
-                },
-            },
-        },
-        {
             'NAME': 'vimi_web.authentication.validators.UsernameUniquenessValidator',
         },
     ],

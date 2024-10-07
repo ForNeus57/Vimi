@@ -1,4 +1,5 @@
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -6,10 +7,10 @@ from vimi_web.authentication.serializers import RegisterUserSerializer
 
 
 class RegisterUser(APIView):
-    serializer_class = RegisterUserSerializer
     permission_classes = [AllowAny,]
+    serializer_class = RegisterUserSerializer
 
-    def post(self, request) -> Response:
+    def post(self, request: Request) -> Response:
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()

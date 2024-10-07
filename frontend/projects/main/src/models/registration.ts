@@ -5,6 +5,6 @@ export class Registration {
     public last_name: string,
     public email: string,
     public password: string,
-    public confirm_password: string,
+    public password_confirm: string,
   ) {}
 }

@@ -1,11 +1,15 @@
 .h-navbar-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 
-    height: var(--horizontal-navigation-bar-height);
-    color: var(--secondary-color);
+  height: var(--horizontal-navigation-bar-height);
+  color: var(--secondary-color);
+}
+
+.h-navbar-container * {
+  white-space: nowrap;
 }
 
 .nav-menu {

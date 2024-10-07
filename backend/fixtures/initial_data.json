@@ -1,0 +1,298 @@
+[
+  {
+    "model": "api.architecture",
+    "pk": 1,
+    "fields": {
+      "name": "Xception",
+      "python_path": "keras.api.applications.xception.Xception"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 2,
+    "fields": {
+      "name": "VGG16",
+      "python_path": "keras.api.applications.vgg16.VGG16"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 3,
+    "fields": {
+      "name": "VGG19",
+      "python_path": "keras.api.applications.vgg19.VGG19"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 4,
+    "fields": {
+      "name": "ResNet50",
+      "python_path": "keras.api.applications.resnet50.ResNet50"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 5,
+    "fields": {
+      "name": "ResNet50V2",
+      "python_path": "keras.api.applications.resnet_v2.ResNet50V2"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 6,
+    "fields": {
+      "name": "ResNet101",
+      "python_path": "keras.api.applications.resnet.ResNet101"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 7,
+    "fields": {
+      "name": "ResNet101V2",
+      "python_path": "keras.api.applications.resnet_v2.ResNet101V2"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 8,
+    "fields": {
+      "name": "ResNet152",
+      "python_path": "keras.api.applications.resnet.ResNet152"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 9,
+    "fields": {
+      "name": "ResNet152V2",
+      "python_path": "keras.api.applications.resnet_v2.ResNet152V2"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 10,
+    "fields": {
+      "name": "InceptionV3",
+      "python_path": "keras.api.applications.inception_v3.InceptionV3"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 11,
+    "fields": {
+      "name": "InceptionResNetV2",
+      "python_path": "keras.api.applications.inception_resnet_v2.InceptionResNetV2"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 12,
+    "fields": {
+      "name": "MobileNet",
+      "python_path": "keras.api.applications.mobilenet.MobileNet"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 13,
+    "fields": {
+      "name": "MobileNetV2",
+      "python_path": "keras.api.applications.mobilenet_v2.MobileNetV2"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 14,
+    "fields": {
+      "name": "DenseNet121",
+      "python_path": "keras.api.applications.densenet.DenseNet121"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 15,
+    "fields": {
+      "name": "DenseNet169",
+      "python_path": "keras.api.applications.densenet.DenseNet169"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 16,
+    "fields": {
+      "name": "DenseNet201",
+      "python_path": "keras.api.applications.densenet.DenseNet201"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 17,
+    "fields": {
+      "name": "NASNetMobile",
+      "python_path": "keras.api.applications.nasnet.NASNetMobile"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 18,
+    "fields": {
+      "name": "NASNetLarge",
+      "python_path": "keras.api.applications.nasnet.NASNetLarge"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 19,
+    "fields": {
+      "name": "EfficientNetB0",
+      "python_path": "keras.api.applications.efficientnet.EfficientNetB0"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 20,
+    "fields": {
+      "name": "EfficientNetB1",
+      "python_path": "keras.api.applications.efficientnet.EfficientNetB1"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 21,
+    "fields": {
+      "name": "EfficientNetB2",
+      "python_path": "keras.api.applications.efficientnet.EfficientNetB2"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 22,
+    "fields": {
+      "name": "EfficientNetB3",
+      "python_path": "keras.api.applications.efficientnet.EfficientNetB3"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 23,
+    "fields": {
+      "name": "EfficientNetB4",
+      "python_path": "keras.api.applications.efficientnet.EfficientNetB4"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 24,
+    "fields": {
+      "name": "EfficientNetB5",
+      "python_path": "keras.api.applications.efficientnet.EfficientNetB5"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 25,
+    "fields": {
+      "name": "EfficientNetB7",
+      "python_path": "keras.api.applications.efficientnet.EfficientNetB7"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 26,
+    "fields": {
+      "name": "EfficientNetV2B0",
+      "python_path": "keras.api.applications.efficientnet_v2.EfficientNetV2B0"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 27,
+    "fields": {
+      "name": "EfficientNetV2B1",
+      "python_path": "keras.api.applications.efficientnet_v2.EfficientNetV2B1"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 28,
+    "fields": {
+      "name": "EfficientNetV2B2",
+      "python_path": "keras.api.applications.efficientnet_v2.EfficientNetV2B2"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 29,
+    "fields": {
+      "name": "EfficientNetV2B3",
+      "python_path": "keras.api.applications.efficientnet_v2.EfficientNetV2B3"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 30,
+    "fields": {
+      "name": "EfficientNetV2S",
+      "python_path": "keras.api.applications.efficientnet_v2.EfficientNetV2S"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 31,
+    "fields": {
+      "name": "EfficientNetV2M",
+      "python_path": "keras.api.applications.efficientnet_v2.EfficientNetV2M"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 32,
+    "fields": {
+      "name": "EfficientNetV2L",
+      "python_path": "keras.api.applications.efficientnet_v2.EfficientNetV2L"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 33,
+    "fields": {
+      "name": "ConvNeXtTiny",
+      "python_path": "keras.api.applications.convnext.ConvNeXtTiny"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 34,
+    "fields": {
+      "name": "ConvNeXtSmall",
+      "python_path": "keras.api.applications.convnext.ConvNeXtSmall"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 35,
+    "fields": {
+      "name": "ConvNeXtBase",
+      "python_path": "keras.api.applications.convnext.ConvNeXtBase"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 36,
+    "fields": {
+      "name": "ConvNeXtLarge",
+      "python_path": "keras.api.applications.convnext.ConvNeXtLarge"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": 37,
+    "fields": {
+      "name": "ConvNeXtXLarge",
+      "python_path": "keras.api.applications.convnext.ConvNeXtXLarge"
+    }
+  }
+]

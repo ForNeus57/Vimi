@@ -14,42 +14,25 @@
 }
 
 .notification {
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: var(--background-color);
   padding: var(--standard-gap);
   border: 1px solid rgba(255, 255, 255, 0.29);
   border-radius: var(--standard-border-radius);
 }
 
 .notification-success {
-  background: rgba(var(--light-success-color), var(--opacity));
-}
-
-.notification-success > p {
   color: var(--primary-success-color);
 }
 
 .notification-error {
-  background: rgba(var(--light-error-color), var(--opacity));
-}
-
-.notification-error > p {
   color: var(--primary-error-color);
 }
 
 .notification-warning {
-  background: rgba(var(--light-warning-color), var(--opacity));
-}
-
-.notification-warning > p {
   color: var(--primary-warning-color);
 }
 
 .notification-info {
-  background: rgba(var(--light-info-color), var(--opacity));
-}
-
-.notification-info > p {
   color: var(--primary-info-color);
 }
 

@@ -23,12 +23,12 @@ class RegistrationConfigView(APIView):
                 **USERNAME_VALIDATORS['html'],
                 **dict(ChainMap(*[validator['OPTIONS'] for validator in USERNAME_VALIDATORS['validators'] if 'OPTIONS' in validator])),
             },
-            'first_name': {
+            'firstName': {
                 **FIRST_NAME_VALIDATORS['general'],
                 **FIRST_NAME_VALIDATORS['html'],
                 **dict(ChainMap(*[validator['OPTIONS'] for validator in FIRST_NAME_VALIDATORS['validators'] if 'OPTIONS' in validator])),
             },
-            'last_name': {
+            'lastName': {
                 **LAST_NAME_VALIDATORS['general'],
                 **LAST_NAME_VALIDATORS['html'],
                 **dict(ChainMap(*[validator['OPTIONS'] for validator in LAST_NAME_VALIDATORS['validators'] if 'OPTIONS' in validator])),
@@ -39,6 +39,11 @@ class RegistrationConfigView(APIView):
                 **dict(ChainMap(*[validator['OPTIONS'] for validator in EMAIL_VALIDATORS['validators'] if 'OPTIONS' in validator])),
             },
             'password': {
+                **PASSWORD_VALIDATORS['general'],
+                **PASSWORD_VALIDATORS['html'],
+                **dict(ChainMap(*[validator['OPTIONS'] for validator in PASSWORD_VALIDATORS['validators'] if 'OPTIONS' in validator])),
+            },
+            'confirmPassword': {
                 **PASSWORD_VALIDATORS['general'],
                 **PASSWORD_VALIDATORS['html'],
                 **dict(ChainMap(*[validator['OPTIONS'] for validator in PASSWORD_VALIDATORS['validators'] if 'OPTIONS' in validator])),

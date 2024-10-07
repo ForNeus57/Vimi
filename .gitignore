@@ -202,4 +202,4 @@ backend/src/vimi_web/api/migrations
 backend/src/vimi_web/worker/migrations
 
 /backend/secrets/
-backend/tmp
+backend/fixtures/*.h5

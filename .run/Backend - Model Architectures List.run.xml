@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Backend - Model Architectures List" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" folderName="API" environment="backend" path="$PROJECT_DIR$/http/backend/model_architectures_all.http" requestIdentifier="#1" runType="Run single request">
+    <method v="2" />
+  </configuration>
+</component>
