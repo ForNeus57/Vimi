@@ -10,7 +10,7 @@ services:
     restart: always
     pull_policy: build
     ports:
-      - "80:80"
+      - "127.0.0.1:80:80"
     networks:
       - backend-net
 
@@ -25,7 +25,7 @@ services:
     restart: always
     pull_policy: build
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5000:5000"
     depends_on:
       vimi.worker:
         condition: service_started
@@ -52,7 +52,7 @@ services:
     restart: always
     pull_policy: build
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     depends_on:
       vimi.backend:
         condition: service_healthy
@@ -72,7 +72,7 @@ services:
     restart: always
     pull_policy: build
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     networks:
       - backend-net
 
@@ -89,7 +89,7 @@ services:
     restart: always
     pull_policy: build
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     networks:
       - backend-net
 
@@ -106,8 +106,8 @@ services:
     restart: always
     pull_policy: build
     ports:
-      - "21:21"
-      - "21000-21010:21000-21010"
+      - "127.0.0.1:21:21"
+      - "127.0.0.1:21000-21010:21000-21010"
     networks:
       - backend-net
 

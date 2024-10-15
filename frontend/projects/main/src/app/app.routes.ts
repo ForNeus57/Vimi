@@ -49,8 +49,8 @@ export const routes: Routes = [
     title: 'Model',
     children: [
       {
-        path: ':id',
-        title: 'Modle Viewer',
+        path: 'viewer',
+        title: 'Model Viewer',
         component: ModelViewerComponent,
       },
       {

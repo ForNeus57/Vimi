@@ -97,6 +97,13 @@ a:focus {
   box-shadow: #bbbbbb 0 0 var(--half-gap);
 }
 
+.font-primary {
+  color: var(--secondary-color);
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+}
+
 .btn {
   border-radius: 9999px;
   box-shadow: rgba(0, 0, 0, 0.25) 0 0 var(--half-gap);

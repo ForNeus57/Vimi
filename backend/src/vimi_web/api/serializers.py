@@ -6,7 +6,7 @@ from vimi_web.api.models import Architecture
 class ArchitectureAllSerializer(serializers.ModelSerializer):
     class Meta:
         model = Architecture
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'layers', 'dimensions']
 
 
 class ModelDimensionsSerializer(serializers.Serializer):

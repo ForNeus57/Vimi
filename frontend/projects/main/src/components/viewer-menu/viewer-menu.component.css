@@ -1,0 +1,14 @@
+:host {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: var(--tertiary-color);
+  padding: var(--standard-gap);
+  border-top-right-radius: var(--standard-border-radius);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/*# sourceMappingURL=viewer-menu.component.css.map */

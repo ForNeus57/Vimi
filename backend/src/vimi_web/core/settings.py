@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'corsheaders',
+
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -56,6 +59,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -65,7 +70,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'vimi_web.core.middleware.MaxUploadSizeMiddleware',
-    'vimi_web.core.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'vimi_web.core.urls'
@@ -147,9 +151,11 @@ CACHES = {
                 'max_connections': 100,
                 'retry_on_timeout': True,
             },
-        }
+        },
     },
 }
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -163,7 +169,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-SIGNING_KEY = generate_rsa_private_key(8192).private_bytes(
+SIGNING_KEY = generate_rsa_private_key(4096).private_bytes(
     encoding=serialization.Encoding.PEM,
     format=serialization.PrivateFormat.TraditionalOpenSSL,
     encryption_algorithm=serialization.NoEncryption(),

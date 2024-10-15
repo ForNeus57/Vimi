@@ -1,0 +1,60 @@
+<h3 class="font-primary">
+  Viewer Menu
+</h3>
+<form class="standard-shadow">
+  <fieldset>
+    <div class="form-floating">
+      <label class="font-primary"
+             for="architectureName">
+        Architecture Name
+      </label>
+      <select id="architectureName" [(ngModel)]="architectureId">
+        @for(architecture of architectures; track architecture.id) {
+          <option [value]="architecture.id">
+            {{architecture.name}}
+          </option>
+        }
+      </select>
+    </div>
+    <div class="form-floating">
+      <label class="font-primary"
+             for="layerName">
+        Layer Name
+      </label>
+      <select id="layerName">
+        @for (layer of layers; track layers.indexOf(layer)) {
+          <option [value]="layers.indexOf(layer)">
+            {{layer}}
+          </option>
+        }
+      </select>
+    </div>
+    <div class="form-floating">
+      <label class="font-primary"
+             for="filterNumber">
+        Filter Number
+      </label>
+      <select id="filterNumber">
+        @for (number of Array(filters); track number) {
+          <option [value]="number">
+            {{number}}
+          </option>
+        }
+      </select>
+    </div>
+    <div class="form-floating">
+      <label class="font-primary"
+             for="inputFile">
+        Input File
+      </label>
+      <input id="inputFile"
+             type="file">
+    </div>
+  </fieldset>
+
+  <button class="btn btn-primary"
+          type="submit">
+    Submit
+  </button>
+
+</form>

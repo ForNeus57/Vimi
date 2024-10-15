@@ -5,6 +5,7 @@ import {DataLayerService} from "../../services/data-layer/data-layer.service";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {Router} from "@angular/router";
 import {throwError} from "rxjs";
+import {ModelShapeService} from "../../services/model-shape/model-shape.service";
 
 @Component({
   selector: 'app-model',
@@ -30,6 +31,7 @@ export class ModelComponent implements OnInit {
     private router: Router,
     private dataLayer: DataLayerService,
     private notificationHandler: NotificationHandlerService,
+    private modelShapeService: ModelShapeService,
   ) {
   }
 
@@ -71,6 +73,8 @@ export class ModelComponent implements OnInit {
         .subscribe({
           next: data => {
             console.log(data);
+            this.modelShapeService.modelShape.next(data);
+            this.router.navigate(['/model/viewer']);
           },
           error: (error: any) => {
             return throwError(() => error);

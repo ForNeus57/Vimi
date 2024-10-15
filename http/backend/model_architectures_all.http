@@ -1,2 +1,2 @@
-GET {{host}}/api/1/model/architecture/ HTTP/1.1
+GET {{host}}/api/1/architecture/ HTTP/1.1
 Accept: application/json
