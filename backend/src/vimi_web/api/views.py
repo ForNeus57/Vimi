@@ -15,7 +15,7 @@ from vimi_web.api.serializers import ArchitectureAllSerializer, ModelDimensionsS
 
 
 class LogoutView(APIView):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request: Request) -> Response:
         try:
@@ -30,7 +30,7 @@ class LogoutView(APIView):
 
 
 class ArchitectureAllView(APIView):
-    permission_classes = [AllowAny,]
+    permission_classes = (AllowAny,)
     queryset = Architecture.objects.all()
     serializer_class = ArchitectureAllSerializer
 
@@ -41,10 +41,10 @@ class ArchitectureAllView(APIView):
 
 
 class ModelDimensionsView(APIView):
-    permission_classes = [AllowAny,]
+    permission_classes = (AllowAny,)
     queryset = Architecture.objects.all()
     serializer_class = ModelDimensionsSerializer
-    parser_classes = [MultiPartParser, FormParser,]
+    parser_classes = (MultiPartParser, FormParser,)
 
     def post(self, request: Request, architecture_id: int) -> Response:
         serializer = self.serializer_class(data={'file': request.FILES['file'], 'id': architecture_id})
@@ -66,10 +66,10 @@ class ModelDimensionsView(APIView):
 
 
 class ModelPreviewView(APIView):
-    permission_classes = [AllowAny,]
+    permission_classes = (AllowAny,)
     queryset = Architecture.objects.all()
     serializer_class = ModelDimensionsSerializer
-    parser_classes = [MultiPartParser, FormParser,]
+    parser_classes = (MultiPartParser, FormParser,)
 
     def post(self, request: Request, architecture_id: int) -> Response | StreamingHttpResponse:
         serializer = self.serializer_class(data={'file': request.FILES['file'], 'id': architecture_id})

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Backend Dump Database" type="ShConfigurationType">
+  <configuration default="false" name="Dump Database" type="ShConfigurationType" folderName="Backend">
     <option name="SCRIPT_TEXT" value="" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="false" />
     <option name="SCRIPT_PATH" value="$PROJECT_DIR$/scripts/bash/backend_dump_database.sh" />

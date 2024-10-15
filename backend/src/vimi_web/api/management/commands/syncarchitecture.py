@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
+
 from vimi_web.api.models import Architecture
 
 

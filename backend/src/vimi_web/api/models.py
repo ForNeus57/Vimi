@@ -3,10 +3,10 @@ from importlib import import_module
 from typing import List, Optional
 
 import keras
-from storages.backends.ftp import FTPStorage
+# from storages.backends.ftp import FTPStorage
 from django.contrib.auth import get_user_model
-from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.db import models
 
 User = get_user_model()
 
@@ -18,6 +18,7 @@ class UserDetail(models.Model):
 
 
 class Architecture(models.Model):
+    # TODO: Join layers and dimensions into a single field and create a custom postgresql field for it
     name = models.CharField(max_length=64, unique=True)
     module = models.CharField(max_length=256)
     layers = ArrayField(models.CharField(max_length=64))
