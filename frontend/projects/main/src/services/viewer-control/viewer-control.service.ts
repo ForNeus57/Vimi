@@ -6,12 +6,12 @@ import {BehaviorSubject} from "rxjs";
 })
 export class ViewerControlService {
 
-  private dimensionsToShow = new BehaviorSubject<number[][]>([]);
+  private dimensionsToShow = new BehaviorSubject<number[][] | number[][][]>([]);
 
   constructor() {
   }
 
-  setDimensions(newDimensions: number[][]) {
+  setDimensions(newDimensions: number[][] | number[][][]) {
     console.log(newDimensions);
     this.dimensionsToShow.next(newDimensions);
   }

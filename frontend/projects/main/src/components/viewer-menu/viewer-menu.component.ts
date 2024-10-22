@@ -119,17 +119,27 @@ export class ViewerMenuComponent implements OnInit {
       const formData = new FormData();
       formData.append('file', file, file.name);
 
-      this.dataLayer.post<NetworkInput>('/api/1/network_input/' + architecture.id, formData).subscribe({
+      this.dataLayer.post<NetworkInput>(`/api/1/network_input/`, formData).subscribe({
         next: (value) => {
-          this.dataLayer.post<number[][][]>().subscribe({
+          const postData = {uuid: value.uuid, architecture: architecture.id,layer_index: this.selectedLayerIndex()};
 
+          this.dataLayer.post<number[][][]>('/api/1/process/network_input/', postData).subscribe({
+            next: (layerOutput) => {
+              this.viewerControl.setDimensions(layerOutput);
+            },
+            error: (error) => {
+              this.notificationHandler.error('File upload Failed');
+              this.notificationHandler.error(error);
+            },
           });
         },
         error: (error) => {
           this.notificationHandler.error('File upload Failed');
           this.notificationHandler.error(error);
         },
-      })
+      });
+    } else {
+      this.notificationHandler.info('Upload file not provided');
     }
   }
 }

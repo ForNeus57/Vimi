@@ -4,4 +4,6 @@ User-Agent: curl/8.2.1
 Accept: */*
 Content-Type: application/json
 
-{"refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcyNDE4ODE4OSwiaWF0IjoxNzI0MTAxNzg5LCJqdGkiOiJhYTMwNmQxZmQ1M2U0ZWQ3YjQ0NmJiMDUzOWU5Nzk0YyIsInVzZXJfaWQiOjJ9.8IGHpprxhNbnf5hiRly_sR32umWr_XgwRsQsAQBRtdU"}
+{
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcyNDE4ODE4OSwiaWF0IjoxNzI0MTAxNzg5LCJqdGkiOiJhYTMwNmQxZmQ1M2U0ZWQ3YjQ0NmJiMDUzOWU5Nzk0YyIsInVzZXJfaWQiOjJ9.8IGHpprxhNbnf5hiRly_sR32umWr_XgwRsQsAQBRtdU"
+}

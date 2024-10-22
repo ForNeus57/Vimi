@@ -1,0 +1,8 @@
+POST {{host}}/api/1/network_input/ HTTP/1.1
+Content-Type: multipart/form-data; boundary=UploadedFile
+
+--UploadedFile
+Content-Disposition: form-data; name="file"; filename="mandrill.png"
+
+< ../../backend/fixtures/mandrill.png
+--UploadedFile--

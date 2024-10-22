@@ -71,10 +71,9 @@ class Architecture(Model):
 
 
 class NetworkInput(Model):
-    architecture = ForeignKey(Architecture, on_delete=PROTECT)
     uuid = UUIDField(default=uuid.uuid4, editable=False, unique=True)
     # TODO: Make use of MEDIA_ROOT and change this to ftp-server
-    file = FileField(upload_to='./fixtures/upload/', max_length=128, editable=False)
+    file = FileField(upload_to='fixtures/upload/', max_length=128, editable=False)
 
     class Meta:
         # TODO: Automatically determine 'api' prefix

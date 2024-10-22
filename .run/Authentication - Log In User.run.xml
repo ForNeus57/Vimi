@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Authentication - Log In User" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" folderName="Backend" environment="backend" path="$PROJECT_DIR$/http/backend/authentication/jwt_authentication_obtain_token.http" requestIdentifier="#1" runType="Run single request">
+  <configuration default="false" name="Authentication - Log In User" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" folderName="Backend" path="$PROJECT_DIR$/http/backend/authentication/jwt_authentication_obtain_token.http" requestIdentifier="#1" runType="Run single request">
     <method v="2" />
   </configuration>
 </component>

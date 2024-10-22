@@ -12,15 +12,10 @@ class ArchitectureAllSerializer(serializers.ModelSerializer):
 
 
 class UploadNetworkInputSerializer(serializers.Serializer):
-    architecture = serializers.PrimaryKeyRelatedField(queryset=Architecture.objects.all())
-    file = serializers.FileField(max_length=1024)
+    file = serializers.FileField(max_length=128)
 
     def create(self, validated_data):
-        network_input =  NetworkInput.objects.create(
-            architecture=validated_data['architecture'],
-            file=validated_data['file'],
-        )
-
+        network_input = NetworkInput.objects.create(file=validated_data['file'])
         network_input.save()
 
         return network_input
@@ -28,4 +23,5 @@ class UploadNetworkInputSerializer(serializers.Serializer):
 
 class ProcessNetworkInputSerializer(serializers.Serializer):
     uuid = serializers.UUIDField()
+    architecture = serializers.PrimaryKeyRelatedField(queryset=Architecture.objects.all())
     layer_index = serializers.IntegerField(min_value=0)
