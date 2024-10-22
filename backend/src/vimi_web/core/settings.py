@@ -97,7 +97,6 @@ WSGI_APPLICATION = 'vimi_web.core.wsgi.application'
 # FTP_HOST = environ['DJANGO_FTP_HOST']
 # FTP_PORT = environ['DJANGO_FTP_PORT']
 #
-# DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
 # FTP_STORAGE_LOCATION = f'ftp://{FTP_USER}:{FTP_PASSWORD}@{FTP_HOST}:{FTP_PORT}/'
 
 
@@ -155,6 +154,19 @@ CACHES = {
     },
 }
 
+# STORAGES = {
+#     "default": {
+#         "BACKEND": "vimi_web.api.storages.FTPStorage",
+#         "OPTIONS": {
+#             "host": environ['FTP_HOST'],
+#             "port": environ['FTP_PORT'],
+#             "login": environ['FTP_USERNAME'],
+#             "password": environ['FTP_PASSWORD'],
+#             "path": environ['FTP_PATH'],
+#         },
+#     }
+# }
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
@@ -169,7 +181,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-SIGNING_KEY = generate_rsa_private_key(4096).private_bytes(
+SIGNING_KEY = generate_rsa_private_key(2048).private_bytes(
     encoding=serialization.Encoding.PEM,
     format=serialization.PrivateFormat.TraditionalOpenSSL,
     encryption_algorithm=serialization.NoEncryption(),

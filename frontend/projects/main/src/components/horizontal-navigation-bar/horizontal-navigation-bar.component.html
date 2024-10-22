@@ -1,22 +1,12 @@
-<link rel="stylesheet" href="horizontal-navigation-bar.component.scss">
 <nav class="h-navbar-container">
   <menu class="nav-menu left-menu">
     @if (!this.isLoggedIn) {
       <li>
-        <a routerLink="/home"
+        <a routerLink="/"
            routerLinkActive="active"
            ariaCurrentWhenActive="page">
           <span style="font-size: xx-large;">
             Vimi
-          </span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/home"
-           routerLinkActive="active"
-           ariaCurrentWhenActive="page">
-          <span style="font-size: large; text-decoration: underline">
-            Home
           </span>
         </a>
       </li>

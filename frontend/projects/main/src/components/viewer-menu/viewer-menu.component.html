@@ -1,60 +1,96 @@
-<h3 class="font-primary">
-  Viewer Menu
-</h3>
-<form class="standard-shadow">
-  <fieldset>
-    <div class="form-floating">
-      <label class="font-primary"
-             for="architectureName">
-        Architecture Name
-      </label>
-      <select id="architectureName" [(ngModel)]="architectureId">
-        @for(architecture of architectures; track architecture.id) {
-          <option [value]="architecture.id">
-            {{architecture.name}}
+<menu class="viewer-menu">
+  <li class="viewer-menu viewer-control-menu standard-shadow">
+    <button class="viewer-control-menu"
+            [ngClass]="{'active': controlMode === 'general'}"
+            (click)="onGeneralControlModeActivation()">
+      <i class="bi bi-gear-fill viewer-control-menu"></i>
+    </button>
+  </li>
+  <li class="viewer-menu viewer-control-menu standard-shadow">
+    <button class="viewer-control-menu"
+            [ngClass]="{'active': controlMode === 'file'}"
+            (click)="onFileControlModeActivation()">
+      <i class="bi bi-file-binary-fill viewer-control-menu"></i>
+    </button>
+  </li>
+  <li class="viewer-menu standard-shadow">
+    <select id="architectureName"
+            name="architectureName"
+            class="viewer-control-menu"
+            [(ngModel)]="selectedArchitectureIndex">
+      <option value="-1">
+        Architecture
+      </option>
+      @for(architecture of architectures; track architectures.indexOf(architecture)) {
+        <option [value]="architectures.indexOf(architecture)">
+          {{architecture.name}}
+        </option>
+      }
+    </select>
+  </li>
+  @switch (controlMode) {
+    @case ('general') {
+      <li class="viewer-menu viewer-menu-main standard-shadow">
+        <mat-slider class="slider"
+                    discrete
+                    [displayWith]="formatSlider"
+                    [disabled]="isSliderDisabled()"
+                    min="0"
+                    [max]="selectedSliderMax()"
+                    step="1">
+          <input matSliderStartThumb
+                 value="0"
+                 (valueChange)="sliderStartValue.set($event)">
+          <input matSliderEndThumb
+                 [value]="selectedSliderEnd()"
+                 (valueChange)="sliderEndValue.set($event)">
+        </mat-slider>
+      </li>
+    }
+    @case ('file') {
+      <li class="viewer-menu viewer-menu-side standard-shadow">
+        <select id="layerName"
+                name="layerName"
+                class="viewer-control-menu"
+                [(ngModel)]="selectedLayerIndex">
+          <option value="-1">
+            Layer
           </option>
-        }
-      </select>
-    </div>
-    <div class="form-floating">
-      <label class="font-primary"
-             for="layerName">
-        Layer Name
-      </label>
-      <select id="layerName">
-        @for (layer of layers; track layers.indexOf(layer)) {
-          <option [value]="layers.indexOf(layer)">
-            {{layer}}
-          </option>
-        }
-      </select>
-    </div>
-    <div class="form-floating">
-      <label class="font-primary"
-             for="filterNumber">
-        Filter Number
-      </label>
-      <select id="filterNumber">
-        @for (number of Array(filters); track number) {
-          <option [value]="number">
-            {{number}}
-          </option>
-        }
-      </select>
-    </div>
-    <div class="form-floating">
-      <label class="font-primary"
-             for="inputFile">
-        Input File
-      </label>
-      <input id="inputFile"
-             type="file">
-    </div>
-  </fieldset>
-
-  <button class="btn btn-primary"
-          type="submit">
-    Submit
-  </button>
-
-</form>
+          @for(layer of layers(); track layers().indexOf(layer)) {
+            <option [value]="layers().indexOf(layer)">
+              {{layers().indexOf(layer) + 1}} - {{layer}}
+            </option>
+          }
+        </select>
+      </li>
+      <li class="viewer-menu viewer-menu-main standard-shadow">
+        <input id="file"
+               type="file"
+               class="slider"
+               #fileUpload
+               (change)="onFileUpload($event)">
+      </li>
+      <li class="viewer-menu-button">
+        <button class="btn btn-primary">
+          Upload File
+        </button>
+      </li>
+    }
+  }
+  @if (controlMode === 'file') {
+    <li class="viewer-menu viewer-control-menu standard-shadow">
+      <button class="viewer-control-menu"
+              [ngClass]="{'active': viewMode === '2d'}"
+              (click)="on2dViewModeActivation()">
+        <i class="bi bi-card-image viewer-control-menu"></i>
+      </button>
+    </li>
+    <li class="viewer-menu viewer-control-menu standard-shadow">
+      <button class="viewer-control-menu"
+              [ngClass]="{'active': viewMode === '3d'}"
+              (click)="on3dViewModeActivation()">
+        <i class="bi bi-aspect-ratio-fill viewer-control-menu"></i>
+      </button>
+    </li>
+  }
+</menu>

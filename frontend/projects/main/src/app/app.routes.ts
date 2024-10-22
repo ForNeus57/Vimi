@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import {HomeComponent} from "../components/home/home.component";
 import {RegisterComponent} from "../components/register/register.component";
 import {LoginComponent} from "../components/login/login.component";
 import {ProfileComponent} from "../components/profile/profile.component";
@@ -40,11 +39,6 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'home',
-    title: 'Home',
-    component: HomeComponent,
-  },
-  {
     path: 'model',
     title: 'Model',
     children: [
@@ -71,10 +65,10 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: '/home',
+    redirectTo: '/model',
   },
   {
     path: '**',
-    redirectTo: '/home',
+    redirectTo: '/model',
   },
 ];

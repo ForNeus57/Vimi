@@ -19,6 +19,6 @@ export const appConfig: ApplicationConfig = {
     {
       provide: ErrorHandler,
       useClass: NotificationErrorHandler,
-    },
+    }, provideAnimationsAsync(),
   ],
 };

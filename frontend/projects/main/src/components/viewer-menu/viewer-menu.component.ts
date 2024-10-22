@@ -1,69 +1,135 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, computed, effect, OnInit, signal, untracked} from '@angular/core';
 import {DataLayerService} from "../../services/data-layer/data-layer.service";
 import {Architecture} from "../../models/architecture";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
-import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {NgClass} from "@angular/common";
+import {MatSlider, MatSliderRangeThumb, MatSliderThumb} from "@angular/material/slider";
+import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
+import {NetworkInput} from "../../models/network-input";
 
 @Component({
   selector: 'app-viewer-menu',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    NgClass,
+    MatSlider,
+    MatSliderThumb,
+    MatSliderRangeThumb,
   ],
   templateUrl: './viewer-menu.component.html',
-  styleUrl: './viewer-menu.component.scss'
+  styleUrl: './viewer-menu.component.scss',
 })
 export class ViewerMenuComponent implements OnInit {
-  architectureId = signal(0);
-  layerName = signal('');
-  filter = signal(0);
+  controlMode = 'general';
+  viewMode = '3d';
 
   architectures = Array<Architecture>();
-  layers = Array<string>();
-  filters = 0;
+
+  selectedArchitectureIndex = signal(-1);
+  readonly selectedArchitecture = computed(() => {
+    if (this.selectedArchitectureIndex() > this.architectures.length) {
+      return null;
+    }
+
+    return this.architectures[this.selectedArchitectureIndex()];
+  });
+  readonly isSliderDisabled = computed(() => {
+    return this.selectedArchitecture() == null
+  });
+  readonly selectedSliderMax = computed(() => {
+    const architecture = this.selectedArchitecture();
+    if (architecture == null) {
+      return 99;
+    }
+
+    return architecture.layers.length - 1;
+  });
+  readonly selectedSliderEnd = computed(() => {
+    return Math.max(Math.floor(this.selectedSliderMax() * 0.05), 1);
+  });
+  sliderStartValue = signal(0);
+  sliderEndValue = signal(0);
+
+  readonly layers = computed(() => {
+    const architecture = this.selectedArchitecture()
+    if (architecture) {
+      return architecture.layers;
+    }
+
+    return [];
+  });
+  selectedLayerIndex = signal(-1);
 
   constructor(
     private dataLayer: DataLayerService,
-    private notificationHandler: NotificationHandlerService
+    private notificationHandler: NotificationHandlerService,
+    private viewerControl: ViewerControlService,
   ) {
+    effect(() => {
+      const architecture = this.selectedArchitecture();
+      if (architecture) {
+        this.viewerControl.setDimensions(
+          architecture.dimensions.slice(this.sliderStartValue(), this.sliderEndValue()),
+        );
+      }
+    });
   }
 
   ngOnInit() {
-    this.dataLayer.get<Array<Architecture>>('/api/1/architecture').subscribe({
-      next: (data) => {
-        this.architectures = data;
-        console.log('Architectures loaded', this.architectures);
+    this.dataLayer.get<Architecture[]>('/api/1/architecture/').subscribe({
+      next: (architectures) => {
+        this.architectures = architectures;
+        this.notificationHandler.success('Architectures loaded');
       },
       error: (error) => {
         this.notificationHandler.error('Failed to load architectures');
+        this.notificationHandler.error(error);
       },
     });
-
-    // this.architectureName.valueChanges.subscribe((selectedArchitectureId) => {
-    //   if (selectedArchitectureId === null) {
-    //     return;
-    //   }
-    //
-    //   const resultingLayers = this.architectures.find(
-    //     (architecture) => architecture.id === selectedArchitectureId
-    //   )?.layers;
-    //
-    //   if (resultingLayers === undefined) {
-    //     return;
-    //   }
-    //
-    //   this.layers = resultingLayers;
-    // });
-    //
-    // this.layerName.valueChanges.subscribe((selectedLayer) => {
-    //   if (selectedLayer === null) {
-    //     return;
-    //   }
-    //
-    //   this.filters = this.layers.indexOf(selectedLayer);
-    // });
   }
 
-  protected readonly Array = Array;
+  onGeneralControlModeActivation() {
+    this.controlMode = 'general';
+  }
+
+  onFileControlModeActivation() {
+    this.controlMode = 'file';
+  }
+
+  on2dViewModeActivation() {
+    this.viewMode = '2d';
+  }
+
+  on3dViewModeActivation() {
+    this.viewMode = '3d';
+  }
+
+  formatSlider(value: number) {
+    return `L${value + 1}`;
+  }
+
+  onFileUpload(event: any) {
+    const file: File = event.target.files[0];
+    const architecture = this.selectedArchitecture();
+
+    if (file && this.selectedLayerIndex() != -1 && architecture) {
+      const formData = new FormData();
+      formData.append('file', file, file.name);
+
+      this.dataLayer.post<NetworkInput>('/api/1/network_input/' + architecture.id, formData).subscribe({
+        next: (value) => {
+          this.dataLayer.post<number[][][]>().subscribe({
+
+          });
+        },
+        error: (error) => {
+          this.notificationHandler.error('File upload Failed');
+          this.notificationHandler.error(error);
+        },
+      })
+    }
+  }
 }

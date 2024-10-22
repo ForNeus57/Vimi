@@ -1,12 +1,84 @@
 :host {
+  --architecture-selector-width: minmax(150px, 10vw);
   position: absolute;
   bottom: 0;
   left: 0;
+  width: 100%;
+  min-height: var(--horizontal-navigation-bar-height);
   background-color: var(--tertiary-color);
-  padding: var(--standard-gap);
-  border-top-right-radius: var(--standard-border-radius);
+  padding: var(--standard-gap) var(--horizontal-navigation-bar-height);
+  border-radius: var(--standard-border-radius) var(--standard-border-radius) 0 0;
   display: flex;
   flex-direction: column;
+}
+
+menu.viewer-menu {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  gap: var(--standard-gap);
+  height: 100%;
+  list-style-type: none;
+}
+
+li.viewer-menu {
+  flex-basis: auto;
+  background-color: var(--background-color);
+  border-radius: var(--standard-gap);
+  display: flex;
+  align-items: stretch;
+}
+
+li.viewer-control-menu {
+  width: calc(var(--horizontal-navigation-bar-height) - var(--standard-gap) * 2);
+  aspect-ratio: 1/1;
+}
+
+li.viewer-menu-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 var(--standard-gap);
+}
+
+button.viewer-control-menu {
+  flex: 1;
+  background: transparent;
+  border-radius: var(--standard-gap);
+  transition: color 0.3s ease, background-color 0.3s ease, outline 0.3s ease;
+}
+
+i.viewer-control-menu {
+  font-size: 2rem;
+  color: var(--quaternary-color);
+}
+
+button.active,
+button.viewer-control-menu:hover {
+  background-color: var(--quaternary-color);
+  outline: solid var(--background-color) var(--standard-outline-width);
+}
+
+button.active i,
+button.viewer-control-menu:hover i {
+  color: var(--background-color);
+}
+
+select.viewer-control-menu {
+  background: transparent;
+  padding: 0 var(--standard-gap);
+}
+
+.slider {
+  width: 100%;
+}
+
+li.viewer-menu-button {
+  display: flex;
   justify-content: center;
   align-items: center;
 }

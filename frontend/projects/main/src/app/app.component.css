@@ -16,6 +16,7 @@
   border-radius: 0 0 var(--standard-border-radius) var(--standard-border-radius);
   padding: 0 var(--horizontal-navigation-bar-height) 0 var(--horizontal-navigation-bar-height);
   position: sticky;
+  z-index: 1;
   top: 0;
 }
 
@@ -24,6 +25,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
+}
+
+.notifications {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 
 @media (min-height: 1000px) {
