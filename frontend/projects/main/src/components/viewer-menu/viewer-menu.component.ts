@@ -51,7 +51,7 @@ export class ViewerMenuComponent implements OnInit {
     return architecture.layers.length - 1;
   });
   readonly selectedSliderEnd = computed(() => {
-    return Math.max(Math.floor(this.selectedSliderMax() * 0.05), 1);
+    return Math.max(Math.floor(this.selectedSliderMax() * 0.5), 1);
   });
   sliderStartValue = signal(0);
   sliderEndValue = signal(0);

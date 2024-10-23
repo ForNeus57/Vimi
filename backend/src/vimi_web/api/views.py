@@ -1,5 +1,3 @@
-from importlib import import_module
-
 import cv2
 import keras
 import numpy as np
@@ -72,6 +70,8 @@ class ProcessNetworkInput(APIView):
             uuid = serializer.validated_data.get('uuid')
             architecture = serializer.validated_data.get('architecture')
             layer_index = serializer.validated_data.get('layer_index')
+
+            # TODO: Fix this so the serializer handles this case automatically
             network_input = NetworkInput.objects.filter(uuid=uuid).first()
             if network_input is None:
                 return Response({'errors': 'uuid do not correspond to any file'}, status=400)
@@ -79,17 +79,19 @@ class ProcessNetworkInput(APIView):
             model = architecture.get_model()
 
             image = cv2.imread(network_input.file.path, cv2.IMREAD_COLOR) / 255.
-            image = cv2.resize(image, model.input_shape[1:3], interpolation=cv2.INTER_CUBIC)
+            image = cv2.resize(image, model.input_shape[1: 3], interpolation=cv2.INTER_CUBIC)
             image = np.expand_dims(image, axis=0)
 
             layer_outputs = [layer.output for layer in model.layers[:layer_index]]
             activation_model = keras.Model(inputs=model.input, outputs=layer_outputs)
             activations = activation_model.predict(image)
 
-            maxes = np.max(np.abs(activations[-1]), axis=(1, 2))
-            maxes[maxes == 0.] = 1.
-            activation = activations[-1] / maxes
+            activation_norm = (activations[-1] - np.min(activations[-1], axis=(1, 2)))[0, :, :, :]
+            point_to_point = np.ptp(activation_norm, axis=(0, 1))
+            point_to_point[point_to_point == 0.] = 1.
+            activation_norm /= point_to_point
+            activation_norm = np.rot90(activation_norm, -1, axes=(0, 1))
 
-            return Response({"output": activation[0, :, :, :].tolist()}, status=200)
+            return Response({"output": activation_norm.tolist()}, status=200)
 
         return Response(serializer.errors, status=400)
