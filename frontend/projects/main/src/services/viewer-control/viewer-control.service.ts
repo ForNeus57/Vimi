@@ -12,7 +12,6 @@ export class ViewerControlService {
   }
 
   setDimensions(newDimensions: number[][] | number[][][]) {
-    console.log(newDimensions);
     this.dimensionsToShow.next(newDimensions);
   }
 

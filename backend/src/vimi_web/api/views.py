@@ -90,6 +90,6 @@ class ProcessNetworkInput(APIView):
             maxes[maxes == 0.] = 1.
             activation = activations[-1] / maxes
 
-            return Response(activation[0, :, :, :].tolist(), status=200)
+            return Response({"output": activation[0, :, :, :].tolist()}, status=200)
 
         return Response(serializer.errors, status=400)

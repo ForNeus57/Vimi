@@ -147,6 +147,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvasElement,
       powerPreference: "high-performance",
+      antialias: true,
     });
     this.renderer.setClearColor(0xffffff, 1);
     this.renderer.setSize(canvasWidth, canvasHeight);

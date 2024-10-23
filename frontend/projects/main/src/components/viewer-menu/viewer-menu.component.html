@@ -18,7 +18,7 @@
             name="architectureName"
             class="viewer-control-menu"
             [(ngModel)]="selectedArchitectureIndex">
-      <option value="-1">
+      <option value="null">
         Architecture
       </option>
       @for(architecture of architectures; track architectures.indexOf(architecture)) {
@@ -53,7 +53,7 @@
                 name="layerName"
                 class="viewer-control-menu"
                 [(ngModel)]="selectedLayerIndex">
-          <option value="-1">
+          <option value="null">
             Layer
           </option>
           @for(layer of layers(); track layers().indexOf(layer)) {
@@ -68,7 +68,13 @@
                type="file"
                class="slider"
                #fileUpload
-               (change)="onFileUpload($event)">
+               (change)="onFileChange($event)">
+      </li>
+      <li class="viewer-menu-button">
+        <button class="btn-small btn-primary"
+                (click)="onFileUpload()">
+          Upload
+        </button>
       </li>
     }
   }

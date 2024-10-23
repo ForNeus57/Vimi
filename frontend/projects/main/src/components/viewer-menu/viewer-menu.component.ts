@@ -1,4 +1,4 @@
-import {Component, computed, effect, OnInit, signal, untracked} from '@angular/core';
+import {Component, computed, effect, OnInit, signal, WritableSignal} from '@angular/core';
 import {DataLayerService} from "../../services/data-layer/data-layer.service";
 import {Architecture} from "../../models/architecture";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
@@ -7,6 +7,8 @@ import {NgClass} from "@angular/common";
 import {MatSlider, MatSliderRangeThumb, MatSliderThumb} from "@angular/material/slider";
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {NetworkInput} from "../../models/network-input";
+import {mergeMap} from "rxjs";
+import {NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
 
 @Component({
   selector: 'app-viewer-menu',
@@ -28,13 +30,14 @@ export class ViewerMenuComponent implements OnInit {
 
   architectures = Array<Architecture>();
 
-  selectedArchitectureIndex = signal(-1);
+  selectedArchitectureIndex: WritableSignal<number | null> = signal(null);
   readonly selectedArchitecture = computed(() => {
-    if (this.selectedArchitectureIndex() > this.architectures.length) {
+    const architectureId = this.selectedArchitectureIndex();
+    if (architectureId == null) {
       return null;
     }
 
-    return this.architectures[this.selectedArchitectureIndex()];
+    return this.architectures[architectureId];
   });
   readonly isSliderDisabled = computed(() => {
     return this.selectedArchitecture() == null
@@ -42,7 +45,7 @@ export class ViewerMenuComponent implements OnInit {
   readonly selectedSliderMax = computed(() => {
     const architecture = this.selectedArchitecture();
     if (architecture == null) {
-      return 99;
+      return 1;
     }
 
     return architecture.layers.length - 1;
@@ -61,7 +64,9 @@ export class ViewerMenuComponent implements OnInit {
 
     return [];
   });
-  selectedLayerIndex = signal(-1);
+  selectedLayerIndex: WritableSignal<number | null> = signal(null);
+
+  selectedFile: File | null = null;
 
   constructor(
     private dataLayer: DataLayerService,
@@ -111,35 +116,60 @@ export class ViewerMenuComponent implements OnInit {
     return `L${value + 1}`;
   }
 
-  onFileUpload(event: any) {
-    const file: File = event.target.files[0];
-    const architecture = this.selectedArchitecture();
+  onFileChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const files = target.files;
 
-    if (file && this.selectedLayerIndex() != -1 && architecture) {
-      const formData = new FormData();
-      formData.append('file', file, file.name);
-
-      this.dataLayer.post<NetworkInput>(`/api/1/network_input/`, formData).subscribe({
-        next: (value) => {
-          const postData = {uuid: value.uuid, architecture: architecture.id,layer_index: this.selectedLayerIndex()};
-
-          this.dataLayer.post<number[][][]>('/api/1/process/network_input/', postData).subscribe({
-            next: (layerOutput) => {
-              this.viewerControl.setDimensions(layerOutput);
-            },
-            error: (error) => {
-              this.notificationHandler.error('File upload Failed');
-              this.notificationHandler.error(error);
-            },
-          });
-        },
-        error: (error) => {
-          this.notificationHandler.error('File upload Failed');
-          this.notificationHandler.error(error);
-        },
-      });
-    } else {
-      this.notificationHandler.info('Upload file not provided');
+    if (files == null) {
+      this.notificationHandler.info('No files provided');
+      return;
     }
+
+    if (files.length > 1) {
+      this.notificationHandler.info('Too many files provided');
+      return;
+    }
+
+    this.selectedFile = files[0];
+  }
+
+  onFileUpload() {
+    const architecture = this.selectedArchitecture();
+    const layerIndex = this.selectedLayerIndex();
+
+    if (this.selectedFile == null) {
+      this.notificationHandler.info('File is not attached');
+      return;
+    }
+
+    if (architecture == null) {
+      this.notificationHandler.info('Architecture is not selected');
+      return;
+    }
+
+    if (layerIndex == null) {
+      this.notificationHandler.info('Layer is not selected');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile, this.selectedFile.name);
+
+    this.dataLayer.post<NetworkInput>('/api/1/network_input/', formData).pipe(
+      mergeMap((value) => {
+        const postData = new NetworkOutputRequestData(value.uuid, architecture.id, layerIndex);
+
+        return this.dataLayer.post<NetworkOutput>('/api/1/process/network_input/', postData);
+      }),
+    ).subscribe({
+      next: (layerOutput) => {
+        this.notificationHandler.success('Successfully fetched layer activations');
+        this.viewerControl.setDimensions(layerOutput.output);
+      },
+      error: (error) => {
+        this.notificationHandler.error('File upload Failed');
+        this.notificationHandler.error(error);
+      },
+    });
   }
 }

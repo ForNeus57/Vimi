@@ -15,15 +15,6 @@
            routerLinkActive="active"
            ariaCurrentWhenActive="page">
           <span style="font-size: large; text-decoration: underline">
-            Model
-          </span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/model/viewer"
-           routerLinkActive="active"
-           ariaCurrentWhenActive="page">
-          <span style="font-size: large; text-decoration: underline">
             Model Viewer
           </span>
         </a>
@@ -36,7 +27,8 @@
         <a routerLink="/account/register"
            routerLinkActive="active"
            ariaCurrentWhenActive="page">
-          <span class="btn btn-secondary menu-anchor" [ngClass]="{'anchor-active': checkIfActive('/account/register'),}">
+          <span class="btn btn-secondary menu-anchor"
+                [ngClass]="{'anchor-active': checkIfActive('/account/register'),}">
             Sign Up
           </span>
         </a>
@@ -45,7 +37,8 @@
         <a routerLink="/account/login"
            routerLinkActive="active"
            ariaCurrentWhenActive="page">
-          <span class="btn btn-secondary menu-anchor" [ngClass]="{'anchor-active': checkIfActive('/account/login'),}">
+          <span class="btn btn-secondary menu-anchor"
+                [ngClass]="{'anchor-active': checkIfActive('/account/login'),}">
             Log In
           </span>
         </a>
