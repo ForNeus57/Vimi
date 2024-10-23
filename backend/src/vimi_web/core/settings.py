@@ -35,7 +35,6 @@ DEBUG = environ['DJANGO_DEBUG'] == 'True'
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -181,7 +180,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-SIGNING_KEY = generate_rsa_private_key(2048).private_bytes(
+SIGNING_KEY = generate_rsa_private_key(1024).private_bytes(
     encoding=serialization.Encoding.PEM,
     format=serialization.PrivateFormat.TraditionalOpenSSL,
     encryption_algorithm=serialization.NoEncryption(),

@@ -32,7 +32,9 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
 
   // I hate the fact it has to be like that
   animate = () => {
-    if (this.controls && this.renderer && this.continueAnimation) {
+    if (this.controls != null
+        && this.renderer != null
+        && this.continueAnimation != null) {
       this.controls.update();
       this.renderer.render(this.scene, this.camera);
       window.requestAnimationFrame(this.animate);
@@ -153,8 +155,8 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
     this.renderer.setClearColor(0xffffff, 1);
     this.renderer.setSize(canvasWidth, canvasHeight);
 
-    const axesHelper = new THREE.AxesHelper(50000);
-    this.scene.add(axesHelper);
+    // const axesHelper = new THREE.AxesHelper(50000);
+    // this.scene.add(axesHelper);
   }
 
   @HostListener('window:resize')

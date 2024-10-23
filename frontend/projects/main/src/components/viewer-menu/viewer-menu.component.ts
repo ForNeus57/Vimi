@@ -67,6 +67,7 @@ export class ViewerMenuComponent implements OnInit {
   selectedLayerIndex: WritableSignal<number | null> = signal(null);
 
   selectedFile: File | null = null;
+  selectedFileUUID: string | null = null
 
   constructor(
     private dataLayer: DataLayerService,
@@ -130,15 +131,30 @@ export class ViewerMenuComponent implements OnInit {
       return;
     }
 
+    // TODO: Check if the files change and if not do not make an request
     this.selectedFile = files[0];
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile, this.selectedFile.name);
+
+    this.dataLayer.post<NetworkInput>('/api/1/network_input/', formData).subscribe({
+      next: (value) => {
+        this.selectedFileUUID = value.uuid;
+        this.notificationHandler.success('Successfully generated file UUID');
+      },
+      error: (error) => {
+        this.notificationHandler.error('File upload Failed');
+        this.notificationHandler.error(error);
+      },
+    });
   }
 
   onFileUpload() {
     const architecture = this.selectedArchitecture();
     const layerIndex = this.selectedLayerIndex();
 
-    if (this.selectedFile == null) {
-      this.notificationHandler.info('File is not attached');
+    if (this.selectedFileUUID == null) {
+      this.notificationHandler.info('File has no UUID assigned');
       return;
     }
 
@@ -152,16 +168,8 @@ export class ViewerMenuComponent implements OnInit {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('file', this.selectedFile, this.selectedFile.name);
-
-    this.dataLayer.post<NetworkInput>('/api/1/network_input/', formData).pipe(
-      mergeMap((value) => {
-        const postData = new NetworkOutputRequestData(value.uuid, architecture.id, layerIndex);
-
-        return this.dataLayer.post<NetworkOutput>('/api/1/process/network_input/', postData);
-      }),
-    ).subscribe({
+    const postData = new NetworkOutputRequestData(this.selectedFileUUID, architecture.id, layerIndex);
+    this.dataLayer.post<NetworkOutput>('/api/1/process/network_input/', postData).subscribe({
       next: (layerOutput) => {
         this.notificationHandler.success('Successfully fetched layer activations');
         this.viewerControl.setDimensions(layerOutput.output);
