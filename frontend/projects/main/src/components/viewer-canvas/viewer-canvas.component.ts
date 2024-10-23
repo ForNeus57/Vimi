@@ -28,9 +28,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
   controls: OrbitControls | null = null;
   renderer: THREE.WebGLRenderer | null = null;
 
-  geometry = new THREE.SphereGeometry(1, 1, 1);
   material = new THREE.MeshBasicMaterial();
-  dummyObject = new THREE.Object3D();
 
   // I hate the fact it has to be like that
   animate = () => {
@@ -103,14 +101,15 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
           this.scene.add(mesh);
 
           const obj = new THREE.Object3D();
+          obj.position.z = 0;
           let counter = 0;
+          let distanceX = 0;
 
           for (let i = 0;  i < dimensions.length; ++i) {
             for (let j = 0; j < dimensions[i].length; ++j) {
               for (let k = 0; k < dimensions[i][j].length; ++k) {
-                obj.position.x = i * 1.05;
-                obj.position.y = j * 1.05;
-                obj.position.z = k * 100;
+                obj.position.x = distanceX;
+                obj.position.y = k * 1.05;
                 obj.updateMatrix();
 
                 mesh.setMatrixAt(counter, obj.matrix);
@@ -118,7 +117,9 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
 
                 counter++;
               }
+              distanceX += 1.05;
             }
+            distanceX += 10;
           }
         }
 
@@ -139,7 +140,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
     // Add and configure camera
     this.camera.aspect = canvasWidth / canvasHeight;
     this.camera.updateProjectionMatrix();
-    this.camera.position.z = 30;
+    this.camera.position.z = 50;
     this.scene.add(this.camera);
 
     this.controls = new OrbitControls(this.camera, canvasElement);

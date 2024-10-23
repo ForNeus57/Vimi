@@ -1,18 +1,5 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  HostListener,
-  inject,
-  OnInit,
-  PLATFORM_ID,
-  viewChild
-} from '@angular/core';
-
-import * as THREE from 'three';
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {Component} from '@angular/core';
 import {ViewerMenuComponent} from "../viewer-menu/viewer-menu.component";
-import {isPlatformServer} from "@angular/common";
 import {ViewerCanvasComponent} from "../viewer-canvas/viewer-canvas.component";
 
 @Component({
@@ -27,7 +14,6 @@ import {ViewerCanvasComponent} from "../viewer-canvas/viewer-canvas.component";
 })
 export class ModelViewerComponent {
   constructor(
-    // private modelShapeService: ModelShapeService,
   ) {
   }
 }

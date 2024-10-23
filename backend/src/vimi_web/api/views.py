@@ -91,6 +91,7 @@ class ProcessNetworkInput(APIView):
             point_to_point[point_to_point == 0.] = 1.
             activation_norm /= point_to_point
             activation_norm = np.rot90(activation_norm, -1, axes=(0, 1))
+            activation_norm = np.transpose(activation_norm, [2, 0, 1])
 
             return Response({"output": activation_norm.tolist()}, status=200)
 
