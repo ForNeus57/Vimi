@@ -1,14 +1,18 @@
-from platform import architecture
-
 from rest_framework import serializers
 
-from vimi_web.api.models import Architecture, NetworkInput
+from vimi_web.api.models import Architecture, NetworkInput, ColorMap
 
 
 class ArchitectureAllSerializer(serializers.ModelSerializer):
     class Meta:
         model = Architecture
-        fields = ['id', 'name', 'layers', 'dimensions']
+        fields = ('id', 'name', 'layers', 'dimensions')
+
+
+class ColorMapAllSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ColorMap
+        fields = ('id', 'name')
 
 
 class UploadNetworkInputSerializer(serializers.Serializer):

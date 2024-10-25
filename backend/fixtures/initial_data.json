@@ -368,5 +368,181 @@
       "layers": "[\"input_layer (InputLayer)\", \"convnext_xlarge_prestem_normalization (Normalization)\", \"convnext_xlarge_stem (Sequential)\", \"convnext_xlarge_stage_0_block_0_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_0_block_0_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_0_block_0_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_0_block_0_gelu (Activation)\", \"convnext_xlarge_stage_0_block_0_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_0_block_0_layer_scale (LayerScale)\", \"convnext_xlarge_stage_0_block_0_identity (Activation)\", \"convnext_xlarge_stage_0_block_1_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_0_block_1_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_0_block_1_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_0_block_1_gelu (Activation)\", \"convnext_xlarge_stage_0_block_1_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_0_block_1_layer_scale (LayerScale)\", \"convnext_xlarge_stage_0_block_1_identity (Activation)\", \"convnext_xlarge_stage_0_block_2_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_0_block_2_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_0_block_2_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_0_block_2_gelu (Activation)\", \"convnext_xlarge_stage_0_block_2_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_0_block_2_layer_scale (LayerScale)\", \"convnext_xlarge_stage_0_block_2_identity (Activation)\", \"convnext_xlarge_downsampling_block_0 (Sequential)\", \"convnext_xlarge_stage_1_block_0_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_1_block_0_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_1_block_0_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_1_block_0_gelu (Activation)\", \"convnext_xlarge_stage_1_block_0_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_1_block_0_layer_scale (LayerScale)\", \"convnext_xlarge_stage_1_block_0_identity (Activation)\", \"convnext_xlarge_stage_1_block_1_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_1_block_1_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_1_block_1_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_1_block_1_gelu (Activation)\", \"convnext_xlarge_stage_1_block_1_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_1_block_1_layer_scale (LayerScale)\", \"convnext_xlarge_stage_1_block_1_identity (Activation)\", \"convnext_xlarge_stage_1_block_2_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_1_block_2_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_1_block_2_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_1_block_2_gelu (Activation)\", \"convnext_xlarge_stage_1_block_2_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_1_block_2_layer_scale (LayerScale)\", \"convnext_xlarge_stage_1_block_2_identity (Activation)\", \"convnext_xlarge_downsampling_block_1 (Sequential)\", \"convnext_xlarge_stage_2_block_0_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_0_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_0_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_0_gelu (Activation)\", \"convnext_xlarge_stage_2_block_0_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_0_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_0_identity (Activation)\", \"convnext_xlarge_stage_2_block_1_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_1_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_1_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_1_gelu (Activation)\", \"convnext_xlarge_stage_2_block_1_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_1_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_1_identity (Activation)\", \"convnext_xlarge_stage_2_block_2_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_2_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_2_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_2_gelu (Activation)\", \"convnext_xlarge_stage_2_block_2_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_2_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_2_identity (Activation)\", \"convnext_xlarge_stage_2_block_3_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_3_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_3_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_3_gelu (Activation)\", \"convnext_xlarge_stage_2_block_3_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_3_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_3_identity (Activation)\", \"convnext_xlarge_stage_2_block_4_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_4_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_4_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_4_gelu (Activation)\", \"convnext_xlarge_stage_2_block_4_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_4_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_4_identity (Activation)\", \"convnext_xlarge_stage_2_block_5_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_5_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_5_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_5_gelu (Activation)\", \"convnext_xlarge_stage_2_block_5_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_5_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_5_identity (Activation)\", \"convnext_xlarge_stage_2_block_6_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_6_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_6_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_6_gelu (Activation)\", \"convnext_xlarge_stage_2_block_6_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_6_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_6_identity (Activation)\", \"convnext_xlarge_stage_2_block_7_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_7_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_7_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_7_gelu (Activation)\", \"convnext_xlarge_stage_2_block_7_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_7_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_7_identity (Activation)\", \"convnext_xlarge_stage_2_block_8_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_8_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_8_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_8_gelu (Activation)\", \"convnext_xlarge_stage_2_block_8_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_8_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_8_identity (Activation)\", \"convnext_xlarge_stage_2_block_9_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_9_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_9_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_9_gelu (Activation)\", \"convnext_xlarge_stage_2_block_9_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_9_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_9_identity (Activation)\", \"convnext_xlarge_stage_2_block_10_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_10_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_10_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_10_gelu (Activation)\", \"convnext_xlarge_stage_2_block_10_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_10_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_10_identity (Activation)\", \"convnext_xlarge_stage_2_block_11_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_11_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_11_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_11_gelu (Activation)\", \"convnext_xlarge_stage_2_block_11_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_11_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_11_identity (Activation)\", \"convnext_xlarge_stage_2_block_12_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_12_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_12_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_12_gelu (Activation)\", \"convnext_xlarge_stage_2_block_12_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_12_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_12_identity (Activation)\", \"convnext_xlarge_stage_2_block_13_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_13_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_13_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_13_gelu (Activation)\", \"convnext_xlarge_stage_2_block_13_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_13_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_13_identity (Activation)\", \"convnext_xlarge_stage_2_block_14_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_14_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_14_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_14_gelu (Activation)\", \"convnext_xlarge_stage_2_block_14_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_14_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_14_identity (Activation)\", \"convnext_xlarge_stage_2_block_15_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_15_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_15_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_15_gelu (Activation)\", \"convnext_xlarge_stage_2_block_15_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_15_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_15_identity (Activation)\", \"convnext_xlarge_stage_2_block_16_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_16_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_16_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_16_gelu (Activation)\", \"convnext_xlarge_stage_2_block_16_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_16_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_16_identity (Activation)\", \"convnext_xlarge_stage_2_block_17_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_17_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_17_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_17_gelu (Activation)\", \"convnext_xlarge_stage_2_block_17_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_17_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_17_identity (Activation)\", \"convnext_xlarge_stage_2_block_18_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_18_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_18_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_18_gelu (Activation)\", \"convnext_xlarge_stage_2_block_18_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_18_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_18_identity (Activation)\", \"convnext_xlarge_stage_2_block_19_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_19_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_19_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_19_gelu (Activation)\", \"convnext_xlarge_stage_2_block_19_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_19_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_19_identity (Activation)\", \"convnext_xlarge_stage_2_block_20_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_20_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_20_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_20_gelu (Activation)\", \"convnext_xlarge_stage_2_block_20_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_20_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_20_identity (Activation)\", \"convnext_xlarge_stage_2_block_21_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_21_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_21_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_21_gelu (Activation)\", \"convnext_xlarge_stage_2_block_21_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_21_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_21_identity (Activation)\", \"convnext_xlarge_stage_2_block_22_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_22_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_22_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_22_gelu (Activation)\", \"convnext_xlarge_stage_2_block_22_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_22_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_22_identity (Activation)\", \"convnext_xlarge_stage_2_block_23_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_23_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_23_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_23_gelu (Activation)\", \"convnext_xlarge_stage_2_block_23_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_23_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_23_identity (Activation)\", \"convnext_xlarge_stage_2_block_24_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_24_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_24_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_24_gelu (Activation)\", \"convnext_xlarge_stage_2_block_24_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_24_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_24_identity (Activation)\", \"convnext_xlarge_stage_2_block_25_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_25_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_25_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_25_gelu (Activation)\", \"convnext_xlarge_stage_2_block_25_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_25_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_25_identity (Activation)\", \"convnext_xlarge_stage_2_block_26_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_2_block_26_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_2_block_26_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_2_block_26_gelu (Activation)\", \"convnext_xlarge_stage_2_block_26_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_2_block_26_layer_scale (LayerScale)\", \"convnext_xlarge_stage_2_block_26_identity (Activation)\", \"convnext_xlarge_downsampling_block_2 (Sequential)\", \"convnext_xlarge_stage_3_block_0_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_3_block_0_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_3_block_0_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_3_block_0_gelu (Activation)\", \"convnext_xlarge_stage_3_block_0_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_3_block_0_layer_scale (LayerScale)\", \"convnext_xlarge_stage_3_block_0_identity (Activation)\", \"convnext_xlarge_stage_3_block_1_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_3_block_1_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_3_block_1_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_3_block_1_gelu (Activation)\", \"convnext_xlarge_stage_3_block_1_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_3_block_1_layer_scale (LayerScale)\", \"convnext_xlarge_stage_3_block_1_identity (Activation)\", \"convnext_xlarge_stage_3_block_2_depthwise_conv (Conv2D)\", \"convnext_xlarge_stage_3_block_2_layernorm (LayerNormalization)\", \"convnext_xlarge_stage_3_block_2_pointwise_conv_1 (Dense)\", \"convnext_xlarge_stage_3_block_2_gelu (Activation)\", \"convnext_xlarge_stage_3_block_2_pointwise_conv_2 (Dense)\", \"convnext_xlarge_stage_3_block_2_layer_scale (LayerScale)\", \"convnext_xlarge_stage_3_block_2_identity (Activation)\", \"convnext_xlarge_head_gap (GlobalAveragePooling2D)\", \"convnext_xlarge_head_layernorm (LayerNormalization)\", \"convnext_xlarge_head_dense (Dense)\"]",
       "dimensions": "[\"[\\\"224\\\", \\\"224\\\", \\\"3\\\"]\", \"[\\\"224\\\", \\\"224\\\", \\\"3\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"1024\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"1024\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"1024\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"1024\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"1024\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"1024\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"56\\\", \\\"56\\\", \\\"256\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"2048\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"2048\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"2048\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"2048\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"2048\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"2048\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"28\\\", \\\"28\\\", \\\"512\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"4096\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"14\\\", \\\"14\\\", \\\"1024\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"8192\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"8192\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"8192\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"8192\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"8192\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"8192\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"7\\\", \\\"7\\\", \\\"2048\\\"]\", \"[\\\"2048\\\", \\\"1\\\", \\\"1\\\"]\", \"[\\\"2048\\\", \\\"1\\\", \\\"1\\\"]\", \"[\\\"1000\\\", \\\"1\\\", \\\"1\\\"]\"]"
     }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Autumn",
+      "attribute": "COLORMAP_AUTUMN"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Bone",
+      "attribute": "COLORMAP_BONE"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Jet",
+      "attribute": "COLORMAP_JET"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Winter",
+      "attribute": "COLORMAP_WINTER"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Rainbow",
+      "attribute": "COLORMAP_RAINBOW"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Ocean",
+      "attribute": "COLORMAP_OCEAN"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Summer",
+      "attribute": "COLORMAP_SUMMER"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Spring",
+      "attribute": "COLORMAP_SPRING"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Cool",
+      "attribute": "COLORMAP_COOL"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "HSV",
+      "attribute": "COLORMAP_HSV"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Pink",
+      "attribute": "COLORMAP_PINK"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Hot",
+      "attribute": "COLORMAP_HOT"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Parula",
+      "attribute": "COLORMAP_PARULA"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Magma",
+      "attribute": "COLORMAP_MAGMA"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Inferno",
+      "attribute": "COLORMAP_INFERNO"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Plasma",
+      "attribute": "COLORMAP_PLASMA"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Viridis",
+      "attribute": "COLORMAP_VIRIDIS"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "CViridis",
+      "attribute": "COLORMAP_CIVIDIS"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Twilight",
+      "attribute": "COLORMAP_TWILIGHT"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Twilight Shifted",
+      "attribute": "COLORMAP_TWILIGHT_SHIFTED"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Turbo",
+      "attribute": "COLORMAP_TURBO"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
+      "name": "Deep Green",
+      "attribute": "COLORMAP_DEEPGREEN"
+    }
   }
 ]

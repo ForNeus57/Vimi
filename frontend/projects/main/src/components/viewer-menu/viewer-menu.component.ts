@@ -7,7 +7,6 @@ import {NgClass} from "@angular/common";
 import {MatSlider, MatSliderRangeThumb, MatSliderThumb} from "@angular/material/slider";
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {NetworkInput} from "../../models/network-input";
-import {mergeMap} from "rxjs";
 import {NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
 
 @Component({
@@ -76,11 +75,13 @@ export class ViewerMenuComponent implements OnInit {
   ) {
     effect(() => {
       const architecture = this.selectedArchitecture();
-      if (architecture) {
-        this.viewerControl.setDimensions(
-          architecture.dimensions.slice(this.sliderStartValue(), this.sliderEndValue()),
-        );
+      if (architecture == null) {
+        return;
       }
+
+      this.viewerControl.setDimensions(
+        architecture.dimensions.slice(this.sliderStartValue(), this.sliderEndValue()),
+      );
     });
   }
 

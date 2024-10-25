@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ElementRef, HostListener, inject, OnInit, PLAT
 import {ViewerMenuComponent} from "../viewer-menu/viewer-menu.component";
 import * as THREE from "three";
 import {isPlatformServer} from "@angular/common";
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {MapControls} from 'three/addons/controls/MapControls.js';
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {BoxGeometry} from "three";
@@ -25,7 +25,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
 
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(75, 1., 0.001, 100000);
-  controls: OrbitControls | null = null;
+  controls: MapControls | null = null;
   renderer: THREE.WebGLRenderer | null = null;
 
   material = new THREE.MeshBasicMaterial();
@@ -115,8 +115,17 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
                 obj.updateMatrix();
 
                 mesh.setMatrixAt(counter, obj.matrix);
-                mesh.setColorAt(counter, new THREE.Color(0, 0, dimensions[i][j][k]));
 
+                let color: THREE.Color | null = null;
+                if (dimensions[i][j][k] < 0) {
+                  // color = new THREE.Color(0, 0, Math.min(1.0, -dimensions[i][j][k] * 1.5));
+                  color = new THREE.Color(0, 0, -dimensions[i][j][k]);
+                } else {
+                  // color = new THREE.Color(Math.min(1.0, dimensions[i][j][k] * 1.5), 0, 0);
+                  color = new THREE.Color(dimensions[i][j][k], 0, 0);
+                }
+
+                mesh.setColorAt(counter, color);
                 counter++;
               }
               distanceX += 1.05;
@@ -145,7 +154,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
     this.camera.position.z = 50;
     this.scene.add(this.camera);
 
-    this.controls = new OrbitControls(this.camera, canvasElement);
+    this.controls = new MapControls(this.camera, canvasElement);
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvasElement,

@@ -1,8 +1,10 @@
 import uuid
 from importlib import import_module
-from typing import List, Optional, Never
+from typing import List, Optional
 
+import cv2
 import keras
+import numpy as np
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.db.models import (
@@ -12,9 +14,7 @@ from django.db.models import (
     CharField,
     PositiveIntegerField,
     CASCADE,
-    PROTECT,
     FileField,
-    ForeignKey,
 )
 
 User = get_user_model()
@@ -81,3 +81,23 @@ class NetworkInput(Model):
 
     def __str__(self) -> str:
         return str(self.uuid)
+
+
+class ColorMap(Model):
+    name = CharField(max_length=32, unique=True)
+    attribute = CharField(max_length=32, unique=True, editable=False)
+
+    class Meta:
+        # TODO: Automatically determine 'api' prefix
+        db_table = 'api_color_map'
+
+    def __str__(self) -> str:
+        return self.name
+
+    def get_color_map(self) -> int:
+        import cv2
+        return getattr(cv2, self.attribute)
+
+    def apply_color_map(self, image: np.ndarray) -> np.ndarray:
+        color_map = self.get_color_map()
+        return cv2.applyColorMap(image, color_map)
