@@ -44,7 +44,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password', 'password_confirm']
+        fields = ('username', 'first_name', 'last_name', 'email', 'password', 'password_confirm')
 
     def create(self, validated_data):
         user = User.objects.create_user(
@@ -64,6 +64,6 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     def validate(self, data: MutableMapping):
         if data['password'] != data['password_confirm']:
-            raise serializers.ValidationError("Passwords do not match.")
+            raise serializers.ValidationError("Passwords do not match")
 
         return data

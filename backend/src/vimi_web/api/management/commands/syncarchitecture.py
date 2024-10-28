@@ -12,16 +12,15 @@ class Command(BaseCommand):
     def add_arguments(self, parser: ArgumentParser) -> None:
         pass
 
-    def handle(self, *args, **options) -> None:
-        architectures = Architecture.objects.all()
+    def handle(self, *args, **kwargs) -> None:
+        queryset = Architecture.objects.all()
 
-        for architecture in architectures:
+        for architecture in queryset:
             model = architecture.get_model()
 
-            architecture.layers = architecture.get_computed_layers(model)
-            architecture.dimensions = architecture.get_computed_dimensions(model)
+            architecture.layers = Architecture.get_computed_layers(model)
+            architecture.dimensions = Architecture.get_computed_dimensions(model)
             architecture.save()
 
             k.clear_session()
-
-            self.stdout.write(self.style.SUCCESS(f"Successfully synchronised {architecture}"))
+            self.stdout.write(self.style.SUCCESS(f'Successfully synchronised {architecture}'))

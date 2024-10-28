@@ -12,6 +12,7 @@ class RegisterUser(APIView):
 
     def post(self, request: Request) -> Response:
         serializer = self.serializer_class(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(status=201)

@@ -1,6 +1,10 @@
+from uuid import UUID
+
 import cv2
 import keras
 import numpy as np
+from django.core.files import File
+from django.http import Http404
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -47,34 +51,30 @@ class UploadNetworkInput(APIView):
         serializer = self.serializer_class(data={'file': request.FILES['file']})
 
         if serializer.is_valid():
-            network_input = serializer.save()
-
-            return Response({'uuid': network_input.uuid}, status=201)
+            response_data = serializer.save()
+            return Response(response_data, status=201)
 
         return Response(serializer.errors, status=400)
 
 
 class ProcessNetworkInput(APIView):
     permission_classes = (AllowAny,)
+    queryset = NetworkInput.objects.all()
     serializer_class = ProcessNetworkInputSerializer
 
     def post(self, request: Request) -> Response:
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            uuid = serializer.validated_data.get('uuid')
             architecture = serializer.validated_data.get('architecture')
+            file = serializer.validated_data.get('file')
+            color_map = serializer.validated_data.get('color_map')
             layer_index = serializer.validated_data.get('layer_index')
-
-            # TODO: Fix this so the serializer handles this case automatically
-            network_input = NetworkInput.objects.filter(uuid=uuid).first()
-            if network_input is None:
-                return Response({'errors': 'uuid do not correspond to any file'}, status=400)
 
             model = architecture.get_model()
 
             # TODO: Remove rescaling in favour of creating custom input tensor as in keras applications documentation
-            image = cv2.imread(network_input.file.path, cv2.IMREAD_COLOR) / 255.
+            image = cv2.imread(file.file.path, cv2.IMREAD_COLOR) / 255.
             image = cv2.resize(image, model.input_shape[1: 3], interpolation=cv2.INTER_CUBIC)
             image = np.expand_dims(image, axis=0)
 
@@ -87,11 +87,15 @@ class ProcessNetworkInput(APIView):
             point_to_point = np.ptp(activation_norm, axis=(0, 1))
             point_to_point[point_to_point == 0.] = 1.               # Prevent NaN from accounting via division by 0
             activation_norm /= point_to_point
-            activation_norm *= 2.
-            activation_norm -= 1.
+            activation_norm = (activation_norm * 255).astype(np.uint8)
             activation_norm = np.rot90(activation_norm, -1, axes=(0, 1))
             activation_norm = np.transpose(activation_norm, [2, 0, 1])
 
-            return Response({"output": activation_norm.tolist()}, status=200)
+            result = np.zeros(shape=(activation_norm.shape + (3,)), dtype=np.uint8)
+            x_size, _, _ = activation_norm.shape
+            for index in range(x_size):
+                result[index] = color_map.apply_color_map(activation_norm[index])
+
+            return Response({"output": result.tolist()}, status=200)
 
         return Response(serializer.errors, status=400)

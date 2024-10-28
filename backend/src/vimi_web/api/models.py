@@ -53,34 +53,26 @@ class Architecture(Model):
         model_caller = getattr(module, self.name)
         return model_caller()
 
-    def get_computed_layers(self, model: Optional[keras.Model] = None) -> List[str]:
-        # TODO: validate that the model is our model!
-        if model is None:
-            model = self.get_model()
-
+    @staticmethod
+    def get_computed_layers(model: keras.Model) -> List[str]:
         return [f'{layer.name} ({layer.__class__.__name__})' for layer in model.layers]
 
-    def get_computed_dimensions(self, model: Optional[keras.Model] = None) -> List[List[int]]:
-        # TODO: validate that the model is our model!
+    @staticmethod
+    def get_computed_dimensions(model: keras.Model) -> List[List[int]]:
         # TODO: Set reasonable defaults for the dimensions. Aka defaults from dimensions model class field!
-        if model is None:
-            model = self.get_model()
 
-        dimensions = [list(model.input_shape[1:])] + [list(layer.output.shape[1:]) for layer in model.layers[1:]]
+        dimensions = [list(model.input.shape[1:])] + [list(layer.output.shape[1:]) for layer in model.layers[1:]]
         return [dimension + [1] * (3 - len(dimension)) for dimension in dimensions]
 
 
 class NetworkInput(Model):
-    uuid = UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    id = UUIDField(default=uuid.uuid4, primary_key=True)
     # TODO: Make use of MEDIA_ROOT and change this to ftp-server
     file = FileField(upload_to='fixtures/upload/', max_length=128, editable=False)
 
     class Meta:
         # TODO: Automatically determine 'api' prefix
         db_table = 'api_network_input'
-
-    def __str__(self) -> str:
-        return str(self.uuid)
 
 
 class ColorMap(Model):
@@ -100,4 +92,4 @@ class ColorMap(Model):
 
     def apply_color_map(self, image: np.ndarray) -> np.ndarray:
         color_map = self.get_color_map()
-        return cv2.applyColorMap(image, color_map)
+        return cv2.applyColorMap(image, colormap=color_map)
