@@ -1,3 +1,13 @@
+app-viewer-menu-general {
+  flex: 1;
+}
 
+li.viewer-menu-general {
+  height: 100%;
+}
+
+.slider {
+  flex: 1;
+}
 
 /*# sourceMappingURL=viewer-menu-general.component.css.map */

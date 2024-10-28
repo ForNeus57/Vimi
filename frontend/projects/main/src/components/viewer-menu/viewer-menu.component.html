@@ -19,7 +19,7 @@
             class="viewer-control-menu"
             [(ngModel)]="selectedArchitectureIndex">
       <option value="null">
-        Select Architecture ...
+        Architecture ...
       </option>
       @for(architecture of architectures; track architectures.indexOf(architecture)) {
         <option [value]="architectures.indexOf(architecture)">

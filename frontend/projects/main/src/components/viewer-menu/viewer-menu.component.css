@@ -16,7 +16,6 @@ menu.viewer-menu {
   flex: 1;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: stretch;
   flex-wrap: nowrap;
   gap: var(--standard-gap);
@@ -42,6 +41,7 @@ li.viewer-menu-main {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: var(--standard-gap);
   padding: 0 var(--standard-gap);
 }
 
@@ -71,10 +71,6 @@ button.viewer-control-menu:hover i {
 select.viewer-control-menu {
   background: transparent;
   padding: 0 var(--standard-gap);
-}
-
-.slider {
-  width: 100%;
 }
 
 li.viewer-menu-button {

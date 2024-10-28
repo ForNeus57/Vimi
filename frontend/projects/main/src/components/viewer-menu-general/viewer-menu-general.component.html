@@ -1,16 +1,22 @@
-<li class="viewer-menu viewer-menu-main standard-shadow">
+<li class="viewer-menu viewer-menu-main viewer-menu-general standard-shadow">
   <mat-slider class="slider"
               discrete
               [displayWith]="formatSlider"
               [disabled]="isSliderDisabled()"
-              min="0"
+              [min]="0"
               [max]="selectedSliderMax()"
-              step="1">
+              [step]="1">
     <input matSliderStartThumb
            value="0"
-           (valueChange)="sliderStartValue.set($event)">
+           (valueChange)="onSliderStartChange($event)">
     <input matSliderEndThumb
            [value]="selectedSliderEnd()"
-           (valueChange)="sliderEndValue.set($event)">
+           (valueChange)="onSliderEndChange($event)">
   </mat-slider>
+
+  <button class="btn-small btn-primary"
+          [disabled]="isSliderDisabled()"
+          (click)="onCanvasUpdate()">
+    Update Canvas
+  </button>
 </li>

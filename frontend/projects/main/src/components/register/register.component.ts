@@ -1,6 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {AuthenticationService} from "../../services/authentication/authentication.service";
 import {
   AbstractControl,
   FormControl,
@@ -13,7 +12,6 @@ import {
 import {JsonPipe, KeyValuePipe, NgClass, TitleCasePipe} from "@angular/common";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {Router} from "@angular/router";
-import {RegistrationConfig} from "../../models/registration-config";
 import {RegistrationErrors} from "../../models/registration-errors";
 
 @Component({

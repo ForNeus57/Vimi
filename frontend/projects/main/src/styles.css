@@ -125,7 +125,6 @@ a:focus {
 button:disabled.btn-primary,
 button[disabled].btn-primary {
   background-color: var(--secondary-dark-color);
-  color: #bbbbbb;
   cursor: auto;
 }
 

@@ -17,10 +17,7 @@ import {ViewerControlService} from "../../services/viewer-control/viewer-control
     FormsModule
   ],
   templateUrl: './viewer-menu-file.component.html',
-  styleUrls: [
-    '../viewer-menu/viewer-menu.component.scss',
-    './viewer-menu-file.component.scss',
-  ]
+  styleUrl: './viewer-menu-file.component.scss',
 })
 export class ViewerMenuFileComponent implements OnInit {
   @Input({required: true})

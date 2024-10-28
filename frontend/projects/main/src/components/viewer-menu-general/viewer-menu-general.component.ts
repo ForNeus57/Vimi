@@ -1,4 +1,4 @@
-import {Component, computed, effect, Input, signal} from '@angular/core';
+import {Component, computed, effect, Input, signal, ViewEncapsulation} from '@angular/core';
 import {Architecture} from "../../models/architecture";
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {MatSlider, MatSliderRangeThumb} from "@angular/material/slider";
@@ -14,7 +14,8 @@ import {MatSlider, MatSliderRangeThumb} from "@angular/material/slider";
   styleUrls: [
     '../viewer-menu/viewer-menu.component.scss',
     './viewer-menu-general.component.scss',
-  ]
+  ],
+  encapsulation: ViewEncapsulation.None,
 })
 export class ViewerMenuGeneralComponent {
   @Input({required: true})
@@ -23,8 +24,6 @@ export class ViewerMenuGeneralComponent {
   };
 
   internalArchitecture = signal<Architecture | null>(null);
-  sliderStartValue = signal(0);
-  sliderEndValue = signal(0);
 
   readonly isSliderDisabled = computed(() => {
     return this.internalArchitecture() == null
@@ -41,19 +40,30 @@ export class ViewerMenuGeneralComponent {
     return Math.max(Math.floor(this.selectedSliderMax() * 0.5), 1);
   });
 
+  sliderStartValue = 0;
+  sliderEndValue = 0;
+
   constructor(
     private viewerControl: ViewerControlService,
-  ) {
-    effect(() => {
-      const architecture = this.internalArchitecture();
-      if (architecture == null) {
-        return;
-      }
+  ) {}
 
-      this.viewerControl.setDimensions(
-        architecture.dimensions.slice(this.sliderStartValue(), this.sliderEndValue()),
-      );
-    });
+  onCanvasUpdate() {
+    const architecture = this.internalArchitecture();
+    if (architecture == null) {
+      return;
+    }
+
+    this.viewerControl.setDimensions(
+      architecture.dimensions.slice(this.sliderStartValue, this.sliderEndValue),
+    );
+  }
+
+  onSliderStartChange(newValue: number) {
+    this.sliderStartValue = newValue;
+  }
+
+  onSliderEndChange(newValue: number) {
+    this.sliderEndValue = newValue;
   }
 
   formatSlider(value: number) {

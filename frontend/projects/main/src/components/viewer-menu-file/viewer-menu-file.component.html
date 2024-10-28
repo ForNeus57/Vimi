@@ -4,7 +4,7 @@
           class="viewer-control-menu"
           [(ngModel)]="selectedLayerIndex">
     <option value="null">
-      Select Layer ...
+      Layer ...
     </option>
     <!-- TODO: Make index inside a layer and bind them easily -->
     @for(layer of computedLayers(); track computedLayers().indexOf(layer)) {
@@ -20,7 +20,7 @@
           class="viewer-control-menu"
           [(ngModel)]="selectedColorMapIndex">
     <option value="null">
-      Select Color Map ...
+      Color Map ...
     </option>
     @for(colorMap of colorMaps; track colorMap.id) {
       <option [value]="colorMap.id">

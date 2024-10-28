@@ -17,12 +17,12 @@
   flex-direction: column;
 }
 
+// TODO: Split the file into 2 one per child component
 menu.viewer-menu {
   flex: 1;
 
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: stretch;
   flex-wrap: nowrap;
 
@@ -51,6 +51,7 @@ li.viewer-menu-main {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: var(--standard-gap);
 
   padding: 0 var(--standard-gap);
 }
@@ -85,9 +86,6 @@ select.viewer-control-menu {
   padding: 0 var(--standard-gap);
 }
 
-.slider {
-  width: 100%;
-}
 
 li.viewer-menu-button {
   display: flex;

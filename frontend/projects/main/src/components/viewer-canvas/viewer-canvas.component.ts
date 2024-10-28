@@ -62,7 +62,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.viewerControl.getDimensionsObservable()
       .pipe(
-        filter((() => isPlatformServer(this.platform))),
+        filter((() => !isPlatformServer(this.platform))),
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe((dimensions) => {

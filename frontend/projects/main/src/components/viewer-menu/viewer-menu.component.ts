@@ -1,11 +1,10 @@
-import {Component, computed, effect, OnInit, signal, WritableSignal} from '@angular/core';
+import {Component, computed, OnInit, signal, WritableSignal} from '@angular/core';
 import {DataLayerService} from "../../services/data-layer/data-layer.service";
 import {Architecture} from "../../models/architecture";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgClass} from "@angular/common";
 import {MatSlider, MatSliderRangeThumb, MatSliderThumb} from "@angular/material/slider";
-import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {ViewerMenuFileComponent} from "../viewer-menu-file/viewer-menu-file.component";
 import {ViewerMenuGeneralComponent} from "../viewer-menu-general/viewer-menu-general.component";
 
@@ -30,7 +29,9 @@ export class ViewerMenuComponent implements OnInit {
 
   readonly selectedArchitecture = computed(() => {
     const architectureId = this.selectedArchitectureIndex();
-    if (architectureId == null) {
+    if (architectureId == null
+        || architectureId < 0
+        || architectureId >= this.architectures.length) {
       return null;
     }
 
