@@ -1,11 +1,12 @@
 export interface NetworkOutput {
-  output: number[][][];
+  output: number[][][][];
 }
 
 export class NetworkOutputRequestData {
   constructor(
-    public uuid: string,
     public architecture: number,
+    public file: string,
+    public color_map: number,
     public layer_index: number,
   ) {
   }

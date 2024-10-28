@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {AuthenticationService} from "../../services/authentication/authentication.service";
 import {NgClass} from "@angular/common";
+import {Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-horizontal-navigation-bar',
@@ -10,8 +11,10 @@ import {NgClass} from "@angular/common";
   templateUrl: './horizontal-navigation-bar.component.html',
   styleUrl: './horizontal-navigation-bar.component.scss'
 })
-export class HorizontalNavigationBarComponent implements OnInit {
-  public isLoggedIn: boolean = false;
+export class HorizontalNavigationBarComponent implements OnInit, OnDestroy {
+  private ngUnsubscribe = new Subject<void>();
+
+  public isLoggedIn = false;
 
   constructor(
       private AuthenticationService: AuthenticationService,
@@ -19,17 +22,24 @@ export class HorizontalNavigationBarComponent implements OnInit {
   ) {
   }
 
-  public ngOnInit() {
-    this.AuthenticationService.getIsLoggedInObs().subscribe((isLoggedIn) => {
-      this.isLoggedIn = isLoggedIn;
-    });
+  ngOnInit() {
+    this.AuthenticationService.getIsLoggedInObs()
+      .pipe(takeUntil(this.ngUnsubscribe),)
+      .subscribe((isLoggedIn) => {
+        this.isLoggedIn = isLoggedIn;
+      });
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   public logout() {
     this.AuthenticationService.logout();
   }
 
-  public checkIfActive(route: string): boolean {
+  public checkIfActive(route: string) {
     // TODO: Fix that the selected link is not highlighted
     return this.router.url === route;
   }

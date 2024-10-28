@@ -92,4 +92,5 @@ class ColorMap(Model):
 
     def apply_color_map(self, image: np.ndarray) -> np.ndarray:
         color_map = self.get_color_map()
-        return cv2.applyColorMap(image, colormap=color_map)
+        image_mapped = cv2.applyColorMap(image, colormap=color_map)
+        return cv2.cvtColor(image_mapped, cv2.COLOR_BGR2RGB)

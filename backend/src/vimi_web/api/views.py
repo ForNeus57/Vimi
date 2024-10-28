@@ -74,7 +74,7 @@ class ProcessNetworkInput(APIView):
             model = architecture.get_model()
 
             # TODO: Remove rescaling in favour of creating custom input tensor as in keras applications documentation
-            image = cv2.imread(file.file.path, cv2.IMREAD_COLOR) / 255.
+            image = cv2.imread(file.file.path, cv2.IMREAD_COLOR) / 255
             image = cv2.resize(image, model.input_shape[1: 3], interpolation=cv2.INTER_CUBIC)
             image = np.expand_dims(image, axis=0)
 

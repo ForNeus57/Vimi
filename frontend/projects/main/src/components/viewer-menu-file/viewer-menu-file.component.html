@@ -1,0 +1,56 @@
+<li class="viewer-menu viewer-menu-side standard-shadow">
+  <select id="layerName"
+          name="layerName"
+          class="viewer-control-menu"
+          [(ngModel)]="selectedLayerIndex">
+    <option value="null">
+      Select Layer ...
+    </option>
+    <!-- TODO: Make index inside a layer and bind them easily -->
+    @for(layer of computedLayers(); track computedLayers().indexOf(layer)) {
+      <option [value]="computedLayers().indexOf(layer)">
+        {{computedLayers().indexOf(layer) + 1}} - {{layer}}
+      </option>
+    }
+  </select>
+</li>
+<li class="viewer-menu viewer-menu-side standard-shadow">
+  <select id="colorMapName"
+          name="colorMapName"
+          class="viewer-control-menu"
+          [(ngModel)]="selectedColorMapIndex">
+    <option value="null">
+      Select Color Map ...
+    </option>
+    @for(colorMap of colorMaps; track colorMap.id) {
+      <option [value]="colorMap.id">
+        {{colorMap.name}}
+      </option>
+    }
+  </select>
+</li>
+<li class="viewer-menu viewer-menu-main standard-shadow">
+  <input id="file"
+         type="file"
+         class="slider"
+         (change)="onFileChange($event)">
+  <button class="btn-small btn-primary"
+          (click)="onFileUpload()">
+    <!--                [disabled]="isUploadDisabled()"-->
+    Upload
+  </button>
+</li>
+<li class="viewer-menu viewer-control-menu standard-shadow">
+  <button class="viewer-control-menu"
+          [ngClass]="{'active': viewMode === '2d'}"
+          (click)="on2dViewModeActivation()">
+    <i class="bi bi-card-image viewer-control-menu"></i>
+  </button>
+</li>
+<li class="viewer-menu viewer-control-menu standard-shadow">
+  <button class="viewer-control-menu"
+          [ngClass]="{'active': viewMode === '3d'}"
+          (click)="on3dViewModeActivation()">
+    <i class="bi bi-aspect-ratio-fill viewer-control-menu"></i>
+  </button>
+</li>

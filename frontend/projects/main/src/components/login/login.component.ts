@@ -10,7 +10,7 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 })
 export class LoginComponent {
   constructor(
-      private AuthenticationService: AuthenticationService,
+    private AuthenticationService: AuthenticationService,
   ) {
   }
 

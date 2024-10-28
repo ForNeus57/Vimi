@@ -47,19 +47,20 @@ export class RegisterComponent {
   public isSubmitted = false;
 
   public registrationForm = new FormGroup({
-    username: new FormControl<string>('', [Validators.required]),
-    first_name: new FormControl<string>('', [Validators.required]),
-    last_name: new FormControl<string>('', [Validators.required]),
-    email: new FormControl<string>('', [Validators.required]),
-    password: new FormControl<string>('', [Validators.required]),
-    password_confirm: new FormControl<string>('', [Validators.required]),
+    username: new FormControl('', [Validators.required]),
+    first_name: new FormControl('', [Validators.required]),
+    last_name: new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required]),
+    password_confirm: new FormControl('', [Validators.required]),
   }, {validators: passwordMatchValidator});
 
-  public constructor(
+  constructor(
     private http: HttpClient,
     private router: Router,
     private notificationHandler: NotificationHandlerService,
-  ) {}
+  ) {
+  }
 
   public onSubmit() {
     this.registrationForm.setErrors({serverError: true});
@@ -126,8 +127,6 @@ export class RegisterComponent {
   public onConfirmPasswordToggle() {
     this.passwordConfirmInputType = this.passwordConfirmInputType === 'password' ? 'text' : 'password';
   }
-
-  protected readonly JSON = JSON;
 }
 
 export const passwordMatchValidator: ValidatorFn = (

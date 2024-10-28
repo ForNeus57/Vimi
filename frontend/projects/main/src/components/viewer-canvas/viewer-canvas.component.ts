@@ -1,4 +1,14 @@
-import {AfterViewInit, Component, ElementRef, HostListener, inject, OnInit, PLATFORM_ID, viewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  inject,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+  viewChild
+} from '@angular/core';
 import {ViewerMenuComponent} from "../viewer-menu/viewer-menu.component";
 import * as THREE from "three";
 import {isPlatformServer} from "@angular/common";
@@ -6,6 +16,7 @@ import {MapControls} from 'three/addons/controls/MapControls.js';
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {BoxGeometry} from "three";
+import {filter, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-viewer-canvas',
@@ -16,7 +27,9 @@ import {BoxGeometry} from "three";
   templateUrl: './viewer-canvas.component.html',
   styleUrl: './viewer-canvas.component.scss',
 })
-export class ViewerCanvasComponent implements OnInit, AfterViewInit {
+export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
+  private ngUnsubscribe = new Subject<void>();
+
   private readonly platform = inject(PLATFORM_ID);
   private continueAnimation = true;
   private objectNames = Array<string>();
@@ -48,11 +61,11 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.viewerControl.getDimensionsObservable()
+      .pipe(
+        filter((() => isPlatformServer(this.platform))),
+        takeUntil(this.ngUnsubscribe),
+      )
       .subscribe((dimensions) => {
-        if (isPlatformServer(this.platform)) {
-          return;
-        }
-
         this.continueAnimation = false;
 
         this.objectNames.forEach((objectName) => {
@@ -85,7 +98,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
             z_dimension += 50 + layer[2];
           });
         } else {
-          dimensions = dimensions as number[][][]
+          dimensions = dimensions as number[][][][]
 
           const objectCount = dimensions.reduce(
             (curr, cum) => curr + cum.reduce(
@@ -116,15 +129,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
 
                 mesh.setMatrixAt(counter, obj.matrix);
 
-                let color: THREE.Color | null = null;
-                if (dimensions[i][j][k] < 0) {
-                  // color = new THREE.Color(0, 0, Math.min(1.0, -dimensions[i][j][k] * 1.5));
-                  color = new THREE.Color(0, 0, -dimensions[i][j][k]);
-                } else {
-                  // color = new THREE.Color(Math.min(1.0, dimensions[i][j][k] * 1.5), 0, 0);
-                  color = new THREE.Color(dimensions[i][j][k], 0, 0);
-                }
-
+                const color = new THREE.Color(dimensions[i][j][k][0] / 255, dimensions[i][j][k][1] / 255, dimensions[i][j][k][2] / 255);
                 mesh.setColorAt(counter, color);
                 counter++;
               }
@@ -137,6 +142,10 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
         this.continueAnimation = true;
         this.animate();
       });
+  }
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   ngAfterViewInit() {
@@ -163,9 +172,6 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit {
     });
     this.renderer.setClearColor(0xffffff, 1);
     this.renderer.setSize(canvasWidth, canvasHeight);
-
-    // const axesHelper = new THREE.AxesHelper(50000);
-    // this.scene.add(axesHelper);
   }
 
   @HostListener('window:resize')
