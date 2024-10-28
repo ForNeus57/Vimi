@@ -6,10 +6,9 @@
     <option value="null">
       Layer ...
     </option>
-    <!-- TODO: Make index inside a layer and bind them easily -->
-    @for(layer of computedLayers(); track computedLayers().indexOf(layer)) {
-      <option [value]="computedLayers().indexOf(layer)">
-        {{computedLayers().indexOf(layer) + 1}} - {{layer}}
+    @for(layer of computedLayers(); track layer.id) {
+      <option [value]="layer.id">
+        {{layer.id + 1}} - {{layer.name}}
       </option>
     }
   </select>

@@ -8,6 +8,7 @@ import {Architecture} from "../../models/architecture";
 import {ColorMap} from "../../models/color-map";
 import {DataLayerService} from "../../services/data-layer/data-layer.service";
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
+import {Layer} from "../../models/layer";
 
 @Component({
   selector: 'app-viewer-menu-file',
@@ -27,6 +28,7 @@ export class ViewerMenuFileComponent implements OnInit {
   @Input({required: true})
   set architecture(newArchitecture: Architecture | null) {
     this.internalArchitecture.set(newArchitecture);
+    this.selectedLayerIndex.set(null);
   };
 
   internalArchitecture = signal<Architecture | null>(null);
@@ -37,7 +39,8 @@ export class ViewerMenuFileComponent implements OnInit {
   readonly computedLayers = computed(() => {
     const architecture = this.internalArchitecture();
     if (architecture) {
-      return architecture.layers;
+      const layers = architecture.layers;
+      return layers.map((value) => new Layer(layers.indexOf(value), value));
     }
 
     return [];
