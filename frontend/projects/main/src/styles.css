@@ -122,6 +122,13 @@ a:focus {
   color: var(--secondary-color);
 }
 
+button:disabled.btn-primary,
+button[disabled].btn-primary {
+  background-color: var(--secondary-dark-color);
+  color: #bbbbbb;
+  cursor: auto;
+}
+
 .btn-secondary {
   background-color: var(--secondary-color);
   color: var(--quaternary-color);

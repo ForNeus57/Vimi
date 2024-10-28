@@ -19,7 +19,7 @@
             class="viewer-control-menu"
             [(ngModel)]="selectedArchitectureIndex">
       <option value="null">
-        Architecture
+        Select Architecture ...
       </option>
       @for(architecture of architectures; track architectures.indexOf(architecture)) {
         <option [value]="architectures.indexOf(architecture)">
@@ -54,11 +54,26 @@
                 class="viewer-control-menu"
                 [(ngModel)]="selectedLayerIndex">
           <option value="null">
-            Layer
+            Select Layer ...
           </option>
           @for(layer of layers(); track layers().indexOf(layer)) {
             <option [value]="layers().indexOf(layer)">
               {{layers().indexOf(layer) + 1}} - {{layer}}
+            </option>
+          }
+        </select>
+      </li>
+      <li class="viewer-menu viewer-menu-side standard-shadow">
+        <select id="colorMapName"
+                name="colorMapName"
+                class="viewer-control-menu"
+                [(ngModel)]="selectedColorMapIndex">
+          <option value="null">
+            Select Color Map ...
+          </option>
+          @for(colorMap of colorMaps; track colorMap.id) {
+            <option [value]="colorMap.id">
+              {{colorMap.name}}
             </option>
           }
         </select>
@@ -69,10 +84,9 @@
                class="slider"
                #fileUpload
                (change)="onFileChange($event)">
-      </li>
-      <li class="viewer-menu-button">
         <button class="btn-small btn-primary"
                 (click)="onFileUpload()">
+          <!--                [disabled]="isUploadDisabled()"-->
           Upload
         </button>
       </li>

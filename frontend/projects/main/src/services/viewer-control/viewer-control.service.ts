@@ -5,13 +5,13 @@ import {BehaviorSubject} from "rxjs";
   providedIn: 'root'
 })
 export class ViewerControlService {
-  private dimensionsToShow = new BehaviorSubject<number[][] | number[][][]>([]);
+  private dimensionsToShow = new BehaviorSubject<number[][] | number[][][][]>([]);
 
   constructor(
   ) {
   }
 
-  setDimensions(newDimensions: number[][] | number[][][]) {
+  setDimensions(newDimensions: number[][] | number[][][][]) {
     this.dimensionsToShow.next(newDimensions);
   }
 

@@ -13,6 +13,9 @@ import {ViewerCanvasComponent} from "../viewer-canvas/viewer-canvas.component";
   styleUrl: './model-viewer.component.scss',
 })
 export class ModelViewerComponent {
+  // TODO: Rename this component so it name matches the code repo
+  // TODO: Consider removing this component
+
   constructor(
   ) {
   }

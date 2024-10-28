@@ -8,6 +8,7 @@ import {MatSlider, MatSliderRangeThumb, MatSliderThumb} from "@angular/material/
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {NetworkInput} from "../../models/network-input";
 import {NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
+import {ColorMap} from "../../models/color-map";
 
 @Component({
   selector: 'app-viewer-menu',
@@ -28,6 +29,7 @@ export class ViewerMenuComponent implements OnInit {
   viewMode = '3d';
 
   architectures = Array<Architecture>();
+  colorMaps = Array<ColorMap>();
 
   selectedArchitectureIndex: WritableSignal<number | null> = signal(null);
   readonly selectedArchitecture = computed(() => {
@@ -38,6 +40,17 @@ export class ViewerMenuComponent implements OnInit {
 
     return this.architectures[architectureId];
   });
+  readonly layers = computed(() => {
+    const architecture = this.selectedArchitecture()
+    if (architecture) {
+      return architecture.layers;
+    }
+
+    return [];
+  });
+  selectedLayerIndex: WritableSignal<number | null> = signal(null);
+  selectedColorMapIndex: WritableSignal<number | null> = signal(null);
+
   readonly isSliderDisabled = computed(() => {
     return this.selectedArchitecture() == null
   });
@@ -55,18 +68,23 @@ export class ViewerMenuComponent implements OnInit {
   sliderStartValue = signal(0);
   sliderEndValue = signal(0);
 
-  readonly layers = computed(() => {
-    const architecture = this.selectedArchitecture()
-    if (architecture) {
-      return architecture.layers;
-    }
-
-    return [];
-  });
-  selectedLayerIndex: WritableSignal<number | null> = signal(null);
+  // readonly isUploadDisabled = computed(() => {
+  //   const architecture = this.selectedArchitecture();
+  //   const colorMap = this.selectedColorMapIndex();
+  //   const layerIndex = this.selectedLayerIndex();
+  //
+  //   console.log(
+  //   architecture == null
+  //   )
+  //
+  //   return architecture == null
+  //     || colorMap == null
+  //     || this.selectedFileId == null
+  //     || layerIndex == null;
+  // });
 
   selectedFile: File | null = null;
-  selectedFileUUID: string | null = null
+  selectedFileId: string | null = null
 
   constructor(
     private dataLayer: DataLayerService,
@@ -86,16 +104,28 @@ export class ViewerMenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataLayer.get<Architecture[]>('/api/1/architecture/').subscribe({
-      next: (architectures) => {
-        this.architectures = architectures;
-        this.notificationHandler.success('Architectures loaded');
-      },
-      error: (error) => {
-        this.notificationHandler.error('Failed to load architectures');
-        this.notificationHandler.error(error);
-      },
-    });
+    this.dataLayer.get<Architecture[]>('/api/1/architecture/')
+      .subscribe({
+        next: (architectures) => {
+          this.architectures = architectures;
+          this.notificationHandler.success('Architectures loaded');
+        },
+        error: (error) => {
+          this.notificationHandler.error('Failed to load architectures');
+          this.notificationHandler.error(error);
+        },
+      });
+    this.dataLayer.get<ColorMap[]>('/api/1/color_map/')
+      .subscribe({
+        next: (colorMaps) => {
+          this.colorMaps = colorMaps;
+          this.notificationHandler.success('Color Maps loaded');
+        },
+        error: (error) => {
+          this.notificationHandler.error('Failed to load color maps');
+          this.notificationHandler.error(error);
+        },
+      });
   }
 
   onGeneralControlModeActivation() {
@@ -140,7 +170,7 @@ export class ViewerMenuComponent implements OnInit {
 
     this.dataLayer.post<NetworkInput>('/api/1/network_input/', formData).subscribe({
       next: (value) => {
-        this.selectedFileUUID = value.uuid;
+        this.selectedFileId = value.id;
         this.notificationHandler.success('Successfully generated file UUID');
       },
       error: (error) => {
@@ -152,15 +182,21 @@ export class ViewerMenuComponent implements OnInit {
 
   onFileUpload() {
     const architecture = this.selectedArchitecture();
+    const colorMap = this.selectedColorMapIndex();
     const layerIndex = this.selectedLayerIndex();
-
-    if (this.selectedFileUUID == null) {
-      this.notificationHandler.info('File has no UUID assigned');
-      return;
-    }
 
     if (architecture == null) {
       this.notificationHandler.info('Architecture is not selected');
+      return;
+    }
+
+    if (colorMap == null) {
+      this.notificationHandler.info('Color Map is not selected');
+      return;
+    }
+
+    if (this.selectedFileId == null) {
+      this.notificationHandler.info('File has no UUID assigned');
       return;
     }
 
@@ -169,7 +205,12 @@ export class ViewerMenuComponent implements OnInit {
       return;
     }
 
-    const postData = new NetworkOutputRequestData(this.selectedFileUUID, architecture.id, layerIndex);
+    const postData = new NetworkOutputRequestData(
+      architecture.id,
+      this.selectedFileId,
+      colorMap,
+      layerIndex
+    );
     this.dataLayer.post<NetworkOutput>('/api/1/process/network_input/', postData).subscribe({
       next: (layerOutput) => {
         this.notificationHandler.success('Successfully fetched layer activations');

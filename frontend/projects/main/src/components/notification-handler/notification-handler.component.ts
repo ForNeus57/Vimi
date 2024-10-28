@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {NgClass, NgStyle} from "@angular/common";
-import {trigger, state, style, animate, transition} from '@angular/animations';
+import {trigger, style, animate, transition} from '@angular/animations';
 
 import {Notification} from "../../models/notification";
+import {filter, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-notification-handler',
@@ -27,29 +28,41 @@ import {Notification} from "../../models/notification";
     ])
   ],
 })
-export class NotificationHandlerComponent implements OnInit {
+export class NotificationHandlerComponent implements OnInit, OnDestroy {
+  private ngUnsubscribe = new Subject<void>();
+
   public readonly timeoutMiliSeconds = 5000;
   public notifications: Array<Notification> = [];
 
-  public constructor(
+  constructor(
     private notificationHandler: NotificationHandlerService,
-  ) {}
+  ) {
+  }
 
-  public ngOnInit() {
-    this.notificationHandler.getNotificationObservable().subscribe(notification => {
-      if (notification === null) {
-        return;
-      }
-      this.addNotification(notification);
-    });
+  ngOnInit() {
+    this.notificationHandler.getNotificationObservable()
+      .pipe(
+        filter(notification => notification != null),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe(notification => {
+        this.addNotification(notification);
+      });
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   public addNotification(notification: Notification) {
     this.notifications.push(notification);
 
     setTimeout(() => {
-      this.removeNotification(notification);
-    }, this.timeoutMiliSeconds);
+        this.removeNotification(notification);
+      },
+      this.timeoutMiliSeconds,
+    );
   }
 
   public removeNotification(notification: Notification) {
