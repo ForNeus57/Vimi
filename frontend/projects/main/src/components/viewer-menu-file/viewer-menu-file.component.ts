@@ -1,4 +1,4 @@
-import {Component, computed, Input, OnInit, signal} from '@angular/core';
+import {Component, computed, Input, OnInit, signal, ViewEncapsulation} from '@angular/core';
 import {NgClass} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {NetworkInput} from "../../models/network-input";
@@ -17,7 +17,11 @@ import {ViewerControlService} from "../../services/viewer-control/viewer-control
     FormsModule
   ],
   templateUrl: './viewer-menu-file.component.html',
-  styleUrl: './viewer-menu-file.component.scss',
+  styleUrls: [
+    '../viewer-menu/viewer-menu.component.scss',
+    './viewer-menu-file.component.scss',
+  ],
+  encapsulation: ViewEncapsulation.None,
 })
 export class ViewerMenuFileComponent implements OnInit {
   @Input({required: true})
@@ -28,6 +32,7 @@ export class ViewerMenuFileComponent implements OnInit {
   internalArchitecture = signal<Architecture | null>(null);
   selectedLayerIndex = signal<number | null>(null);
   selectedColorMapIndex = signal<number | null>(null);
+  selectedFileId = signal<string | null>(null);
 
   readonly computedLayers = computed(() => {
     const architecture = this.internalArchitecture();
@@ -37,24 +42,20 @@ export class ViewerMenuFileComponent implements OnInit {
 
     return [];
   });
-  // readonly isUploadDisabled = computed(() => {
-  //   const architecture = this.selectedArchitecture();
-  //   const colorMap = this.selectedColorMapIndex();
-  //   const layerIndex = this.selectedLayerIndex();
-  //
-  //   console.log(
-  //   architecture == null
-  //   )
-  //
-  //   return architecture == null
-  //     || colorMap == null
-  //     || this.selectedFileId == null
-  //     || layerIndex == null;
-  // });
+  readonly isUploadDisabled = computed(() => {
+    const architecture = this.internalArchitecture();
+    const colorMap = this.selectedColorMapIndex();
+    const layerIndex = this.selectedLayerIndex();
+    const fileId = this.selectedFileId();
+
+    return architecture == null
+      || colorMap == null
+      || fileId == null
+      || layerIndex == null;
+  });
 
   viewMode = '3d';
   colorMaps = Array<ColorMap>();
-  selectedFileId: string | null = null;
 
   constructor(
     private dataLayer: DataLayerService,
@@ -99,7 +100,7 @@ export class ViewerMenuFileComponent implements OnInit {
     this.dataLayer.post<NetworkInput>('/api/1/network_input/', formData)
       .subscribe({
         next: (value) => {
-          this.selectedFileId = value.id;
+          this.selectedFileId.set(value.id);
           this.notificationHandler.success('Successfully generated file UUID');
         },
         error: (error) => {
@@ -112,6 +113,7 @@ export class ViewerMenuFileComponent implements OnInit {
   onFileUpload() {
     const architecture = this.internalArchitecture();
     const colorMap = this.selectedColorMapIndex();
+    const fileId = this.selectedFileId();
     const layerIndex = this.selectedLayerIndex();
 
     if (architecture == null) {
@@ -124,7 +126,7 @@ export class ViewerMenuFileComponent implements OnInit {
       return;
     }
 
-    if (this.selectedFileId == null) {
+    if (fileId == null) {
       this.notificationHandler.info('File has no UUID assigned');
       return;
     }
@@ -136,7 +138,7 @@ export class ViewerMenuFileComponent implements OnInit {
 
     const postData = new NetworkOutputRequestData(
       architecture.id,
-      this.selectedFileId,
+      fileId,
       colorMap,
       layerIndex,
     );

@@ -1,3 +1,8 @@
-
+app-viewer-menu-file {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: var(--standard-gap);
+}
 
 /*# sourceMappingURL=viewer-menu-file.component.css.map */

@@ -35,9 +35,9 @@
          class="slider"
          (change)="onFileChange($event)">
   <button class="btn-small btn-primary"
+          [disabled]="isUploadDisabled()"
           (click)="onFileUpload()">
-    <!--                [disabled]="isUploadDisabled()"-->
-    Upload
+    Update Canvas
   </button>
 </li>
 <li class="viewer-menu viewer-control-menu standard-shadow">

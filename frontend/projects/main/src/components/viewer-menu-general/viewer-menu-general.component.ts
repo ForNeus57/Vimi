@@ -28,6 +28,7 @@ export class ViewerMenuGeneralComponent {
   readonly isSliderDisabled = computed(() => {
     return this.internalArchitecture() == null
   });
+  // TODO: Fix so that if I change the architecture the slider values restart
   readonly selectedSliderMax = computed(() => {
     const architecture = this.internalArchitecture();
     if (architecture == null) {

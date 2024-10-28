@@ -28,6 +28,7 @@ import {filter, Subject, takeUntil} from "rxjs";
   styleUrl: './viewer-canvas.component.scss',
 })
 export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
+  // TODO: Rewrite canvas so it can adjust to different commands
   private ngUnsubscribe = new Subject<void>();
 
   private readonly platform = inject(PLATFORM_ID);
