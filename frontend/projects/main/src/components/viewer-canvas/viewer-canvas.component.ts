@@ -143,6 +143,17 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         this.continueAnimation = true;
         this.animate();
       });
+
+    this.viewerControl.getCameraObservable()
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe((orientation) => {
+        this.camera.position.set(orientation.position.x, orientation.position.y, orientation.position.z);
+        this.camera.lookAt(orientation.lookAt);
+        this.camera.zoom = orientation.zoom;
+        this.camera.updateProjectionMatrix();
+      });
   }
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -161,7 +172,6 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     // Add and configure camera
     this.camera.aspect = canvasWidth / canvasHeight;
     this.camera.updateProjectionMatrix();
-    this.camera.position.z = 50;
     this.scene.add(this.camera);
 
     this.controls = new MapControls(this.camera, canvasElement);

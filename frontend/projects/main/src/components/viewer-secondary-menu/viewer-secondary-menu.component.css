@@ -1,0 +1,11 @@
+:host {
+  position: absolute;
+  bottom: calc(var(--horizontal-navigation-bar-height) + var(--standard-gap));
+  right: calc(100% - var(--horizontal-navigation-bar-height));
+}
+
+button.btn-change-camera {
+  aspect-ratio: 1/1;
+}
+
+/*# sourceMappingURL=viewer-secondary-menu.component.css.map */
