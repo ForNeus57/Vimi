@@ -98,6 +98,10 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
             z_dimension += 50 + layer[2];
           });
+
+          const grid = new THREE.GridHelper(z_dimension * 3, z_dimension * 3 / 100);
+          this.objectNames.push(grid.name);
+          this.scene.add(grid);
         } else {
           dimensions = dimensions as number[][][][]
 
@@ -138,6 +142,10 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
             }
             distanceX += 10;
           }
+
+          const grid = new THREE.GridHelper(distanceX * 3, distanceX * 3 / 100);
+          this.objectNames.push(grid.name);
+          this.scene.add(grid);
         }
 
         this.continueAnimation = true;

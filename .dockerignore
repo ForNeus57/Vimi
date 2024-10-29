@@ -205,5 +205,4 @@ backend/test
 backend/src/vimi_web/api/migrations
 backend/src/vimi_web/worker/migrations
 backend/secrets/
-backend/fixtures/*.h5
 backend/fixtures/upload/
