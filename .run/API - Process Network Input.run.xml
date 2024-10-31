@@ -1,5 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="API - Process Network Input" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" folderName="Backend" environment="backend" path="$PROJECT_DIR$/http/backend/api/process_network_input.http" requestIdentifier="#1" runType="Run single request">
-    <method v="2" />
-  </configuration>
-</component>

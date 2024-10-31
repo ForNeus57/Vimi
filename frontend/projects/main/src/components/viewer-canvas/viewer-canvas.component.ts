@@ -69,6 +69,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((dimensions) => {
         this.continueAnimation = false;
 
+        // TODO: Fix the object disposal process
         this.objectNames.forEach((objectName) => {
           const previousObject= this.scene.getObjectByName(objectName);
           if (previousObject) {

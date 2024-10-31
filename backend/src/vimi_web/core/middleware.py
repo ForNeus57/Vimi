@@ -14,7 +14,7 @@ class MaxUploadSizeMiddleware:
         if request.method == "POST" and request.META.get('CONTENT_LENGTH'):
             if int(request.META['CONTENT_LENGTH']) > max_upload_size:
                 raise SuspiciousOperation(
-                    f"File size exceeds the maximum allowed size of {max_upload_size / (1024 * 1024)}MB"
+                    f"File size exceeds the maximum allowed size of {max_upload_size / (1024 * 1024)}MiB"
                 )
 
         response = self.get_response(request)

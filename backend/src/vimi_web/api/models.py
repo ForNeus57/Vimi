@@ -14,7 +14,7 @@ from django.db.models import (
     CharField,
     PositiveIntegerField,
     CASCADE,
-    FileField,
+    FileField, BinaryField,
 )
 
 User = get_user_model()
@@ -94,3 +94,12 @@ class ColorMap(Model):
         color_map = self.get_color_map()
         image_mapped = cv2.applyColorMap(image, colormap=color_map)
         return cv2.cvtColor(image_mapped, cv2.COLOR_BGR2RGB)
+
+
+class Activations(Model):
+    id = UUIDField(default=uuid.uuid4, primary_key=True)
+    activations_binary = BinaryField(max_length=1024 * 256)     # 256KiB
+    shape = ArrayField(base_field=PositiveIntegerField(), size=2)
+
+    def to_numpy(self) -> np.ndarray:
+        return np.frombuffer(self.activations_binary, dtype=np.uint8).reshape(self.shape)
