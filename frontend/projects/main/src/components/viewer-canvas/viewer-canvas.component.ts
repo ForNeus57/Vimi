@@ -33,7 +33,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private readonly platform = inject(PLATFORM_ID);
   private continueAnimation = true;
-  private objectNames = Array<string>();
+  private objectNames = Array();
 
   editorCanvas = viewChild.required<ElementRef<HTMLCanvasElement>>('editorCanvas');
 
@@ -61,93 +61,80 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.viewerControl.getDimensionsObservable()
+    this.viewerControl.getNewImageObservable()
       .pipe(
         filter((() => !isPlatformServer(this.platform))),
         takeUntil(this.ngUnsubscribe),
       )
-      .subscribe((dimensions) => {
-        this.continueAnimation = false;
-
-        // TODO: Fix the object disposal process
-        this.objectNames.forEach((objectName) => {
-          const previousObject= this.scene.getObjectByName(objectName);
-          if (previousObject) {
-            this.scene.remove(previousObject);
-          } else {
-            this.notificationHandler.error(`Attempted to remove a non existent object: "${objectName}"`);
-          }
-        });
-        this.objectNames.length = 0;
-
-        if (dimensions.every(item => item.every(item2 => !Array.isArray(item2)))) {
-          dimensions = dimensions as number[][]
-          let z_dimension = 0
-          dimensions.forEach((layer, index) => {
-            const geometry = new THREE.BoxGeometry(layer[0], layer[1], layer[2]);
-            const material = new THREE.MeshBasicMaterial({
-              color: new THREE.Color(Math.random() * 0xffffff)
-            });
-            const layerMesh = new THREE.Mesh(geometry, material);
-
-            layerMesh.name = index.toString()
-            layerMesh.position.z = z_dimension + layer[2] / 2;
-            layerMesh.updateMatrix();
-
-            this.objectNames.push(layerMesh.name);
-            this.scene.add(layerMesh);
-
-            z_dimension += 50 + layer[2];
-          });
-
-          const grid = new THREE.GridHelper(z_dimension * 3, z_dimension * 3 / 100);
-          this.objectNames.push(grid.name);
-          this.scene.add(grid);
-        } else {
-          dimensions = dimensions as number[][][][]
-
-          const objectCount = dimensions.reduce(
-            (curr, cum) => curr + cum.reduce(
-              (curr2, cum2) => curr2 + cum2.length,
-              0
-            ),
-            0
-          );
-
-          const material = new THREE.MeshBasicMaterial();
-          const mesh = new THREE.InstancedMesh(new BoxGeometry(1, 1, 1), material, objectCount);
-          mesh.name = '0';
-
-          this.objectNames.push(mesh.name);
-          this.scene.add(mesh);
-
-          const obj = new THREE.Object3D();
-          obj.position.z = 0;
-          let counter = 0;
-          let distanceX = 0;
-
-          for (let i = 0;  i < dimensions.length; ++i) {
-            for (let j = 0; j < dimensions[i].length; ++j) {
-              for (let k = 0; k < dimensions[i][j].length; ++k) {
-                obj.position.x = distanceX;
-                obj.position.y = k * 1.05;
-                obj.updateMatrix();
-
-                mesh.setMatrixAt(counter, obj.matrix);
-
-                const color = new THREE.Color(dimensions[i][j][k][0] / 255, dimensions[i][j][k][1] / 255, dimensions[i][j][k][2] / 255);
-                mesh.setColorAt(counter, color);
-                counter++;
-              }
-              distanceX += 1.05;
-            }
-            distanceX += 10;
-          }
-
-          const grid = new THREE.GridHelper(distanceX * 3, distanceX * 3 / 100);
-          this.objectNames.push(grid.name);
-          this.scene.add(grid);
-        }
+      .subscribe((newImage) => {
+        // if (dimensions.every(item => item.every(item2 => !Array.isArray(item2)))) {
+        //   dimensions = dimensions as number[][]
+        //   let z_dimension = 0
+        //   dimensions.forEach((layer, index) => {
+        //     const geometry = new THREE.BoxGeometry(layer[0], layer[1], layer[2]);
+        //     const material = new THREE.MeshBasicMaterial({
+        //       color: new THREE.Color(Math.random() * 0xffffff)
+        //     });
+        //     const layerMesh = new THREE.Mesh(geometry, material);
+        //
+        //     layerMesh.name = index.toString()
+        //     layerMesh.position.z = z_dimension + layer[2] / 2;
+        //     layerMesh.updateMatrix();
+        //
+        //     this.objectNames.push(layerMesh.name);
+        //     this.scene.add(layerMesh);
+        //
+        //     z_dimension += 50 + layer[2];
+        //   });
+        //
+        //   const grid = new THREE.GridHelper(z_dimension * 3, z_dimension * 3 / 100);
+        //   this.objectNames.push(grid.name);
+        //   this.scene.add(grid);
+        // } else {
+        //   dimensions = dimensions as number[][][][]
+        //
+        //   const objectCount = dimensions.reduce(
+        //     (curr, cum) => curr + cum.reduce(
+        //       (curr2, cum2) => curr2 + cum2.length,
+        //       0
+        //     ),
+        //     0
+        //   );
+        //
+        //   const material = new THREE.MeshBasicMaterial();
+        //   const mesh = new THREE.InstancedMesh(new BoxGeometry(1, 1, 1), material, objectCount);
+        //   mesh.name = '0';
+        //
+        //   this.objectNames.push(mesh.name);
+        //   this.scene.add(mesh);
+        //
+        //   const obj = new THREE.Object3D();
+        //   obj.position.z = 0;
+        //   let counter = 0;
+        //   let distanceX = 0;
+        //
+        //   for (let i = 0;  i < dimensions.length; ++i) {
+        //     for (let j = 0; j < dimensions[i].length; ++j) {
+        //       for (let k = 0; k < dimensions[i][j].length; ++k) {
+        //         obj.position.x = distanceX;
+        //         obj.position.y = k * 1.05;
+        //         obj.updateMatrix();
+        //
+        //         mesh.setMatrixAt(counter, obj.matrix);
+        //
+        //         const color = new THREE.Color(dimensions[i][j][k][0] / 255, dimensions[i][j][k][1] / 255, dimensions[i][j][k][2] / 255);
+        //         mesh.setColorAt(counter, color);
+        //         counter++;
+        //       }
+        //       distanceX += 1.05;
+        //     }
+        //     distanceX += 10;
+        //   }
+        //
+        //   const grid = new THREE.GridHelper(distanceX * 3, distanceX * 3 / 100);
+        //   this.objectNames.push(grid.name);
+        //   this.scene.add(grid);
+        // }
 
         this.continueAnimation = true;
         this.animate();
@@ -161,9 +148,33 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         this.camera.position.set(orientation.position.x, orientation.position.y, orientation.position.z);
         this.camera.lookAt(orientation.lookAt);
         this.camera.zoom = orientation.zoom;
+
         this.camera.updateProjectionMatrix();
       });
+
+    this.viewerControl.getCleanCanvasObservable()
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe(() => {
+        this.continueAnimation = false;
+
+        // TODO: Fix the object disposal process
+        this.objectNames.forEach((objectName) => {
+          const previousObject= this.scene.getObjectByName(objectName);
+          if (previousObject) {
+            this.scene.remove(previousObject);
+          } else {
+            this.notificationHandler.error(`Attempted to remove a non existent object: "${objectName}"`);
+          }
+        });
+        this.objectNames.length = 0;
+
+        this.continueAnimation = true;
+        this.animate();
+      });
   }
+
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
@@ -192,6 +203,12 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     this.renderer.setClearColor(0xffffff, 1);
     this.renderer.setSize(canvasWidth, canvasHeight);
+
+    const grid = new THREE.GridHelper(100, 10);
+    this.objectNames.push(grid.name);
+    this.scene.add(grid);
+
+    this.animate();
   }
 
   @HostListener('window:resize')

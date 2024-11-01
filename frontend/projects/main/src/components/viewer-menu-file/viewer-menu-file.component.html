@@ -13,10 +13,22 @@
     }
   </select>
 </li>
-<li class="viewer-menu viewer-menu-side standard-shadow">
+<li class="viewer-menu viewer-menu-main standard-shadow">
+  <input id="file"
+         type="file"
+         class="slider"
+         (change)="onFileChange($event)">
+  <button class="btn-small btn-primary"
+          [disabled]="isDownloadActivationsDisabled()"
+          (click)="onDownloadActivations()">
+    Download Activations
+  </button>
+</li>
+<li class="viewer-menu viewer-menu-main-secondary standard-shadow">
   <select id="colorMapName"
           name="colorMapName"
           class="viewer-control-menu"
+          style="align-self: stretch"
           [(ngModel)]="selectedColorMapIndex">
     <option value="null">
       Color Map ...
@@ -27,16 +39,10 @@
       </option>
     }
   </select>
-</li>
-<li class="viewer-menu viewer-menu-main standard-shadow">
-  <input id="file"
-         type="file"
-         class="slider"
-         (change)="onFileChange($event)">
   <button class="btn-small btn-primary"
-          [disabled]="isUploadDisabled()"
-          (click)="onFileUpload()">
-    Update Canvas
+          [disabled]="isColorMapChangeDisabled()"
+          (click)="onColorMapChange()">
+    Change Color Map
   </button>
 </li>
 <li class="viewer-menu viewer-control-menu standard-shadow">

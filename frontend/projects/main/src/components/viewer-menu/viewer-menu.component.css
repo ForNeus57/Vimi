@@ -28,7 +28,6 @@ li.viewer-menu {
   background-color: var(--background-color);
   border-radius: var(--standard-gap);
   display: flex;
-  align-items: stretch;
 }
 
 li.viewer-control-menu {

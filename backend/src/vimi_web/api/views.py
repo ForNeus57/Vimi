@@ -22,7 +22,7 @@ class ArchitectureAllView(APIView):
     serializer_class = ArchitectureAllSerializer
 
     def get(self, request: Request) -> Response:
-        result = self.serializer_class(data=self.queryset.all(), many=True)
+        result = self.serializer_class(self.queryset.all(), many=True)
 
         return Response(result.data, status=200)
 
@@ -33,7 +33,7 @@ class ColorMapAllView(APIView):
     serializer_class = ColorMapAllSerializer
 
     def get(self, request: Request) -> Response:
-        result = self.serializer_class(data=self.queryset.all(), many=True)
+        result = self.serializer_class(self.queryset.all(), many=True)
 
         return Response(result.data, status=200)
 

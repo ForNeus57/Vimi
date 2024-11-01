@@ -7,7 +7,7 @@ import {NotificationHandlerService} from "../notification-handler/notification-h
   providedIn: 'root'
 })
 export class DataLayerService {
-  private readonly backendUrl = 'http://localhost:8000/';
+  private readonly backendUrl = 'http://127.0.0.1:8000/';
   private readonly retryCount = 3;
 
   constructor(

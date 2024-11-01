@@ -54,9 +54,9 @@ export class ViewerMenuGeneralComponent {
       return;
     }
 
-    this.viewerControl.setDimensions(
-      architecture.dimensions.slice(this.sliderStartValue, this.sliderEndValue),
-    );
+    // this.viewerControl.setNewImage(
+    //   architecture.dimensions.slice(this.sliderStartValue, this.sliderEndValue),
+    // );
   }
 
   onSliderStartChange(newValue: number) {
