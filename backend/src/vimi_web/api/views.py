@@ -27,6 +27,37 @@ class ArchitectureAllView(APIView):
         return Response(result.data, status=200)
 
 
+class UploadNetworkInput(APIView):
+    permission_classes = (AllowAny,)
+    serializer_class = UploadNetworkInputSerializer
+    parser_classes = (MultiPartParser, FormParser,)
+
+    def post(self, request: Request) -> Response:
+        serializer = self.serializer_class(data={'file': request.FILES['file']})
+
+        if serializer.is_valid():
+            instance = serializer.save()
+            return Response({'id': instance.id}, status=201)
+
+        return Response(serializer.errors, status=400)
+
+
+class NetworkInputProcess(APIView):
+    permission_classes = (AllowAny,)
+    serializer_class = NetworkInputProcessSerializer
+
+    def post(self, request: Request) -> Response:
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            instance = serializer.save()
+            _, _, z_size = instance.shape
+
+            return Response({'id': instance.id, 'filters_count': z_size}, status=201)
+
+        return Response(serializer.errors, status=400)
+
+
 class ColorMapAllView(APIView):
     permission_classes = (AllowAny,)
     queryset = ColorMap.objects.all()
@@ -48,39 +79,12 @@ class ColorMapProcessView(APIView):
         if serializer.is_valid():
             activation = serializer.validated_data['activations']
             color_map = serializer.validated_data['color_map']
+            filter_index = serializer.validated_data['filter_index']
 
-            filter_activations = color_map.apply_color_map(activation.to_numpy())
+            filter_activations = activation.to_numpy()[:, :, filter_index]
+            filter_colored = color_map.apply_color_map(filter_activations)
 
-            response = {'activations': b64encode(filter_activations.tobytes()), 'shape': filter_activations.shape}
+            response = {'activations': b64encode(filter_colored.tobytes()), 'shape': filter_colored.shape}
             return Response(response, status=200)
-
-        return Response(serializer.errors, status=400)
-
-
-class UploadNetworkInput(APIView):
-    permission_classes = (AllowAny,)
-    serializer_class = UploadNetworkInputSerializer
-    parser_classes = (MultiPartParser, FormParser,)
-
-    def post(self, request: Request) -> Response:
-        serializer = self.serializer_class(data={'file': request.FILES['file']})
-
-        if serializer.is_valid():
-            response_data = serializer.save()
-            return Response(response_data, status=201)
-
-        return Response(serializer.errors, status=400)
-
-
-class NetworkInputProcess(APIView):
-    permission_classes = (AllowAny,)
-    serializer_class = NetworkInputProcessSerializer
-
-    def post(self, request: Request) -> Response:
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-            response_data = serializer.save()
-            return Response(response_data, status=201)
 
         return Response(serializer.errors, status=400)

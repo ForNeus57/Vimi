@@ -373,8 +373,18 @@
     "model": "api.colormap",
     "pk": null,
     "fields": {
+      "name": "Gray",
+      "attribute": null,
+      "user_map_binary": "AAAAAQEBAgICAwMDBAQEBQUFBgYGBwcHCAgICQkJCgoKCwsLDAwMDQ0NDg4ODw8PEBAQEREREhISExMTFBQUFRUVFhYWFxcXGBgYGRkZGhoaGxsbHBwcHR0dHh4eHx8fICAgISEhIiIiIyMjJCQkJSUlJiYmJycnKCgoKSkpKioqKysrLCwsLS0tLi4uLy8vMDAwMTExMjIyMzMzNDQ0NTU1NjY2Nzc3ODg4OTk5Ojo6Ozs7PDw8PT09Pj4+Pz8/QEBAQUFBQkJCQ0NDRERERUVFRkZGR0dHSEhISUlJSkpKS0tLTExMTU1NTk5OT09PUFBQUVFRUlJSU1NTVFRUVVVVVlZWV1dXWFhYWVlZWlpaW1tbXFxcXV1dXl5eX19fYGBgYWFhYmJiY2NjZGRkZWVlZmZmZ2dnaGhoaWlpampqa2trbGxsbW1tbm5ub29vcHBwcXFxcnJyc3NzdHR0dXV1dnZ2d3d3eHh4eXl5enp6e3t7fHx8fX19fn5+f39/gICAgYGBgoKCg4ODhISEhYWFhoaGh4eHiIiIiYmJioqKi4uLjIyMjY2Njo6Oj4+PkJCQkZGRkpKSk5OTlJSUlZWVlpaWl5eXmJiYmZmZmpqam5ubnJycnZ2dnp6en5+foKCgoaGhoqKio6OjpKSkpaWlpqamp6enqKioqampqqqqq6urrKysra2trq6ur6+vsLCwsbGxsrKys7OztLS0tbW1tra2t7e3uLi4ubm5urq6u7u7vLy8vb29vr6+v7+/wMDAwcHBwsLCw8PDxMTExcXFxsbGx8fHyMjIycnJysrKy8vLzMzMzc3Nzs7Oz8/P0NDQ0dHR0tLS09PT1NTU1dXV1tbW19fX2NjY2dnZ2tra29vb3Nzc3d3d3t7e39/f4ODg4eHh4uLi4+Pj5OTk5eXl5ubm5+fn6Ojo6enp6urq6+vr7Ozs7e3t7u7u7+/v8PDw8fHx8vLy8/Pz9PT09fX19vb29/f3+Pj4+fn5+vr6+/v7/Pz8/f39/v7+////"
+    }
+  },
+  {
+    "model": "api.colormap",
+    "pk": null,
+    "fields": {
       "name": "Autumn",
-      "attribute": "COLORMAP_AUTUMN"
+      "attribute": "COLORMAP_AUTUMN",
+      "user_map_binary": null
     }
   },
   {
@@ -382,7 +392,8 @@
     "pk": null,
     "fields": {
       "name": "Bone",
-      "attribute": "COLORMAP_BONE"
+      "attribute": "COLORMAP_BONE",
+      "user_map_binary": null
     }
   },
   {
@@ -390,7 +401,8 @@
     "pk": null,
     "fields": {
       "name": "Jet",
-      "attribute": "COLORMAP_JET"
+      "attribute": "COLORMAP_JET",
+      "user_map_binary": null
     }
   },
   {
@@ -398,7 +410,8 @@
     "pk": null,
     "fields": {
       "name": "Winter",
-      "attribute": "COLORMAP_WINTER"
+      "attribute": "COLORMAP_WINTER",
+      "user_map_binary": null
     }
   },
   {
@@ -406,7 +419,8 @@
     "pk": null,
     "fields": {
       "name": "Rainbow",
-      "attribute": "COLORMAP_RAINBOW"
+      "attribute": "COLORMAP_RAINBOW",
+      "user_map_binary": null
     }
   },
   {
@@ -414,7 +428,8 @@
     "pk": null,
     "fields": {
       "name": "Ocean",
-      "attribute": "COLORMAP_OCEAN"
+      "attribute": "COLORMAP_OCEAN",
+      "user_map_binary": null
     }
   },
   {
@@ -422,7 +437,8 @@
     "pk": null,
     "fields": {
       "name": "Summer",
-      "attribute": "COLORMAP_SUMMER"
+      "attribute": "COLORMAP_SUMMER",
+      "user_map_binary": null
     }
   },
   {
@@ -430,7 +446,8 @@
     "pk": null,
     "fields": {
       "name": "Spring",
-      "attribute": "COLORMAP_SPRING"
+      "attribute": "COLORMAP_SPRING",
+      "user_map_binary": null
     }
   },
   {
@@ -438,7 +455,8 @@
     "pk": null,
     "fields": {
       "name": "Cool",
-      "attribute": "COLORMAP_COOL"
+      "attribute": "COLORMAP_COOL",
+      "user_map_binary": null
     }
   },
   {
@@ -446,7 +464,8 @@
     "pk": null,
     "fields": {
       "name": "HSV",
-      "attribute": "COLORMAP_HSV"
+      "attribute": "COLORMAP_HSV",
+      "user_map_binary": null
     }
   },
   {
@@ -454,7 +473,8 @@
     "pk": null,
     "fields": {
       "name": "Pink",
-      "attribute": "COLORMAP_PINK"
+      "attribute": "COLORMAP_PINK",
+      "user_map_binary": null
     }
   },
   {
@@ -462,7 +482,8 @@
     "pk": null,
     "fields": {
       "name": "Hot",
-      "attribute": "COLORMAP_HOT"
+      "attribute": "COLORMAP_HOT",
+      "user_map_binary": null
     }
   },
   {
@@ -470,7 +491,8 @@
     "pk": null,
     "fields": {
       "name": "Parula",
-      "attribute": "COLORMAP_PARULA"
+      "attribute": "COLORMAP_PARULA",
+      "user_map_binary": null
     }
   },
   {
@@ -478,7 +500,8 @@
     "pk": null,
     "fields": {
       "name": "Magma",
-      "attribute": "COLORMAP_MAGMA"
+      "attribute": "COLORMAP_MAGMA",
+      "user_map_binary": null
     }
   },
   {
@@ -486,7 +509,8 @@
     "pk": null,
     "fields": {
       "name": "Inferno",
-      "attribute": "COLORMAP_INFERNO"
+      "attribute": "COLORMAP_INFERNO",
+      "user_map_binary": null
     }
   },
   {
@@ -494,7 +518,8 @@
     "pk": null,
     "fields": {
       "name": "Plasma",
-      "attribute": "COLORMAP_PLASMA"
+      "attribute": "COLORMAP_PLASMA",
+      "user_map_binary": null
     }
   },
   {
@@ -502,7 +527,8 @@
     "pk": null,
     "fields": {
       "name": "Viridis",
-      "attribute": "COLORMAP_VIRIDIS"
+      "attribute": "COLORMAP_VIRIDIS",
+      "user_map_binary": null
     }
   },
   {
@@ -510,7 +536,8 @@
     "pk": null,
     "fields": {
       "name": "CViridis",
-      "attribute": "COLORMAP_CIVIDIS"
+      "attribute": "COLORMAP_CIVIDIS",
+      "user_map_binary": null
     }
   },
   {
@@ -518,7 +545,8 @@
     "pk": null,
     "fields": {
       "name": "Twilight",
-      "attribute": "COLORMAP_TWILIGHT"
+      "attribute": "COLORMAP_TWILIGHT",
+      "user_map_binary": null
     }
   },
   {
@@ -526,7 +554,8 @@
     "pk": null,
     "fields": {
       "name": "Twilight Shifted",
-      "attribute": "COLORMAP_TWILIGHT_SHIFTED"
+      "attribute": "COLORMAP_TWILIGHT_SHIFTED",
+      "user_map_binary": null
     }
   },
   {
@@ -534,7 +563,8 @@
     "pk": null,
     "fields": {
       "name": "Turbo",
-      "attribute": "COLORMAP_TURBO"
+      "attribute": "COLORMAP_TURBO",
+      "user_map_binary": null
     }
   },
   {
@@ -542,7 +572,8 @@
     "pk": null,
     "fields": {
       "name": "Deep Green",
-      "attribute": "COLORMAP_DEEPGREEN"
+      "attribute": "COLORMAP_DEEPGREEN",
+      "user_map_binary": null
     }
   }
 ]

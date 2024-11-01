@@ -1,6 +1,7 @@
 import cv2
 import keras
 import numpy as np
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer, ModelSerializer, PrimaryKeyRelatedField, FileField, IntegerField
 
 from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activations
@@ -20,18 +21,29 @@ class ColorMapAllSerializer(ModelSerializer):
 
 class ColorMapProcessSerializer(Serializer):
     activations = PrimaryKeyRelatedField(queryset=Activations.objects.all())
-    color_map = PrimaryKeyRelatedField(queryset=ColorMap.objects.all())
+    color_map = PrimaryKeyRelatedField(queryset=ColorMap.objects.all(), allow_null=True, default=ColorMap.objects.all().first())
+    filter_index = IntegerField(min_value=0)
+
+    def validate(self, data):
+        _, _, z_size = data['activations'].to_numpy().shape
+
+        if data['filter_index'] >= z_size:
+            raise ValidationError("filter_index is out of range for given activations")
+
+        return data
 
 
 class UploadNetworkInputSerializer(Serializer):
     # TODO: Validate the file is not too big
     file = FileField(max_length=128)
 
-    def create(self, validated_data):
-        instance = NetworkInput.objects.create(file=validated_data['file'])
+    def create(self, validated_data) -> NetworkInput:
+        instance = NetworkInput.objects.create(
+            file=validated_data['file'],
+        )
         instance.save()
 
-        return {'id': instance.id}
+        return instance
 
 
 class NetworkInputProcessSerializer(Serializer):
@@ -39,16 +51,23 @@ class NetworkInputProcessSerializer(Serializer):
     file = PrimaryKeyRelatedField(queryset=NetworkInput.objects.all())
     layer_index = IntegerField(min_value=0)
 
-    def create(self, validated_data):
-        architecture = validated_data.get('architecture')
-        file = validated_data.get('file')
-        layer_index = validated_data.get('layer_index')
+    def validate(self, data):
+        if data['layer_index'] >= len(data['architecture'].layers) \
+            or data['layer_index'] >= len(data['architecture'].dimensions):
+            raise ValidationError("layer_index is out of range for given architecture")
+
+        return data
+
+    def create(self, validated_data) -> Activations:
+        architecture = validated_data['architecture']
+        file = validated_data['file']
+        layer_index = validated_data['layer_index']
 
         model = architecture.get_model()
 
         # TODO: Remove rescaling in favour of creating custom input tensor as in keras applications documentation
         image = cv2.imread(file.file.path, cv2.IMREAD_COLOR) / 255
-        image = cv2.resize(image, model.input_shape[1: 3], interpolation=cv2.INTER_CUBIC)
+        image = cv2.resize(image, model.input.shape[1: 3], interpolation=cv2.INTER_CUBIC)
         image = np.expand_dims(image, axis=0)
 
         layer_outputs = [layer.output for layer in model.layers[:layer_index]]
@@ -56,33 +75,14 @@ class NetworkInputProcessSerializer(Serializer):
         activations = activation_model.predict(image)
         activations = activations[-1][0]
 
-        activation_norm = activations - np.min(activations, axis=(0, 1))
-        point_to_point = np.ptp(activation_norm, axis=(0, 1))
-        point_to_point[point_to_point == 0.] = 1.                  # Prevent NaN from accounting via division by 0
-        activation_norm /= point_to_point
-        activation_norm = (activation_norm * 255).astype(np.uint8)
+        activation_norm = (activations - np.min(activations)) / np.max(activations)
+        activation_norm = (activation_norm * 255.).astype(np.uint8)
         activation_norm = np.rot90(activation_norm, -1, axes=(0, 1))
 
-        # result = np.zeros(shape=(activation_norm.shape + (3,)), dtype=np.uint8)
-        # x_size, _, _ = activation_norm.shape
-        # for index in range(x_size):
-        #     result[index] = color_map.apply_color_map(activation_norm[index])
+        instance = Activations.objects.create(
+            activations_binary=activation_norm.tobytes(),
+            shape=activation_norm.shape,
+        )
+        instance.save()
 
-        result = []
-        _, _, z_size = activation_norm.shape
-
-        for idx in range(z_size):
-            current_filter = activation_norm[:, :, idx]
-
-            instance = Activations.objects.create(
-                activations_binary=current_filter.tobytes(),
-                shape=current_filter.shape
-            )
-            instance.save()
-
-            result.append({
-                'id': instance.id,
-                'order': idx,
-            })
-
-        return {'activations': result}
+        return instance
