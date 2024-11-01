@@ -2,14 +2,14 @@ import {Component, computed, Input, OnInit, signal, ViewEncapsulation} from '@an
 import {NgClass} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {NetworkInput} from "../../models/network-input";
-import {Activation, NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
+import {NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {Architecture} from "../../models/architecture";
-import {ColorMap, ColorMapImage, ColorMapImageOrdered, ColorMapRequestData} from "../../models/color-map";
+import {ColorMap, ColorMapImage, ColorMapRequestData} from "../../models/color-map";
 import {DataLayerService} from "../../services/data-layer/data-layer.service";
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {Layer} from "../../models/layer";
-import {combineLatest, forkJoin, map, tap} from "rxjs";
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: 'app-viewer-menu-file',
@@ -36,6 +36,7 @@ export class ViewerMenuFileComponent implements OnInit {
   selectedLayerIndex = signal<number | null>(null);
   selectedColorMapIndex = signal<number | null>(null);
   selectedFileId = signal<string | null>(null);
+  selectedActivations = signal<NetworkOutput | null>(null);
 
   readonly computedLayers = computed(() => {
     const architecture = this.internalArchitecture();
@@ -49,8 +50,8 @@ export class ViewerMenuFileComponent implements OnInit {
   readonly isDownloadActivationsDisabled = computed(() => {
     // TODO: Fix the fact that this do not update once in a while
     const architecture = this.internalArchitecture();
-    const layerIndex = this.selectedLayerIndex();
     const fileId = this.selectedFileId();
+    const layerIndex = this.selectedLayerIndex();
 
     return architecture == null
       || fileId == null
@@ -59,14 +60,14 @@ export class ViewerMenuFileComponent implements OnInit {
   readonly isColorMapChangeDisabled = computed(() => {
     // TODO: Fix the fact that this do not update once in a while
     const colorMapIndex = this.selectedColorMapIndex();
+    const activations = this.selectedActivations();
 
-    return this.activations == null
-      || colorMapIndex == null;
+    return colorMapIndex == null
+      || activations == null;
   });
 
   viewMode = '3d';
   colorMaps = Array<ColorMap>();
-  activations: Activation[] | null = null;
 
   constructor(
     private dataLayer: DataLayerService,
@@ -111,8 +112,8 @@ export class ViewerMenuFileComponent implements OnInit {
     this.dataLayer.post<NetworkInput>('/api/1/network_input/', formData)
       .subscribe({
         next: (value) => {
-          this.selectedFileId.set(value.id);
           this.notificationHandler.success('Successfully generated file UUID');
+          this.selectedFileId.set(value.id);
         },
         error: (error) => {
           this.notificationHandler.error('File upload Failed');
@@ -150,10 +151,16 @@ export class ViewerMenuFileComponent implements OnInit {
       .subscribe({
         next: (output) => {
           this.notificationHandler.success('Successfully fetched layer activations');
-          this.activations = output.activations;
+          this.selectedActivations.set(output);
+
+          // TODO: Make it less dodgy
+          const previousColorMap = this.selectedColorMapIndex();
+          this.selectedColorMapIndex.set(this.colorMaps[0].id)
+          this.onColorMapChange();
+          this.selectedColorMapIndex.set(previousColorMap);
         },
         error: (error) => {
-          this.notificationHandler.error('File upload Failed');
+          this.notificationHandler.error('Failed to download activations');
           this.notificationHandler.error(error);
         },
       });
@@ -161,42 +168,35 @@ export class ViewerMenuFileComponent implements OnInit {
 
   onColorMapChange() {
     const colorMap = this.selectedColorMapIndex();
+    const activations = this.selectedActivations();
+
     if (colorMap == null) {
       this.notificationHandler.info('Color Map is not selected');
       return;
     }
 
-    if (this.activations == null) {
-      this.notificationHandler.info('Activations not provided');
+    if (activations == null) {
+      this.notificationHandler.info('Activations not downloaded');
       return;
     }
 
-    forkJoin(this.activations.map((activation) => {
+    forkJoin(Array.from({length: activations.filters_count}, (_, filter_id) => {
       const postData = new ColorMapRequestData(
-        activation.id,
+        activations.id,
         colorMap,
+        filter_id,
       );
 
       return this.dataLayer.post<ColorMapImage>('/api/1/color_map/process/', postData)
-        // .pipe(
-        //   map((val) => {
-        //     return new ColorMapImageOrdered(val, activation.order)
-        //   }),
-        // )
     }))
       .subscribe({
         next: (output) => {
           this.notificationHandler.success('Successfully fetched color maps');
           this.viewerControl.setClearCanvas();
-          output.forEach((image) => {
-            const imageActivations = image.activations
-            const integerActivations = Uint8Array.from(
-              Array.from(atob(imageActivations)).map(letter => letter.charCodeAt(0))
-            );
-            console.log(imageActivations, integerActivations)
 
-
-          });
+          this.viewerControl.setNewImage(output.map((image) => {
+            return image.activations;
+          }));
         },
         error: (error) => {
           this.notificationHandler.error('File upload Failed');

@@ -1,10 +1,6 @@
 export interface NetworkOutput {
-  activations: Activation[];
-}
-
-export interface Activation {
   id: string,
-  order: number,
+  filters_count: number,
 }
 
 export class NetworkOutputRequestData {

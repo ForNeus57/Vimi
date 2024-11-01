@@ -13,26 +13,6 @@ class ArchitectureAllSerializer(ModelSerializer):
         fields = ('id', 'name', 'layers', 'dimensions',)
 
 
-class ColorMapAllSerializer(ModelSerializer):
-    class Meta:
-        model = ColorMap
-        fields = ('id', 'name',)
-
-
-class ColorMapProcessSerializer(Serializer):
-    activations = PrimaryKeyRelatedField(queryset=Activations.objects.all())
-    color_map = PrimaryKeyRelatedField(queryset=ColorMap.objects.all(), allow_null=True, default=ColorMap.objects.all().first())
-    filter_index = IntegerField(min_value=0)
-
-    def validate(self, data):
-        _, _, z_size = data['activations'].to_numpy().shape
-
-        if data['filter_index'] >= z_size:
-            raise ValidationError("filter_index is out of range for given activations")
-
-        return data
-
-
 class UploadNetworkInputSerializer(Serializer):
     # TODO: Validate the file is not too big
     file = FileField(max_length=128)
@@ -67,6 +47,7 @@ class NetworkInputProcessSerializer(Serializer):
 
         # TODO: Remove rescaling in favour of creating custom input tensor as in keras applications documentation
         image = cv2.imread(file.file.path, cv2.IMREAD_COLOR) / 255
+        assert image is not None, 'image cannot be obtained'
         image = cv2.resize(image, model.input.shape[1: 3], interpolation=cv2.INTER_CUBIC)
         image = np.expand_dims(image, axis=0)
 
@@ -86,3 +67,23 @@ class NetworkInputProcessSerializer(Serializer):
         instance.save()
 
         return instance
+
+
+class ColorMapAllSerializer(ModelSerializer):
+    class Meta:
+        model = ColorMap
+        fields = ('id', 'name',)
+
+
+class ColorMapProcessSerializer(Serializer):
+    activations = PrimaryKeyRelatedField(queryset=Activations.objects.all())
+    color_map = PrimaryKeyRelatedField(queryset=ColorMap.objects.all())
+    filter_index = IntegerField(min_value=0)
+
+    def validate(self, data):
+        _, _, z_size = data['activations'].to_numpy().shape
+
+        if data['filter_index'] >= z_size:
+            raise ValidationError("filter_index is out of range for given activations")
+
+        return data

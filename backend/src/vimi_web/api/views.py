@@ -84,7 +84,8 @@ class ColorMapProcessView(APIView):
             filter_activations = activation.to_numpy()[:, :, filter_index]
             filter_colored = color_map.apply_color_map(filter_activations)
 
-            response = {'activations': b64encode(filter_colored.tobytes()), 'shape': filter_colored.shape}
+            # response = {'activations': b64encode(filter_colored.tobytes()), 'shape': filter_colored.shape}
+            response = {'activations': filter_colored.tolist()}
             return Response(response, status=200)
 
         return Response(serializer.errors, status=400)

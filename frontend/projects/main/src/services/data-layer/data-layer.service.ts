@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import {catchError, retry} from "rxjs/operators";
-import {NotificationHandlerService} from "../notification-handler/notification-handler.service";
+import {retry} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'

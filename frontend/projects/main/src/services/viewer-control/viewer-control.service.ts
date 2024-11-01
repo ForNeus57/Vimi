@@ -7,11 +7,11 @@ import {CameraOrientation} from "../../models/camera-orientation";
   providedIn: 'root'
 })
 export class ViewerControlService {
-  private newImage = new BehaviorSubject<number[][][]>([]);
-  private cameraOrientation = new BehaviorSubject<CameraOrientation>(
-    new CameraOrientation(new THREE.Vector3(0, 0, -10), new THREE.Vector3(0, 0, 0), 1.0)
+  private readonly newImage = new BehaviorSubject<number[][][][] | null>(null);
+  private readonly cameraOrientation = new BehaviorSubject<CameraOrientation>(
+    new CameraOrientation(new THREE.Vector3(0, 5, -10), new THREE.Vector3(0, 0, 0), 1.0)
   );
-  private clearCanvas = new BehaviorSubject<void>(undefined);
+  private readonly clearCanvas = new BehaviorSubject<void>(undefined);
 
   constructor(
   ) {
@@ -25,7 +25,7 @@ export class ViewerControlService {
     return this.clearCanvas.asObservable();
   }
 
-  setNewImage(newImage: number[][][]) {
+  setNewImage(newImage: number[][][][]) {
     this.newImage.next(newImage);
   }
 

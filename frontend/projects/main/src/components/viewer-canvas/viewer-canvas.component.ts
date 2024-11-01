@@ -34,15 +34,14 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly platform = inject(PLATFORM_ID);
   private continueAnimation = true;
   private objectNames = Array();
+  private z_shift = 0;
 
   editorCanvas = viewChild.required<ElementRef<HTMLCanvasElement>>('editorCanvas');
 
-  scene = new THREE.Scene();
+  private scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(75, 1., 0.001, 100000);
   controls: MapControls | null = null;
   renderer: THREE.WebGLRenderer | null = null;
-
-  material = new THREE.MeshBasicMaterial();
 
   // I hate the fact it has to be like that
   animate = () => {
@@ -63,7 +62,8 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.viewerControl.getNewImageObservable()
       .pipe(
-        filter((() => !isPlatformServer(this.platform))),
+        filter(() => !isPlatformServer(this.platform)),
+        filter((activation) => activation != null),
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe((newImage) => {
@@ -91,50 +91,45 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         //   this.objectNames.push(grid.name);
         //   this.scene.add(grid);
         // } else {
-        //   dimensions = dimensions as number[][][][]
-        //
-        //   const objectCount = dimensions.reduce(
-        //     (curr, cum) => curr + cum.reduce(
-        //       (curr2, cum2) => curr2 + cum2.length,
-        //       0
-        //     ),
-        //     0
-        //   );
-        //
-        //   const material = new THREE.MeshBasicMaterial();
-        //   const mesh = new THREE.InstancedMesh(new BoxGeometry(1, 1, 1), material, objectCount);
-        //   mesh.name = '0';
-        //
-        //   this.objectNames.push(mesh.name);
-        //   this.scene.add(mesh);
-        //
-        //   const obj = new THREE.Object3D();
-        //   obj.position.z = 0;
-        //   let counter = 0;
-        //   let distanceX = 0;
-        //
-        //   for (let i = 0;  i < dimensions.length; ++i) {
-        //     for (let j = 0; j < dimensions[i].length; ++j) {
-        //       for (let k = 0; k < dimensions[i][j].length; ++k) {
-        //         obj.position.x = distanceX;
-        //         obj.position.y = k * 1.05;
-        //         obj.updateMatrix();
-        //
-        //         mesh.setMatrixAt(counter, obj.matrix);
-        //
-        //         const color = new THREE.Color(dimensions[i][j][k][0] / 255, dimensions[i][j][k][1] / 255, dimensions[i][j][k][2] / 255);
-        //         mesh.setColorAt(counter, color);
-        //         counter++;
-        //       }
-        //       distanceX += 1.05;
-        //     }
-        //     distanceX += 10;
-        //   }
-        //
-        //   const grid = new THREE.GridHelper(distanceX * 3, distanceX * 3 / 100);
-        //   this.objectNames.push(grid.name);
-        //   this.scene.add(grid);
-        // }
+        const objectCount = newImage.length * newImage[0].length * newImage[0][0].length * newImage[0][0][0].length;
+
+        const material = new THREE.MeshBasicMaterial();
+        const mesh = new THREE.InstancedMesh(new BoxGeometry(1, 1, 1), material, objectCount);
+        mesh.name = '0';
+
+        this.objectNames.push(mesh.name);
+        this.scene.add(mesh);
+
+        const obj = new THREE.Object3D();
+        obj.position.z = this.z_shift;
+        let counter = 0;
+        let distanceX = 0;
+
+        for (let i = 0; i < newImage.length; ++i) {
+          for (let j = 0; j < newImage[i].length; ++j) {
+            for (let k = 0; k < newImage[i][j].length; ++k) {
+              obj.position.x = distanceX;
+              obj.position.y = k * 1.05;
+              obj.updateMatrix();
+
+              mesh.setMatrixAt(counter, obj.matrix);
+
+              const color = new THREE.Color(
+                newImage[i][j][k][0] / 255,
+                newImage[i][j][k][1] / 255,
+                newImage[i][j][k][2] / 255,
+              );
+              mesh.setColorAt(counter, color);
+              counter++;
+            }
+          }
+          distanceX += 1.05;
+        }
+
+        const grid = new THREE.GridHelper(distanceX * 3, distanceX * 3 / 100);
+        grid.name = 'grid1';
+        this.objectNames.push(grid.name);
+        this.scene.add(grid);
 
         this.continueAnimation = true;
         this.animate();
@@ -205,6 +200,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.renderer.setSize(canvasWidth, canvasHeight);
 
     const grid = new THREE.GridHelper(100, 10);
+    grid.name = 'grid0';
     this.objectNames.push(grid.name);
     this.scene.add(grid);
 
