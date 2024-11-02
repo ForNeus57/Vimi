@@ -13,6 +13,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db.models import (
     Model, OneToOneField, UUIDField, CharField, PositiveIntegerField, CASCADE, FileField, BinaryField, ImageField,
 )
+from keras.src.ops import dtype
 
 User = get_user_model()
 
@@ -69,7 +70,6 @@ class Architecture(Model):
 
 class NetworkInput(Model):
     id = UUIDField(default=uuid.uuid4, primary_key=True)
-    # TODO: Make use of MEDIA_ROOT and change this to ftp-server
     file = FileField(upload_to='upload/', max_length=128, editable=False)
 
     class Meta:
@@ -124,7 +124,7 @@ class ColorMap(Model):
 
         if color_map is not None:
             image_mapped = cv2.applyColorMap(image, colormap=color_map)
-            return cv2.cvtColor(image_mapped, cv2.COLOR_BGR2RGB)
+            return image_mapped
         else:
             assert len(user_map.shape) == 2, 'user_map has too many dimensions'
 
@@ -146,9 +146,16 @@ class Activation(Model):
 
 class Texture(Model):
     texture_image = ImageField(upload_to='output/')
+    # TODO: Validate the sape is adequate
+    shape = ArrayField(base_field=PositiveIntegerField(), size=3)
 
     @staticmethod
     def to_image(array: np.ndarray) -> ContentFile:
+        array = np.repeat(np.repeat(array, 8, axis=0), 8, axis=1)
+        # filler = np.zeros_like(array, dtype=np.uint8)
+        # array = np.block([[filler, array, filler, filler],
+        #                   [array, array, array, array],
+        #                   [filler, array, filler, filler]])
         _, frame_png = cv2.imencode('.png', array)
 
         file = ContentFile(frame_png)

@@ -2,7 +2,7 @@ POST {{host}}/api/1/color_map/process/ HTTP/1.1
 Content-Type: application/json
 
 {
-  "activations": "bdcb2918-4952-4826-b6d5-3e0d7ccf4441",
+  "activations": "ac4deb24-feb4-4ec4-8553-16187ba406c1",
   "color_map": 1,
   "filter_index": 1
 }

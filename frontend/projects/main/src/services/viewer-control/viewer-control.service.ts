@@ -2,12 +2,13 @@ import {Injectable} from '@angular/core';
 import * as THREE from "three";
 import {BehaviorSubject} from "rxjs";
 import {CameraOrientation} from "../../models/camera-orientation";
+import {ImageSet} from "../../models/color-map";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ViewerControlService {
-  private readonly newImage = new BehaviorSubject<number[][][][] | null>(null);
+  private readonly imageSet = new BehaviorSubject<ImageSet | null>(null);
   private readonly cameraOrientation = new BehaviorSubject<CameraOrientation>(
     new CameraOrientation(new THREE.Vector3(0, 5, -10), new THREE.Vector3(0, 0, 0), 1.0)
   );
@@ -25,12 +26,12 @@ export class ViewerControlService {
     return this.clearCanvas.asObservable();
   }
 
-  setNewImage(newImage: number[][][][]) {
-    this.newImage.next(newImage);
+  setNewImage(imageSet: ImageSet) {
+    this.imageSet.next(imageSet);
   }
 
   getNewImageObservable() {
-    return this.newImage.asObservable();
+    return this.imageSet.asObservable();
   }
 
   setCameraOrientation(orientation: CameraOrientation) {

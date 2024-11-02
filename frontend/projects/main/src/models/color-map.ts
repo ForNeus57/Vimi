@@ -15,6 +15,15 @@ export class ColorMapRequestData {
   }
 }
 
-export interface ColorMapImage {
-  activations: number[][][],
+export class ImageSet {
+  constructor(
+    public textures: TextureImage[],
+    // TODO: Make mode an enum
+    public mode: string,
+  ) {
+  }
+}
+export interface TextureImage {
+  texture: string,
+  shape: number[],
 }

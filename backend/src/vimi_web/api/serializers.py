@@ -58,7 +58,6 @@ class NetworkInputProcessSerializer(Serializer):
 
         activation_norm = (activations - np.min(activations)) / np.max(activations)
         activation_norm = (activation_norm * 255.).astype(np.uint8)
-        activation_norm = np.rot90(activation_norm, -1, axes=(0, 1))
 
         instance = Activation.objects.create(
             activation_binary=activation_norm.tobytes(),
@@ -99,7 +98,9 @@ class ColorMapProcessSerializer(Serializer):
         image = Texture.to_image(filter_colored)
         instance = Texture.objects.create(
             texture_image=image,
+            shape=filter_colored.shape,
         )
         instance.save()
 
+        # TODO:  just return it for god say
         return instance

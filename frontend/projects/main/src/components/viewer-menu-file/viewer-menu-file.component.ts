@@ -5,7 +5,7 @@ import {NetworkInput} from "../../models/network-input";
 import {NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {Architecture} from "../../models/architecture";
-import {ColorMap, ColorMapImage, ColorMapRequestData} from "../../models/color-map";
+import {ColorMap, TextureImage, ColorMapRequestData, ImageSet} from "../../models/color-map";
 import {DataLayerService} from "../../services/data-layer/data-layer.service";
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {Layer} from "../../models/layer";
@@ -66,7 +66,7 @@ export class ViewerMenuFileComponent implements OnInit {
       || activations == null;
   });
 
-  viewMode = '3d';
+  viewMode = '1d';
   colorMaps = Array<ColorMap>();
 
   constructor(
@@ -187,16 +187,17 @@ export class ViewerMenuFileComponent implements OnInit {
         filter_id,
       );
 
-      return this.dataLayer.post<ColorMapImage>('/api/1/color_map/process/', postData)
+      return this.dataLayer.post<TextureImage>('/api/1/color_map/process/', postData)
     }))
       .subscribe({
         next: (output) => {
           this.notificationHandler.success('Successfully fetched color maps');
           this.viewerControl.setClearCanvas();
 
-          this.viewerControl.setNewImage(output.map((image) => {
-            return image.activations;
-          }));
+          this.viewerControl.setNewImage(new ImageSet(
+            output,
+            this.viewMode,
+          ));
         },
         error: (error) => {
           this.notificationHandler.error('File upload Failed');
@@ -205,11 +206,11 @@ export class ViewerMenuFileComponent implements OnInit {
       });
   }
 
-  on2dViewModeActivation() {
-    this.viewMode = '2d';
+  on1dViewModeActivation() {
+    this.viewMode = '1d';
   }
 
-  on3dViewModeActivation() {
-    this.viewMode = '3d';
+  on2dViewModeActivation() {
+    this.viewMode = '2d';
   }
 }

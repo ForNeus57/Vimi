@@ -47,15 +47,15 @@
 </li>
 <li class="viewer-menu viewer-control-menu standard-shadow">
   <button class="viewer-control-menu"
-          [ngClass]="{'active': viewMode === '2d'}"
-          (click)="on2dViewModeActivation()">
-    <i class="bi bi-card-image viewer-control-menu"></i>
+          [ngClass]="{'active': viewMode === '1d'}"
+          (click)="on1dViewModeActivation()">
+    <i class="bi  bi-three-dots viewer-control-menu"></i>
   </button>
 </li>
 <li class="viewer-menu viewer-control-menu standard-shadow">
   <button class="viewer-control-menu"
-          [ngClass]="{'active': viewMode === '3d'}"
-          (click)="on3dViewModeActivation()">
-    <i class="bi bi-aspect-ratio-fill viewer-control-menu"></i>
+          [ngClass]="{'active': viewMode === '2d'}"
+          (click)="on2dViewModeActivation()">
+    <i class="bi bi-grid-3x3-gap-fill viewer-control-menu"></i>
   </button>
 </li>

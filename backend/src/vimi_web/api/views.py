@@ -78,8 +78,7 @@ class ColorMapProcessView(APIView):
             instance = serializer.save()
             photo_url = instance.texture_image.url
 
-            # response = {'activations': b64encode(filter_colored.tobytes()), 'shape': filter_colored.shape}
-            response = {'texture': request.build_absolute_uri(photo_url)}
+            response = {'texture': request.build_absolute_uri(photo_url), 'shape': instance.shape}
             return Response(response, status=200)
 
         return Response(serializer.errors, status=400)
