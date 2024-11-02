@@ -1,15 +1,17 @@
 import uuid
 from importlib import import_module
 from typing import List, Optional, Tuple
+from uuid import uuid4
 
 import cv2
 import keras
+from django.core.files.base import ContentFile
 from keras.api.layers import Input
 import numpy as np
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.db.models import (
-    Model, OneToOneField, UUIDField, CharField, PositiveIntegerField, CASCADE, FileField, BinaryField,
+    Model, OneToOneField, UUIDField, CharField, PositiveIntegerField, CASCADE, FileField, BinaryField, ImageField,
 )
 
 User = get_user_model()
@@ -68,7 +70,7 @@ class Architecture(Model):
 class NetworkInput(Model):
     id = UUIDField(default=uuid.uuid4, primary_key=True)
     # TODO: Make use of MEDIA_ROOT and change this to ftp-server
-    file = FileField(upload_to='fixtures/upload/', max_length=128, editable=False)
+    file = FileField(upload_to='upload/', max_length=128, editable=False)
 
     class Meta:
         # TODO: Automatically determine 'api' prefix
@@ -133,10 +135,23 @@ class ColorMap(Model):
 
             return image_mapped
 
-class Activations(Model):
+class Activation(Model):
     id = UUIDField(default=uuid.uuid4, primary_key=True)
-    activations_binary = BinaryField(max_length=1024 * 512)             # 512KiB
+    activation_binary = BinaryField(max_length=1024 * 512)             # 512KiB
     shape = ArrayField(base_field=PositiveIntegerField(), size=3)
 
     def to_numpy(self) -> np.ndarray:
-        return np.frombuffer(self.activations_binary, dtype=np.uint8).reshape(self.shape)
+        return np.frombuffer(self.activation_binary, dtype=np.uint8).reshape(self.shape)
+
+
+class Texture(Model):
+    texture_image = ImageField(upload_to='output/')
+
+    @staticmethod
+    def to_image(array: np.ndarray) -> ContentFile:
+        _, frame_png = cv2.imencode('.png', array)
+
+        file = ContentFile(frame_png)
+        file.name = f'{uuid4()}.png'
+
+        return file

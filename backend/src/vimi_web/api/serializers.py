@@ -4,7 +4,7 @@ import numpy as np
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer, ModelSerializer, PrimaryKeyRelatedField, FileField, IntegerField
 
-from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activations
+from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation, Texture
 
 
 class ArchitectureAllSerializer(ModelSerializer):
@@ -38,7 +38,7 @@ class NetworkInputProcessSerializer(Serializer):
 
         return data
 
-    def create(self, validated_data) -> Activations:
+    def create(self, validated_data) -> Activation:
         architecture = validated_data['architecture']
         file = validated_data['file']
         layer_index = validated_data['layer_index']
@@ -60,8 +60,8 @@ class NetworkInputProcessSerializer(Serializer):
         activation_norm = (activation_norm * 255.).astype(np.uint8)
         activation_norm = np.rot90(activation_norm, -1, axes=(0, 1))
 
-        instance = Activations.objects.create(
-            activations_binary=activation_norm.tobytes(),
+        instance = Activation.objects.create(
+            activation_binary=activation_norm.tobytes(),
             shape=activation_norm.shape,
         )
         instance.save()
@@ -76,7 +76,7 @@ class ColorMapAllSerializer(ModelSerializer):
 
 
 class ColorMapProcessSerializer(Serializer):
-    activations = PrimaryKeyRelatedField(queryset=Activations.objects.all())
+    activations = PrimaryKeyRelatedField(queryset=Activation.objects.all())
     color_map = PrimaryKeyRelatedField(queryset=ColorMap.objects.all())
     filter_index = IntegerField(min_value=0)
 
@@ -87,3 +87,19 @@ class ColorMapProcessSerializer(Serializer):
             raise ValidationError("filter_index is out of range for given activations")
 
         return data
+
+    def create(self, validated_data):
+        activation = validated_data['activations']
+        color_map = validated_data['color_map']
+        filter_index = validated_data['filter_index']
+
+        filter_activations = activation.to_numpy()[:, :, filter_index]
+        filter_colored = color_map.apply_color_map(filter_activations)
+
+        image = Texture.to_image(filter_colored)
+        instance = Texture.objects.create(
+            texture_image=image,
+        )
+        instance.save()
+
+        return instance

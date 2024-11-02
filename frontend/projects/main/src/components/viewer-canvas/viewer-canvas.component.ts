@@ -14,7 +14,6 @@ import * as THREE from "three";
 import {isPlatformServer} from "@angular/common";
 import {MapControls} from 'three/addons/controls/MapControls.js';
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
-import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {BoxGeometry} from "three";
 import {filter, Subject, takeUntil} from "rxjs";
 
@@ -33,18 +32,18 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private readonly platform = inject(PLATFORM_ID);
   private continueAnimation = true;
-  private objectNames = Array();
+  private objectToDisposal = Array();
   private z_shift = 0;
 
   editorCanvas = viewChild.required<ElementRef<HTMLCanvasElement>>('editorCanvas');
 
   private scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(75, 1., 0.001, 100000);
-  controls: MapControls | null = null;
-  renderer: THREE.WebGLRenderer | null = null;
+  private camera = new THREE.PerspectiveCamera(75, 1., 0.001, 2500);
+  private controls: MapControls | null = null;
+  private renderer: THREE.WebGLRenderer | null = null;
 
   // I hate the fact it has to be like that
-  animate = () => {
+  private animate = () => {
     if (this.controls != null
         && this.renderer != null
         && this.continueAnimation != null) {
@@ -55,7 +54,6 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   };
 
   constructor(
-    private notificationHandler: NotificationHandlerService,
     private viewerControl: ViewerControlService,
   ) {}
 
@@ -81,29 +79,32 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         //     layerMesh.position.z = z_dimension + layer[2] / 2;
         //     layerMesh.updateMatrix();
         //
-        //     this.objectNames.push(layerMesh.name);
+        //     this.objectToDisposal.push(layerMesh.name);
         //     this.scene.add(layerMesh);
         //
         //     z_dimension += 50 + layer[2];
         //   });
         //
         //   const grid = new THREE.GridHelper(z_dimension * 3, z_dimension * 3 / 100);
-        //   this.objectNames.push(grid.name);
+        //   this.objectToDisposal.push(grid.name);
         //   this.scene.add(grid);
         // } else {
         const objectCount = newImage.length * newImage[0].length * newImage[0][0].length * newImage[0][0][0].length;
 
+        const geometry = new BoxGeometry(1, 1, 1);
         const material = new THREE.MeshBasicMaterial();
-        const mesh = new THREE.InstancedMesh(new BoxGeometry(1, 1, 1), material, objectCount);
-        mesh.name = '0';
-
-        this.objectNames.push(mesh.name);
+        const mesh = new THREE.InstancedMesh(geometry, material, objectCount);
+        mesh.matrixAutoUpdate = false;
+        this.objectToDisposal.push(mesh);
+        this.objectToDisposal.push(material);
+        this.objectToDisposal.push(geometry);
         this.scene.add(mesh);
 
         const obj = new THREE.Object3D();
         obj.position.z = this.z_shift;
         let counter = 0;
         let distanceX = 0;
+        const color = new THREE.Color();
 
         for (let i = 0; i < newImage.length; ++i) {
           for (let j = 0; j < newImage[i].length; ++j) {
@@ -111,24 +112,26 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
               obj.position.x = distanceX;
               obj.position.y = k * 1.05;
               obj.updateMatrix();
-
+              obj.matrixAutoUpdate = false;
               mesh.setMatrixAt(counter, obj.matrix);
 
-              const color = new THREE.Color(
+              color.set(
                 newImage[i][j][k][0] / 255,
                 newImage[i][j][k][1] / 255,
                 newImage[i][j][k][2] / 255,
               );
               mesh.setColorAt(counter, color);
+
               counter++;
             }
+            distanceX += 1.05;
           }
-          distanceX += 1.05;
+          distanceX += 10;
         }
 
-        const grid = new THREE.GridHelper(distanceX * 3, distanceX * 3 / 100);
-        grid.name = 'grid1';
-        this.objectNames.push(grid.name);
+        const grid = new THREE.GridHelper(distanceX * 1.5, distanceX * 3 / 100);
+        grid.position.x = distanceX / 2;
+        this.objectToDisposal.push(grid);
         this.scene.add(grid);
 
         this.continueAnimation = true;
@@ -137,6 +140,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.viewerControl.getCameraObservable()
       .pipe(
+        filter(() => !isPlatformServer(this.platform)),
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe((orientation) => {
@@ -149,21 +153,17 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.viewerControl.getCleanCanvasObservable()
       .pipe(
+        filter(() => !isPlatformServer(this.platform)),
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe(() => {
         this.continueAnimation = false;
 
-        // TODO: Fix the object disposal process
-        this.objectNames.forEach((objectName) => {
-          const previousObject= this.scene.getObjectByName(objectName);
-          if (previousObject) {
-            this.scene.remove(previousObject);
-          } else {
-            this.notificationHandler.error(`Attempted to remove a non existent object: "${objectName}"`);
-          }
+        this.objectToDisposal.forEach((object) => {
+          object.dispose();
+          this.scene.remove(object);
         });
-        this.objectNames.length = 0;
+        this.objectToDisposal.length = 0;
 
         this.continueAnimation = true;
         this.animate();
@@ -194,14 +194,12 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvasElement,
       powerPreference: "high-performance",
-      antialias: true,
     });
     this.renderer.setClearColor(0xffffff, 1);
     this.renderer.setSize(canvasWidth, canvasHeight);
 
     const grid = new THREE.GridHelper(100, 10);
-    grid.name = 'grid0';
-    this.objectNames.push(grid.name);
+    this.objectToDisposal.push(grid);
     this.scene.add(grid);
 
     this.animate();

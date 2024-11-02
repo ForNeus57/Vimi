@@ -1,5 +1,3 @@
-from base64 import b64encode
-
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -77,15 +75,11 @@ class ColorMapProcessView(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            activation = serializer.validated_data['activations']
-            color_map = serializer.validated_data['color_map']
-            filter_index = serializer.validated_data['filter_index']
-
-            filter_activations = activation.to_numpy()[:, :, filter_index]
-            filter_colored = color_map.apply_color_map(filter_activations)
+            instance = serializer.save()
+            photo_url = instance.texture_image.url
 
             # response = {'activations': b64encode(filter_colored.tobytes()), 'shape': filter_colored.shape}
-            response = {'activations': filter_colored.tolist()}
+            response = {'texture': request.build_absolute_uri(photo_url)}
             return Response(response, status=200)
 
         return Response(serializer.errors, status=400)
