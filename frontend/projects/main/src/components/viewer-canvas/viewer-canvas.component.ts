@@ -31,12 +31,12 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly platform = inject(PLATFORM_ID);
   private continueAnimation = true;
   private objectToDisposal = Array();
-  private z_shift = 0;
+  private standardGap = 10;
 
   editorCanvas = viewChild.required<ElementRef<HTMLCanvasElement>>('editorCanvas');
 
   private scene = new THREE.Scene();
-  private camera = new THREE.PerspectiveCamera(75, 1., 0.001, 2500);
+  private camera = new THREE.PerspectiveCamera(75, 1., 0.001, 10000);
   private controls: MapControls | null = null;
   private renderer: THREE.WebGLRenderer | null = null;
 
@@ -65,29 +65,44 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((imageSet) => {
         this.continueAnimation = false;
 
+        const textureLoader = new THREE.TextureLoader();
         if (imageSet.mode == '1d') {
-          let z_dimension = 0;
+          let xDimensionCumulative = 0;
+          let totalXLength = imageSet.textures.reduce((sum, texture) => {
+              return sum + texture.shape[0];
+            },
+            0
+          ) + (imageSet.textures.length - 1) * this.standardGap;
+          let maximumHeight = imageSet.textures.reduce((max, texture) => {
+            return Math.max(max, texture.shape[1]);
+          }, 0)
+
           imageSet.textures.forEach((texture) => {
             const geometry = new THREE.BoxGeometry(texture.shape[0], texture.shape[1], texture.shape[2]);
-            const textureLoader = new THREE.TextureLoader();
-
             const material = new THREE.MeshBasicMaterial({
               // TODO: Implement error handling here
               map: textureLoader.load(texture.texture),
             });
             const layerMesh = new THREE.Mesh(geometry, material);
 
-            layerMesh.position.z = z_dimension + texture.shape[2] / 2;
+            layerMesh.position.x = xDimensionCumulative + texture.shape[0] / 2 - totalXLength / 2;
+            layerMesh.position.y = maximumHeight / 2;
             layerMesh.updateMatrix();
 
-            this.objectToDisposal.push(layerMesh);
+            // this.objectToDisposal.push(layerMesh);
             this.objectToDisposal.push(geometry);
             this.objectToDisposal.push(material);
             this.scene.add(layerMesh);
 
-            z_dimension += 50 + texture.shape[2];
+            xDimensionCumulative += this.standardGap + texture.shape[0];
+
+            const grid = new THREE.GridHelper(totalXLength * 1.5, totalXLength / 100);
+            this.objectToDisposal.push(grid);
+            this.scene.add(grid);
           });
         } else if (imageSet.mode == '2d') {
+          let xDimensionCumulative = 0;
+          let yDimensionCumulative = 0;
 
         } else {
           // TODO: Throw error that unknown mode was hit
