@@ -1,51 +1,46 @@
 from collections import ChainMap
 
+from django.conf import settings
+
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from vimi_web.authentication.settings import (
-    USERNAME_VALIDATORS,
-    FIRST_NAME_VALIDATORS,
-    LAST_NAME_VALIDATORS,
-    EMAIL_VALIDATORS,
-    PASSWORD_VALIDATORS,
-)
 
 
 class RegistrationConfigView(APIView):
     permission_classes = [AllowAny]
 
-    def get(self, request):
+    def get(self, request: Request) -> Response:
         return Response({
             'username': {
-                **USERNAME_VALIDATORS['general'],
-                **USERNAME_VALIDATORS['html'],
-                **dict(ChainMap(*[validator['OPTIONS'] for validator in USERNAME_VALIDATORS['validators'] if 'OPTIONS' in validator])),
+                **settings.USERNAME_VALIDATORS['general'],
+                **settings.USERNAME_VALIDATORS['html'],
+                **dict(ChainMap(*[validator['OPTIONS'] for validator in settings.USERNAME_VALIDATORS['validators'] if 'OPTIONS' in validator])),
             },
             'firstName': {
-                **FIRST_NAME_VALIDATORS['general'],
-                **FIRST_NAME_VALIDATORS['html'],
-                **dict(ChainMap(*[validator['OPTIONS'] for validator in FIRST_NAME_VALIDATORS['validators'] if 'OPTIONS' in validator])),
+                **settings.FIRST_NAME_VALIDATORS['general'],
+                **settings.FIRST_NAME_VALIDATORS['html'],
+                **dict(ChainMap(*[validator['OPTIONS'] for validator in settings.FIRST_NAME_VALIDATORS['validators'] if 'OPTIONS' in validator])),
             },
             'lastName': {
-                **LAST_NAME_VALIDATORS['general'],
-                **LAST_NAME_VALIDATORS['html'],
-                **dict(ChainMap(*[validator['OPTIONS'] for validator in LAST_NAME_VALIDATORS['validators'] if 'OPTIONS' in validator])),
+                **settings.LAST_NAME_VALIDATORS['general'],
+                **settings.LAST_NAME_VALIDATORS['html'],
+                **dict(ChainMap(*[validator['OPTIONS'] for validator in settings.LAST_NAME_VALIDATORS['validators'] if 'OPTIONS' in validator])),
             },
             'email': {
-                **EMAIL_VALIDATORS['general'],
-                **EMAIL_VALIDATORS['html'],
-                **dict(ChainMap(*[validator['OPTIONS'] for validator in EMAIL_VALIDATORS['validators'] if 'OPTIONS' in validator])),
+                **settings.EMAIL_VALIDATORS['general'],
+                **settings.EMAIL_VALIDATORS['html'],
+                **dict(ChainMap(*[validator['OPTIONS'] for validator in settings.EMAIL_VALIDATORS['validators'] if 'OPTIONS' in validator])),
             },
             'password': {
-                **PASSWORD_VALIDATORS['general'],
-                **PASSWORD_VALIDATORS['html'],
-                **dict(ChainMap(*[validator['OPTIONS'] for validator in PASSWORD_VALIDATORS['validators'] if 'OPTIONS' in validator])),
+                **settings.PASSWORD_VALIDATORS['general'],
+                **settings.PASSWORD_VALIDATORS['html'],
+                **dict(ChainMap(*[validator['OPTIONS'] for validator in settings.PASSWORD_VALIDATORS['validators'] if 'OPTIONS' in validator])),
             },
             'confirmPassword': {
-                **PASSWORD_VALIDATORS['general'],
-                **PASSWORD_VALIDATORS['html'],
-                **dict(ChainMap(*[validator['OPTIONS'] for validator in PASSWORD_VALIDATORS['validators'] if 'OPTIONS' in validator])),
+                **settings.PASSWORD_VALIDATORS['general'],
+                **settings.PASSWORD_VALIDATORS['html'],
+                **dict(ChainMap(*[validator['OPTIONS'] for validator in settings.PASSWORD_VALIDATORS['validators'] if 'OPTIONS' in validator])),
             },
         }, status=200)

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os.path
+import keras
 from datetime import timedelta
 from pathlib import Path
 from os import environ
@@ -19,10 +20,12 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
 from vimi_lib.crypto.rsa_key_reader import generate_rsa_private_key
-from vimi_web.authentication.settings import PASSWORD_VALIDATORS
+
+
+keras.config.disable_interactive_logging()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -220,7 +223,20 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
 ]
 
-AUTH_PASSWORD_VALIDATORS = PASSWORD_VALIDATORS['validators']
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+    {
+        'NAME': 'vimi_web.authentication.validators.SymbolsPresentsValidator',
+    },
+]
 
 # SECURE_SSL_REDIRECT = True
 CSRF_COOKIE_SECURE = True
@@ -248,3 +264,6 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Add development settings from authentication
+from vimi_web.authentication.settings.development import *

@@ -1,33 +1,34 @@
-import uuid
 from importlib import import_module
 from typing import List, Optional, Tuple
 from uuid import uuid4
 
 import cv2
-import keras
-from django.core.files.base import ContentFile
-from keras.api.layers import Input
 import numpy as np
+import keras
+from keras.api.layers import Input
+from django.db import models
+from django.core.files.base import ContentFile
 from django.contrib.auth import get_user_model
-from django.contrib.postgres.fields import ArrayField
-from django.db.models import (
-    Model, OneToOneField, UUIDField, CharField, PositiveIntegerField, CASCADE, FileField, BinaryField, ImageField,
-)
-from keras.src.ops import dtype
+from django.contrib.postgres import fields as postgresql_fields
 
 User = get_user_model()
 
-class UserDetail(Model):
-    id = UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
-    user = OneToOneField(User, on_delete=CASCADE)
+class UserDetail(models.Model):
+    id = models.UUIDField(default=uuid4, editable=False, primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 
-class Architecture(Model):
+class Architecture(models.Model):
     # TODO: Join layers and dimensions into a single field and create a custom postgresql field for it!
-    name = CharField(max_length=64, unique=True, editable=False)
-    module = CharField(max_length=128, editable=False)
-    layers = ArrayField(base_field=CharField(max_length=64))
-    dimensions = ArrayField(base_field=ArrayField(base_field=PositiveIntegerField(default=1), size=3))
+    name = models.CharField(max_length=64, unique=True, editable=False)
+    module = models.CharField(max_length=64, editable=False)
+    layers = postgresql_fields.ArrayField(base_field=models.CharField(max_length=64))
+    dimensions = postgresql_fields.ArrayField(
+        base_field=postgresql_fields.ArrayField(
+            base_field=models.PositiveIntegerField(default=1),
+            size=3,
+        ),
+    )
 
     def __str__(self) -> str:
         return self.name
@@ -68,22 +69,22 @@ class Architecture(Model):
         return [dimension + [1] * (3 - len(dimension)) for dimension in dimensions]
 
 
-class NetworkInput(Model):
-    id = UUIDField(default=uuid.uuid4, primary_key=True)
-    file = FileField(upload_to='upload/', max_length=128, editable=False)
+class NetworkInput(models.Model):
+    id = models.UUIDField(default=uuid4, primary_key=True)
+    file = models.FileField(upload_to='upload/', max_length=128, editable=False)
 
     class Meta:
         # TODO: Automatically determine 'api' prefix
         db_table = 'api_network_input'
 
 
-class ColorMap(Model):
-    name = CharField(max_length=32, unique=True)
+class ColorMap(models.Model):
+    name = models.CharField(max_length=32, unique=True)
     # TODO: Consider removing this in favour of user_map_binary and generate it dynamically
     # TODO: Validate this field
-    attribute = CharField(max_length=32, editable=False, null=True)
+    attribute = models.CharField(max_length=32, editable=False, null=True)
     # TODO: Validate this field
-    user_map_binary = BinaryField(max_length=1024, null=True)                  # 1KiB; shape=(256, 3); dtype=np.uint8
+    user_map_binary = models.BinaryField(max_length=1024, null=True)                  # 1KiB; shape=(256, 3); dtype=np.uint8
     # TODO: Consider storing shape if necessary
     # user_map_shape = ArrayField(base_field=PositiveIntegerField(), size=3)
 
@@ -135,19 +136,19 @@ class ColorMap(Model):
 
             return image_mapped
 
-class Activation(Model):
-    id = UUIDField(default=uuid.uuid4, primary_key=True)
-    activation_binary = BinaryField(max_length=1024 * 512)             # 512KiB
-    shape = ArrayField(base_field=PositiveIntegerField(), size=3)
+class Activation(models.Model):
+    id = models.UUIDField(default=uuid4, primary_key=True)
+    activation_binary = models.BinaryField(max_length=1024 * 512)             # 512KiB
+    shape = postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(), size=3)
 
     def to_numpy(self) -> np.ndarray:
         return np.frombuffer(self.activation_binary, dtype=np.uint8).reshape(self.shape)
 
 
-class Texture(Model):
-    texture_image = ImageField(upload_to='output/')
+class Texture(models.Model):
+    texture_image = models.ImageField(upload_to='output/')
     # TODO: Validate the sape is adequate
-    shape = ArrayField(base_field=PositiveIntegerField(), size=3)
+    shape = postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(), size=3)
 
     @staticmethod
     def to_image(array: np.ndarray) -> ContentFile:
