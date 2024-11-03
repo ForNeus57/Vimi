@@ -89,7 +89,6 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
             layerMesh.position.y = maximumHeight / 2;
             layerMesh.updateMatrix();
 
-            // this.objectToDisposal.push(layerMesh);
             this.objectToDisposal.push(geometry);
             this.objectToDisposal.push(material);
             this.scene.add(layerMesh);

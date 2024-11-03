@@ -1,19 +1,4 @@
 services:
-  vimi.worker:
-    image: vimi-worker:latest
-    build:
-      context: .
-      dockerfile: backend/worker.Dockerfile
-    container_name: vimi-worker
-    env_file:
-      - backend/worker.env
-    restart: always
-    pull_policy: build
-    ports:
-      - "127.0.0.1:80:80"
-    networks:
-      - backend-net
-
   vimi.backend:
     image: vimi-backend:latest
     build:
@@ -25,10 +10,8 @@ services:
     restart: always
     pull_policy: build
     ports:
-      - "127.0.0.1:5000:5000"
+      - "127.0.0.1:8000:8000"
     depends_on:
-      vimi.worker:
-        condition: service_started
       vimi.database:
         condition: service_started
       vimi.cache:
@@ -38,8 +21,6 @@ services:
     networks:
       - backend-net
       - frontend-net
-#    secrets:
-#      - vimi-backend-jwt-signing
 
   vimi.frontend:
     image: vimi-frontend:latest
@@ -52,7 +33,7 @@ services:
     restart: always
     pull_policy: build
     ports:
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:4200:4200"
     depends_on:
       vimi.backend:
         condition: service_healthy
@@ -132,12 +113,6 @@ volumes:
       type: none
       device: ./.containers/ftp-server
       o: bind
-
-#secrets:
-#  vimi-backend-jwt-signing:
-#    file: backend/secrets/jwt_signing_private_key.pem
-#  vimi-backend-jwt-signing-password:
-#    file: backend/secrets/jwt_signing_password.txt
 
 networks:
   backend-net:

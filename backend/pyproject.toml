@@ -2,7 +2,7 @@ python-implementation = "CPython"
 
 [project]
 name = "vimi-backend"
-version = "0.0.1.0"
+version = "1.0.0.0"
 requires-python = ">=3.12.4"
 authors = [{ name="Dominik Breksa", email="dominikbreksa@gmail.com" }]
 description = "Small Backend for neural networks visualisations."
@@ -20,7 +20,6 @@ Issues = "https://github.com/ForNeus57/Vimi/issues"
 
 [project.scripts]
 vimi-backend = "vimi_web.manage:main"
-vimi-worker = "vimi_worker.app:main"
 
 [build-system]
 requires = ["setuptools>=70.0"]
@@ -32,7 +31,6 @@ dependencies = {file = ["requirements.txt"]}
 [tool.pytest.ini_options]
 addopts = [
     "--cov=vimi_web",
-    "--cov=vimi_worker",
     "--cov=vimi_lib",
     "--cov-report=term-missing",
 ]

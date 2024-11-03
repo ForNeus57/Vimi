@@ -54,7 +54,6 @@ INSTALLED_APPS = [
 
     'vimi_web.api',
     'vimi_web.authentication',
-    'vimi_web.worker',
     'vimi_web.config',
 ]
 
