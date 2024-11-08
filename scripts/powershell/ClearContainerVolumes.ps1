@@ -6,7 +6,6 @@ $directoriesToRemove = @(
     "\.containers\database\**",
     "\.containers\cache\**",
     "\backend\src\vimi_web\api\migrations\00*",
-    "\backend\src\vimi_web\worker\migrations\00*",
     "\backend\media\upload\**",
     "\backend\media\output\**"
 )

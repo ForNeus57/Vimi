@@ -265,5 +265,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 4
 
+FIXTURE_DIRS = [
+    'fixtures/',
+]
+
 # Add development settings from authentication
-from vimi_web.authentication.settings.development import *
+from vimi_web.authentication.settings.testing import *

@@ -31,7 +31,7 @@ dependencies = {file = ["requirements.txt"]}
 [tool.pytest.ini_options]
 addopts = [
     "--cov=vimi_web",
-    "--cov=vimi_lib",
+#    "--cov=vimi_lib",
     "--cov-report=term-missing",
 ]
 testpaths = ["test"]

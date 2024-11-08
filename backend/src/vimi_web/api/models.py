@@ -79,14 +79,12 @@ class NetworkInput(models.Model):
 
 
 class ColorMap(models.Model):
-    name = models.CharField(max_length=32, unique=True)
+    name = models.CharField(max_length=16, unique=True)
     # TODO: Consider removing this in favour of user_map_binary and generate it dynamically
     # TODO: Validate this field
-    attribute = models.CharField(max_length=32, editable=False, null=True)
+    attribute = models.CharField(max_length=16, editable=False, null=True)
     # TODO: Validate this field
-    user_map_binary = models.BinaryField(max_length=1024, null=True)                  # 1KiB; shape=(256, 3); dtype=np.uint8
-    # TODO: Consider storing shape if necessary
-    # user_map_shape = ArrayField(base_field=PositiveIntegerField(), size=3)
+    user_map_binary = models.BinaryField(max_length=1024)                  # 1KiB; shape=(256, 3); dtype=np.uint8
 
     class Meta:
         # TODO: Automatically determine 'api' prefix
@@ -110,31 +108,29 @@ class ColorMap(models.Model):
         import cv2
         return getattr(cv2, self.attribute)
 
-    def get_user_map(self) -> Optional[np.ndarray]:
-        if self.user_map_binary is None:
-            return None
-
+    def get_user_map(self) -> np.ndarray:
         return np.frombuffer(self.user_map_binary, dtype=np.uint8).reshape((256, 3))
 
     def apply_color_map(self, image: np.ndarray) -> np.ndarray:
         assert len(image.shape) == 2, 'image must be grayscale'
         assert image.dtype == np.uint8, 'image colors must be uint8'
 
-        color_map = self.get_color_map()
         user_map = self.get_user_map()
+        assert len(user_map.shape) == 2, 'user_map has too many dimensions'
 
-        if color_map is not None:
-            image_mapped = cv2.applyColorMap(image, colormap=color_map)
-            return image_mapped
-        else:
-            assert len(user_map.shape) == 2, 'user_map has too many dimensions'
+        _, channels = user_map.shape
+        image_mapped = np.zeros(shape=image.shape + (channels,), dtype=image.dtype)
+        for index in range(channels):
+            image_mapped[:, :, index] = cv2.applyColorMap(image, userColor=user_map[:, index])
 
-            _, channels = user_map.shape
-            image_mapped = np.zeros(shape=image.shape + (channels,), dtype=image.dtype)
-            for index in range(channels):
-                image_mapped[:, :, index] = cv2.applyColorMap(image, userColor=user_map[:, index])
+        return image_mapped
 
-            return image_mapped
+    @staticmethod
+    def get_generated_user_map_binary(cv2_color_map_attribute: int) -> bytes:
+        # TODO: Check if an attribute is in library
+        continues_gray_values = np.arange(256, dtype=np.uint8)
+        color_function_values = cv2.applyColorMap(continues_gray_values, colormap=cv2_color_map_attribute)
+        return color_function_values.tobytes()
 
 class Activation(models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True)

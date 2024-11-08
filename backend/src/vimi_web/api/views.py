@@ -1,3 +1,5 @@
+"""All views for API Application"""
+
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -15,6 +17,8 @@ from vimi_web.api.serializers import (
 
 
 class ArchitectureAllView(APIView):
+    """Returns All supported Neural-Network Architectures"""
+
     permission_classes = (AllowAny,)
     queryset = Architecture.objects.all()
     serializer_class = ArchitectureAllSerializer
@@ -57,6 +61,7 @@ class NetworkInputProcess(APIView):
 
 
 class ColorMapAllView(APIView):
+    """Returns All supported Color Maps"""
     permission_classes = (AllowAny,)
     queryset = ColorMap.objects.all()
     serializer_class = ColorMapAllSerializer

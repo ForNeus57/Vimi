@@ -23,4 +23,4 @@ class Command(BaseCommand):
             architecture.save()
 
             k.clear_session()
-            self.stdout.write(self.style.SUCCESS(f'Successfully synchronised {architecture}'))
+            self.stdout.write(self.style.SUCCESS(f'Successfully synchronised "{architecture}"'))

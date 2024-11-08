@@ -5,7 +5,7 @@
     <option name="SCRIPT_PATH" value="$PROJECT_DIR$/scripts/bash/backend_migrate_database.sh" />
     <option name="SCRIPT_OPTIONS" value="" />
     <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="false" />
-    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$/backend" />
     <option name="INDEPENDENT_INTERPRETER_PATH" value="false" />
     <option name="INTERPRETER_PATH" value="//wsl.localhost/Ubuntu-24.04/usr/bin/bash" />
     <option name="INTERPRETER_OPTIONS" value="" />
