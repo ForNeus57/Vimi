@@ -17,13 +17,9 @@ export class ColorMapRequestData {
 
 export class ImageSet {
   constructor(
-    public textures: TextureImage[],
+    public textureUrls: URL[],
     // TODO: Make mode an enum
     public mode: string,
   ) {
   }
-}
-export interface TextureImage {
-  texture: string,
-  shape: number[],
 }

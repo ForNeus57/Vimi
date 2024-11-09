@@ -27,32 +27,36 @@ export class DataLayerService {
   }
 
   public post<T>(url: string, body: any, params: any = {}) {
-    return this.httpClient.post<T>(new URL(url, this.backendUrl).href, body, {params}).pipe(
+    return this.httpClient.post<T>(this.createBackendUrl(url).href, body, {params}).pipe(
       retry(this.retryCount),
     );
   }
 
   public put<T>(url: string, body: any, params: any = {}) {
-    return this.httpClient.put<T>(new URL(url, this.backendUrl).href, body, {params}).pipe(
+    return this.httpClient.put<T>(this.createBackendUrl(url).href, body, {params}).pipe(
       retry(this.retryCount),
     );
   }
 
   public delete<T>(url: string, params: any = {}) {
-    return this.httpClient.delete<T>(new URL(url, this.backendUrl).href, {params}).pipe(
+    return this.httpClient.delete<T>(this.createBackendUrl(url).href, {params}).pipe(
       retry(this.retryCount),
     );
   }
 
   public head<T>(url: string, params: any = {}) {
-    return this.httpClient.head<T>(new URL(url, this.backendUrl).href, {params}).pipe(
+    return this.httpClient.head<T>(this.createBackendUrl(url).href, {params}).pipe(
       retry(this.retryCount),
     );
   }
 
   public options<T>(url: string, params: any = {}) {
-    return this.httpClient.options<T>(new URL(url, this.backendUrl).href, {params}).pipe(
+    return this.httpClient.options<T>(this.createBackendUrl(url).href, {params}).pipe(
       retry(this.retryCount),
     );
+  }
+
+  public createBackendUrl(path: string) {
+    return new URL(path, this.backendUrl);
   }
 }

@@ -4,5 +4,5 @@ Content-Type: multipart/form-data; boundary=UploadedFile
 --UploadedFile
 Content-Disposition: form-data; name="file"; filename="mandrill.png"
 
-< ../../backend/media/examples/mandrill.png
+< ../../backend/test/resources/images/mandrill.png
 --UploadedFile--

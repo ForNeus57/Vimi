@@ -6,8 +6,7 @@ $directoriesToRemove = @(
     "\.containers\database\**",
     "\.containers\cache\**",
     "\backend\src\vimi_web\api\migrations\00*",
-    "\backend\media\upload\**",
-    "\backend\media\output\**"
+    "\backend\media\upload\**"
 )
 
 foreach ($volume in $volumes) {

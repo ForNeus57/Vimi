@@ -9,5 +9,5 @@ urlpatterns = [
     path('network_input/process/', views.NetworkInputProcess.as_view(), name='api_network_input_process'),
 
     path('color_map/', views.ColorMapAllView.as_view(), name='api_color_map'),
-    path('color_map/process/', views.ColorMapProcessView.as_view(), name='api_color_map_process'),
+    path('color_map/process/<uuid:activation>/<int:filter_index>/<int:color_map>/', views.ColorMapProcessView.as_view(), name='api_color_map_process'),
 ]

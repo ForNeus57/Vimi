@@ -79,17 +79,16 @@ class NetworkInput(models.Model):
 
 
 class ColorMap(models.Model):
-    name = models.CharField(max_length=16, unique=True)
+    name = models.CharField(max_length=32, unique=True)
     # TODO: Consider removing this in favour of user_map_binary and generate it dynamically
     # TODO: Validate this field
-    attribute = models.CharField(max_length=16, editable=False, null=True)
+    attribute = models.CharField(max_length=32, editable=False, null=True)
     # TODO: Validate this field
     user_map_binary = models.BinaryField(max_length=1024)                  # 1KiB; shape=(256, 3); dtype=np.uint8
 
     class Meta:
         # TODO: Automatically determine 'api' prefix
         db_table = 'api_color_map'
-        ordering = ('id',)
         # TODO: Consider adding unique together to a attribute and user_map_binary
 
     def clean(self) -> None:
@@ -132,6 +131,30 @@ class ColorMap(models.Model):
         color_function_values = cv2.applyColorMap(continues_gray_values, colormap=cv2_color_map_attribute)
         return color_function_values.tobytes()
 
+    @staticmethod
+    def get_generated_texture(array: np.ndarray, extension: Optional[str] = None, quality: Optional[int] = None) -> ContentFile:
+        if extension is None:
+            extension = '.png'
+
+        if quality is None:
+            quality = 8
+
+        assert quality > 1, 'quality level must be above 1'
+
+        array = np.repeat(np.repeat(array, quality, axis=0), quality, axis=1)
+        # filler = np.zeros_like(array, dtype=np.uint8)
+        # array = np.block([[filler, array, filler, filler],
+        #                   [array, array, array, array],
+        #                   [filler, array, filler, filler]])
+
+        success, frame = cv2.imencode(extension, array)
+        assert success, 'Image was not encoded properly'
+
+        file = ContentFile(frame)
+        file.name = f'{uuid4()}{extension}'
+
+        return file
+
 class Activation(models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True)
     activation_binary = models.BinaryField(max_length=1024 * 512)             # 512KiB
@@ -139,23 +162,3 @@ class Activation(models.Model):
 
     def to_numpy(self) -> np.ndarray:
         return np.frombuffer(self.activation_binary, dtype=np.uint8).reshape(self.shape)
-
-
-class Texture(models.Model):
-    texture_image = models.ImageField(upload_to='output/')
-    # TODO: Validate the sape is adequate
-    shape = postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(), size=3)
-
-    @staticmethod
-    def to_image(array: np.ndarray) -> ContentFile:
-        array = np.repeat(np.repeat(array, 8, axis=0), 8, axis=1)
-        # filler = np.zeros_like(array, dtype=np.uint8)
-        # array = np.block([[filler, array, filler, filler],
-        #                   [array, array, array, array],
-        #                   [filler, array, filler, filler]])
-        _, frame_png = cv2.imencode('.png', array)
-
-        file = ContentFile(frame_png)
-        file.name = f'{uuid4()}.png'
-
-        return file

@@ -9,5 +9,5 @@ urlpatterns = [
     path('authentication/', include('vimi_web.authentication.urls')),
     # path('config/', include('vimi_web.config.urls')),
 
-    *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+    # *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]

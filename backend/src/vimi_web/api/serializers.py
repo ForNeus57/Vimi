@@ -4,10 +4,11 @@ from typing import Any
 import cv2
 import keras
 import numpy as np
+from django.core.files.base import ContentFile
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 
-from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation, Texture
+from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation
 
 
 class ArchitectureAllSerializer(serializers.ModelSerializer):
@@ -78,32 +79,14 @@ class ColorMapAllSerializer(serializers.ModelSerializer):
 
 
 class ColorMapProcessSerializer(serializers.Serializer):
-    activations = serializers.PrimaryKeyRelatedField(queryset=Activation.objects.all())
-    color_map = serializers.PrimaryKeyRelatedField(queryset=ColorMap.objects.all())
+    activation = serializers.PrimaryKeyRelatedField(queryset=Activation.objects.all())
     filter_index = serializers.IntegerField(min_value=0)
+    color_map = serializers.PrimaryKeyRelatedField(queryset=ColorMap.objects.all())
 
     def validate(self, data: Mapping[str, Any]) -> Mapping[str, Any]:
-        _, _, z_size = data['activations'].to_numpy().shape
+        _, _, z_size = data['activation'].to_numpy().shape
 
         if data['filter_index'] >= z_size:
             raise ValidationError("filter_index is out of range for given activations")
 
         return data
-
-    def create(self, validated_data: Mapping[str, Any]) -> Texture:
-        activation = validated_data['activations']
-        color_map = validated_data['color_map']
-        filter_index = validated_data['filter_index']
-
-        filter_activations = activation.to_numpy()[:, :, filter_index]
-        filter_colored = color_map.apply_color_map(filter_activations)
-
-        image = Texture.to_image(filter_colored)
-        instance = Texture.objects.create(
-            texture_image=image,
-            shape=filter_colored.shape,
-        )
-        instance.save()
-
-        # TODO:  just return it for god say
-        return instance

@@ -5,11 +5,10 @@ import {NetworkInput} from "../../models/network-input";
 import {NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {Architecture} from "../../models/architecture";
-import {ColorMap, TextureImage, ColorMapRequestData, ImageSet} from "../../models/color-map";
+import {ColorMap, ImageSet} from "../../models/color-map";
 import {DataLayerService} from "../../services/data-layer/data-layer.service";
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {Layer} from "../../models/layer";
-import {forkJoin} from "rxjs";
 
 @Component({
   selector: 'app-viewer-menu-file',
@@ -180,30 +179,12 @@ export class ViewerMenuFileComponent implements OnInit {
       return;
     }
 
-    forkJoin(Array.from({length: activations.filters_count}, (_, filter_id) => {
-      const postData = new ColorMapRequestData(
-        activations.id,
-        colorMap,
-        filter_id,
-      );
-
-      return this.dataLayer.post<TextureImage>('/api/1/color_map/process/', postData)
-    }))
-      .subscribe({
-        next: (output) => {
-          this.notificationHandler.success('Successfully fetched color maps');
-          this.viewerControl.setClearCanvas();
-
-          this.viewerControl.setNewImage(new ImageSet(
-            output,
-            this.viewMode,
-          ));
-        },
-        error: (error) => {
-          this.notificationHandler.error('File upload Failed');
-          this.notificationHandler.error(error);
-        },
-      });
+    this.viewerControl.setNewImage(new ImageSet(
+      Array.from({length: activations.filters_count}, (_, filter_id) => {
+        return this.dataLayer.createBackendUrl(`/api/1/color_map/process/${activations.id}/${filter_id}/${colorMap}/`);
+      }),
+      this.viewMode,
+    ));
   }
 
   on1dViewModeActivation() {
