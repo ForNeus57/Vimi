@@ -16,10 +16,29 @@
 <li class="viewer-menu viewer-menu-main standard-shadow">
   <input id="file"
          type="file"
-         class="slider"
-         (change)="onFileChange($event)">
+         style="display: none"
+         (change)="onFileChange($event)" #fileUpload>
   <button class="btn-small btn-primary"
-          [disabled]="isDownloadActivationsDisabled()"
+          (click)="fileUpload.click()">
+    Upload
+  </button>
+  <select id="normalizationName"
+          name="normalizatioName"
+          class="viewer-control-menu"
+          style="align-self: stretch"
+          [(ngModel)]="selectedNormalization">
+    <option value="null">
+      Normalization ...
+    </option>
+    <option value="local">
+      Local
+    </option>
+    <option value="global">
+      Global
+    </option>
+  </select>
+  <button class="btn-small btn-primary"
+          [disabled]="isDownloadActivationsDisabled"
           (click)="onDownloadActivations()">
     Download
   </button>
@@ -40,7 +59,7 @@
     }
   </select>
   <button class="btn-small btn-primary"
-          [disabled]="isColorMapChangeDisabled()"
+          [disabled]="isColorMapChangeDisabled"
           (click)="onColorMapChange()">
     Change
   </button>

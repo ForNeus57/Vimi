@@ -1,0 +1,8 @@
+GET {{host}}/api/1/activation/normalization/ HTTP/1.1
+Accept: application/json
+
+###
+OPTIONS {{host}}/api/1/activation/normalization/ HTTP/1.1
+
+###
+HEAD {{host}}/api/1/activation/normalization/ HTTP/1.1

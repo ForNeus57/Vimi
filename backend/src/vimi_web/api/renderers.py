@@ -1,5 +1,6 @@
 from rest_framework.renderers import BaseRenderer
 
+
 class TextureFileRenderer(BaseRenderer):
     media_type = 'image/png'
     format = None

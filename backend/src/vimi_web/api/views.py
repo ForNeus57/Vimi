@@ -7,14 +7,14 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from vimi_web.api.models import Architecture, ColorMap
+from vimi_web.api.models import Architecture, ColorMap, Activation
 from vimi_web.api.renderers import TextureFileRenderer
 from vimi_web.api.serializers import (
     ArchitectureAllSerializer,
     UploadNetworkInputSerializer,
     NetworkInputProcessSerializer,
     ColorMapAllSerializer,
-    ColorMapProcessSerializer,
+    ColorMapProcessSerializer, ActivationNormalizationAllSerializer,
 )
 
 
@@ -26,9 +26,9 @@ class ArchitectureAllView(APIView):
     serializer_class = ArchitectureAllSerializer
 
     def get(self, request: Request) -> Response:
-        result = self.serializer_class(self.queryset.all(), many=True)
+        serializer = self.serializer_class(self.queryset.all(), many=True)
 
-        return Response(result.data, status=200)
+        return Response(serializer.data, status=200)
 
 
 class UploadNetworkInputView(APIView):
@@ -69,9 +69,9 @@ class ColorMapAllView(APIView):
     serializer_class = ColorMapAllSerializer
 
     def get(self, request: Request) -> Response:
-        result = self.serializer_class(self.queryset.all(), many=True)
+        serializer = self.serializer_class(self.queryset.all(), many=True)
 
-        return Response(result.data, status=200)
+        return Response(serializer.data, status=200)
 
 
 class ColorMapProcessView(APIView):
@@ -101,3 +101,14 @@ class ColorMapProcessView(APIView):
                             content_type='image/png')
 
         return Response(serializer.errors, status=400)
+
+
+class ActivationNormalizationAllView(APIView):
+    permission_classes = (AllowAny,)
+    serializer_class = ActivationNormalizationAllSerializer
+
+    def get(self, request: Request) -> Response:
+        serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]}, Activation.Normalization.choices),
+                                           many=True)
+
+        return Response(serializer.data, status=200)

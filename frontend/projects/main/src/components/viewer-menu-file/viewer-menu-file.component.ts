@@ -36,6 +36,7 @@ export class ViewerMenuFileComponent implements OnInit {
   selectedColorMapIndex = signal<number | null>(null);
   selectedFileId = signal<string | null>(null);
   selectedActivations = signal<NetworkOutput | null>(null);
+  selectedNormalization = signal<string | null>(null);
 
   readonly computedLayers = computed(() => {
     const architecture = this.internalArchitecture();
@@ -111,7 +112,7 @@ export class ViewerMenuFileComponent implements OnInit {
     this.dataLayer.post<NetworkInput>('/api/1/network_input/', formData)
       .subscribe({
         next: (value) => {
-          this.notificationHandler.success('Successfully generated file UUID');
+          this.notificationHandler.success(`Successfully generated file UUID for ${selectedFile.name}`);
           this.selectedFileId.set(value.id);
         },
         error: (error) => {

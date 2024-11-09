@@ -176,6 +176,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.cleanCanvas();
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }

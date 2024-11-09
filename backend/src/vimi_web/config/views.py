@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 
 
 class RegistrationConfigView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = (AllowAny,)
 
     def get(self, request: Request) -> Response:
         return Response({

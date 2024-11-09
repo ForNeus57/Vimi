@@ -10,8 +10,10 @@ from django.db import models
 from django.core.files.base import ContentFile
 from django.contrib.auth import get_user_model
 from django.contrib.postgres import fields as postgresql_fields
+from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
+
 
 class UserDetail(models.Model):
     id = models.UUIDField(default=uuid4, editable=False, primary_key=True)
@@ -151,12 +153,18 @@ class ColorMap(models.Model):
 
         return file
 
+
 class Activation(models.Model):
+    class Normalization(models.IntegerChoices):
+        GLOBAL = 0, _("Global")
+        LOCAL = 1, _("Local")
+
     id = models.UUIDField(default=uuid4, primary_key=True)
     # TODO: Change this to a file pointer to a static file
     # TODO: See why this field is not validated by django?
-    activation_binary = models.BinaryField(max_length=1024 * 512)             # 512KiB
+    activation_binary = models.BinaryField(max_length=1024 * 512)                               # 512KiB
     shape = postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(), size=3)
+    normalization = models.IntegerField(choices=Normalization)
 
     def to_numpy(self) -> np.ndarray:
         return np.frombuffer(self.activation_binary, dtype=np.uint8).reshape(self.shape)

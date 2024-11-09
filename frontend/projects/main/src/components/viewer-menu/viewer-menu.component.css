@@ -6,7 +6,7 @@
   width: 100%;
   min-height: var(--horizontal-navigation-bar-height);
   background-color: var(--tertiary-color);
-  padding: var(--standard-gap) var(--horizontal-navigation-bar-height);
+  padding: var(--standard-gap) calc(var(--horizontal-navigation-bar-height) / 2);
   border-radius: var(--standard-border-radius) var(--standard-border-radius) 0 0;
   display: flex;
   flex-direction: column;
@@ -38,7 +38,7 @@ li.viewer-control-menu {
 li.viewer-menu-main {
   flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: var(--standard-gap);
   padding: 0 var(--standard-gap);
