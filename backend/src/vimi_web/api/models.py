@@ -92,7 +92,7 @@ class ColorMap(models.Model):
         # TODO: Consider adding unique together to a attribute and user_map_binary
 
     def clean(self) -> None:
-        if not ((self.attribute is None) ^ (self.user_map_binary is None)):
+        if not (self.attribute is None) ^ (self.user_map_binary is None):
             raise ValueError("must provide either attribute or user_map_binary")
 
         # TODO: Finish validation
@@ -154,6 +154,7 @@ class ColorMap(models.Model):
 class Activation(models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True)
     # TODO: Change this to a file pointer to a static file
+    # TODO: See why this field is not validated by django?
     activation_binary = models.BinaryField(max_length=1024 * 512)             # 512KiB
     shape = postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(), size=3)
 

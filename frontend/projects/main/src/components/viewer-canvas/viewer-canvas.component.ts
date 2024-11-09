@@ -7,12 +7,12 @@ import {
   OnDestroy,
   OnInit,
   PLATFORM_ID,
-  viewChild
+  viewChild,
 } from '@angular/core';
 import {ViewerMenuComponent} from "../viewer-menu/viewer-menu.component";
 import * as THREE from "three";
 import {isPlatformServer} from "@angular/common";
-import {MapControls} from 'three/addons/controls/MapControls.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {filter, Subject, takeUntil} from "rxjs";
 
@@ -37,7 +37,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private scene = new THREE.Scene();
   private camera = new THREE.PerspectiveCamera(75, 1., 0.001, 10000);
-  private controls: MapControls | null = null;
+  private controls: OrbitControls | null = null;
   private renderer: THREE.WebGLRenderer | null = null;
 
   // TODO: I hate the fact it has to be like that
@@ -147,6 +147,9 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe((orientation) => {
+        if (this.controls != null) {
+          this.controls.reset();
+        }
         this.camera.position.set(orientation.position.x, orientation.position.y, orientation.position.z);
         this.camera.lookAt(orientation.lookAt);
         this.camera.zoom = orientation.zoom;
@@ -190,7 +193,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.camera.updateProjectionMatrix();
     this.scene.add(this.camera);
 
-    this.controls = new MapControls(this.camera, canvasElement);
+    this.controls = new OrbitControls(this.camera, canvasElement);
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvasElement,
@@ -202,6 +205,8 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     const grid = new THREE.GridHelper(100, 10);
     this.objectsToDisposal.push(grid);
     this.scene.add(grid);
+
+    this.controls.saveState();
 
     this.animate();
   }
