@@ -115,7 +115,7 @@ class ColorMap(models.Model):
         assert image.dtype == np.uint8, 'image colors must be uint8'
 
         user_map = self.get_user_map()
-        assert len(user_map.shape) == 2, 'user_map has too many dimensions'
+        assert len(user_map.shape) == 2, 'user_map has too many or not enough dimensions'
 
         _, channels = user_map.shape
         image_mapped = np.zeros(shape=image.shape + (channels,), dtype=image.dtype)
@@ -126,7 +126,7 @@ class ColorMap(models.Model):
 
     @staticmethod
     def get_generated_user_map_binary(cv2_color_map_attribute: int) -> bytes:
-        # TODO: Check if an attribute is in library
+        # TODO: Check if an attribute is in cv2 library
         continues_gray_values = np.arange(256, dtype=np.uint8)
         color_function_values = cv2.applyColorMap(continues_gray_values, colormap=cv2_color_map_attribute)
         return color_function_values.tobytes()
@@ -134,7 +134,7 @@ class ColorMap(models.Model):
     @staticmethod
     def get_generated_texture(array: np.ndarray, extension: Optional[str] = None, quality: Optional[int] = None) -> ContentFile:
         extension = extension or '.png'
-        quality = quality or 8
+        quality = quality or 4
         assert quality > 1, 'quality level must be above 1'
 
         array = np.repeat(np.repeat(array, quality, axis=0), quality, axis=1)

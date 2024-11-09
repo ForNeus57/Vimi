@@ -4,6 +4,7 @@ from typing import Any
 import cv2
 import keras
 import numpy as np
+from PIL import Image
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 
@@ -46,8 +47,7 @@ class NetworkInputProcessSerializer(serializers.Serializer):
         layer_index = validated_data['layer_index']
         normalization_method = validated_data['normalization_method']
 
-        image = cv2.imread(network_input.file.path, cv2.IMREAD_COLOR) / 255
-        assert image is not None, 'image cannot be obtained'
+        image = np.array(Image.open(network_input.file.path), dtype=np.uint8) / 255
         model = architecture.get_model(image.shape)
         image = np.expand_dims(image, axis=0)
         layer_outputs = [layer.output for layer in model.layers[:layer_index]]

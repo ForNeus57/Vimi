@@ -4,7 +4,7 @@ Content-Type: application/json
 {
   "architecture": 1,
   "layer_index": 4,
-  "network_input": "fdcaab1e-36c3-4d08-ac55-e0af0aefb6ab",
+  "network_input": "4b5f0f2a-5a6d-4145-924a-f51cfce6003a",
   "normalization_method": "global"
 }
 
@@ -15,6 +15,6 @@ Content-Type: application/json
 {
   "architecture": 1,
   "layer_index": 4,
-  "network_input": "fdcaab1e-36c3-4d08-ac55-e0af0aefb6ab",
+  "network_input": "4b5f0f2a-5a6d-4145-924a-f51cfce6003a",
   "normalization_method": "local"
 }

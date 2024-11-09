@@ -8,7 +8,7 @@
     </option>
     @for(layer of computedLayers(); track layer.id) {
       <option [value]="layer.id">
-        {{layer.id + 1}} - {{layer.name}}
+        {{layer.name}}
       </option>
     }
   </select>

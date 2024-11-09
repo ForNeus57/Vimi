@@ -68,18 +68,18 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         const textureLoader = new THREE.TextureLoader();
         if (imageSet.mode == '1d') {
           let xDimensionCumulative = 0;
-          let totalXLength = imageSet.textureUrls.length * imageSet.shape[0] + (imageSet.textureUrls.length - 1) * this.standardGap;
-          let maximumHeight = imageSet.shape[1];
+          let totalXLength = imageSet.textureUrls.length * imageSet.shape[1] + (imageSet.textureUrls.length - 1) * this.standardGap;
+          let maximumHeight = imageSet.shape[0];
 
           imageSet.textureUrls.forEach((texture) => {
-            const geometry = new THREE.BoxGeometry(imageSet.shape[0], imageSet.shape[1], 1);
+            const geometry = new THREE.BoxGeometry(imageSet.shape[1], imageSet.shape[0], 1);
             const material = new THREE.MeshBasicMaterial({
               // TODO: Implement error handling here
               map: textureLoader.load(texture.href),
             });
             const layerMesh = new THREE.Mesh(geometry, material);
 
-            layerMesh.position.x = xDimensionCumulative + imageSet.shape[0] / 2 - totalXLength / 2;
+            layerMesh.position.x = xDimensionCumulative + imageSet.shape[1] / 2 - totalXLength / 2;
             layerMesh.position.y = maximumHeight / 2;
             layerMesh.updateMatrix();
 
@@ -87,7 +87,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
             this.objectsToDisposal.push(material);
             this.scene.add(layerMesh);
 
-            xDimensionCumulative += this.standardGap + imageSet.shape[0];
+            xDimensionCumulative += this.standardGap + imageSet.shape[1];
 
             const grid = new THREE.GridHelper(totalXLength * 1.5, totalXLength / 100);
             this.objectsToDisposal.push(grid);
@@ -96,6 +96,10 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         } else if (imageSet.mode == '2d') {
           let xDimensionCumulative = 0;
           let yDimensionCumulative = 0;
+          let totalXLength = Math.floor(Math.sqrt(imageSet.textureUrls.length))// * imageSet.shape[0] + (imageSet.textureUrls.length - 1) * this.standardGap;
+          let totalYLength = Math.ceil(Math.sqrt(imageSet.textureUrls.length))// * imageSet.shape[0] + (imageSet.textureUrls.length - 1) * this.standardGap;
+
+          console.log(totalXLength, totalYLength, imageSet.textureUrls.length)
 
         } else {
           // TODO: Throw error that unknown mode was hit
