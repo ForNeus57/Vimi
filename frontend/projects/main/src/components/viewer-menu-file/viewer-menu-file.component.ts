@@ -1,6 +1,5 @@
 import {Component, computed, Input, OnInit, signal, ViewEncapsulation} from '@angular/core';
 import {NgClass} from "@angular/common";
-import {FormsModule} from "@angular/forms";
 import {NetworkInput} from "../../models/network-input";
 import {NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
@@ -9,13 +8,14 @@ import {ColorMap, ImageSet} from "../../models/color-map";
 import {DataLayerService} from "../../services/data-layer/data-layer.service";
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {Layer} from "../../models/layer";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-viewer-menu-file',
   standalone: true,
   imports: [
     NgClass,
-    FormsModule
+    FormsModule,
   ],
   templateUrl: './viewer-menu-file.component.html',
   styleUrls: [
@@ -145,6 +145,7 @@ export class ViewerMenuFileComponent implements OnInit {
       architecture.id,
       fileId,
       layerIndex,
+      "local",
     );
     this.dataLayer.post<NetworkOutput>('/api/1/network_input/process/', postData)
       .subscribe({
@@ -180,10 +181,11 @@ export class ViewerMenuFileComponent implements OnInit {
     }
 
     this.viewerControl.setNewImage(new ImageSet(
-      Array.from({length: activations.filters_count}, (_, filter_id) => {
+      Array.from({length: activations.filters_shape[activations.filters_shape.length - 1]}, (_, filter_id) => {
         return this.dataLayer.createBackendUrl(`/api/1/color_map/process/${activations.id}/${filter_id}/${colorMap}/`);
       }),
       this.viewMode,
+      activations.filters_shape,
     ));
   }
 

@@ -31,7 +31,7 @@ class ArchitectureAllView(APIView):
         return Response(result.data, status=200)
 
 
-class UploadNetworkInput(APIView):
+class UploadNetworkInputView(APIView):
     permission_classes = (AllowAny,)
     serializer_class = UploadNetworkInputSerializer
     parser_classes = (MultiPartParser, FormParser,)
@@ -47,7 +47,7 @@ class UploadNetworkInput(APIView):
         return Response(serializer.errors, status=400)
 
 
-class NetworkInputProcess(APIView):
+class NetworkInputProcessView(APIView):
     permission_classes = (AllowAny,)
     serializer_class = NetworkInputProcessSerializer
 
@@ -57,7 +57,7 @@ class NetworkInputProcess(APIView):
         if serializer.is_valid():
             instance = serializer.save()
 
-            return Response({'id': instance.id, 'filter_shape': instance.shape}, status=201)
+            return Response({'id': instance.id, 'filters_shape': instance.shape}, status=201)
 
         return Response(serializer.errors, status=400)
 

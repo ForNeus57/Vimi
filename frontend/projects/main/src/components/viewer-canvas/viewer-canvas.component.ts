@@ -3,7 +3,7 @@ import {
   Component,
   ElementRef,
   HostListener,
-  inject, model,
+  inject,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
@@ -30,7 +30,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private readonly platform = inject(PLATFORM_ID);
   private continueAnimation = true;
-  private objectToDisposal = Array();
+  private objectsToDisposal = Array();
   private standardGap = 10;
 
   editorCanvas = viewChild.required<ElementRef<HTMLCanvasElement>>('editorCanvas');
@@ -68,35 +68,29 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         const textureLoader = new THREE.TextureLoader();
         if (imageSet.mode == '1d') {
           let xDimensionCumulative = 0;
-          let totalXLength = imageSet.textures.reduce((sum, texture) => {
-              return sum + texture.shape[0];
-            },
-            0
-          ) + (imageSet.textures.length - 1) * this.standardGap;
-          let maximumHeight = imageSet.textures.reduce((max, texture) => {
-            return Math.max(max, texture.shape[1]);
-          }, 0)
+          let totalXLength = imageSet.textureUrls.length * imageSet.shape[0] + (imageSet.textureUrls.length - 1) * this.standardGap;
+          let maximumHeight = imageSet.shape[1];
 
-          imageSet.textures.forEach((texture) => {
-            const geometry = new THREE.BoxGeometry(texture.shape[0], texture.shape[1], texture.shape[2]);
+          imageSet.textureUrls.forEach((texture) => {
+            const geometry = new THREE.BoxGeometry(imageSet.shape[0], imageSet.shape[1], 1);
             const material = new THREE.MeshBasicMaterial({
               // TODO: Implement error handling here
-              map: textureLoader.load(texture.texture),
+              map: textureLoader.load(texture.href),
             });
             const layerMesh = new THREE.Mesh(geometry, material);
 
-            layerMesh.position.x = xDimensionCumulative + texture.shape[0] / 2 - totalXLength / 2;
+            layerMesh.position.x = xDimensionCumulative + imageSet.shape[0] / 2 - totalXLength / 2;
             layerMesh.position.y = maximumHeight / 2;
             layerMesh.updateMatrix();
 
-            this.objectToDisposal.push(geometry);
-            this.objectToDisposal.push(material);
+            this.objectsToDisposal.push(geometry);
+            this.objectsToDisposal.push(material);
             this.scene.add(layerMesh);
 
-            xDimensionCumulative += this.standardGap + texture.shape[0];
+            xDimensionCumulative += this.standardGap + imageSet.shape[0];
 
             const grid = new THREE.GridHelper(totalXLength * 1.5, totalXLength / 100);
-            this.objectToDisposal.push(grid);
+            this.objectsToDisposal.push(grid);
             this.scene.add(grid);
           });
         } else if (imageSet.mode == '2d') {
@@ -121,14 +115,14 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         //     layerMesh.position.z = z_dimension + layer[2] / 2;
         //     layerMesh.updateMatrix();
         //
-        //     this.objectToDisposal.push(layerMesh.name);
+        //     this.objectsToDisposal.push(layerMesh.name);
         //     this.scene.add(layerMesh);
         //
         //     z_dimension += 50 + layer[2];
         //   });
         //
         //   const grid = new THREE.GridHelper(z_dimension * 3, z_dimension * 3 / 100);
-        //   this.objectToDisposal.push(grid.name);
+        //   this.objectsToDisposal.push(grid.name);
         //   this.scene.add(grid);
         // } else {
         // const objectCount = imageSet.length * imageSet[0].length * imageSet[0][0].length * imageSet[0][0][0].length;
@@ -137,9 +131,9 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         // const material = new THREE.MeshBasicMaterial();
         // const mesh = new THREE.InstancedMesh(geometry, material, objectCount);
         // mesh.matrixAutoUpdate = false;
-        // this.objectToDisposal.push(mesh);
-        // this.objectToDisposal.push(material);
-        // this.objectToDisposal.push(geometry);
+        // this.objectsToDisposal.push(mesh);
+        // this.objectsToDisposal.push(material);
+        // this.objectsToDisposal.push(geometry);
         // this.scene.add(mesh);
         //
         // const obj = new THREE.Object3D();
@@ -174,7 +168,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         // const grid = new THREE.GridHelper(distanceX * 1.5, distanceX * 3 / 100);
         // grid.position.x = distanceX / 2;
         // const grid = new THREE.GridHelper(1000, 30);
-        // this.objectToDisposal.push(grid);
+        // this.objectsToDisposal.push(grid);
         // this.scene.add(grid);
 
         this.continueAnimation = true;
@@ -202,11 +196,11 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe(() => {
         this.continueAnimation = false;
 
-        this.objectToDisposal.forEach((object) => {
+        this.objectsToDisposal.forEach((object) => {
           object.dispose();
           this.scene.remove(object);
         });
-        this.objectToDisposal.length = 0;
+        this.objectsToDisposal.length = 0;
 
         this.continueAnimation = true;
         this.animate();
@@ -241,7 +235,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.renderer.setSize(canvasWidth, canvasHeight);
 
     const grid = new THREE.GridHelper(100, 10);
-    this.objectToDisposal.push(grid);
+    this.objectsToDisposal.push(grid);
     this.scene.add(grid);
 
     this.animate();

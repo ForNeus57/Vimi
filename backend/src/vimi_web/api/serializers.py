@@ -4,7 +4,6 @@ from typing import Any
 import cv2
 import keras
 import numpy as np
-from django.core.files.base import ContentFile
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 
@@ -22,9 +21,7 @@ class UploadNetworkInputSerializer(serializers.Serializer):
     file = serializers.FileField(max_length=128)
 
     def create(self, validated_data: Mapping[str, Any]) -> NetworkInput:
-        instance = NetworkInput.objects.create(
-            file=validated_data['file'],
-        )
+        instance = NetworkInput.objects.create(file=validated_data['file'])
         instance.save()
 
         return instance
@@ -32,8 +29,9 @@ class UploadNetworkInputSerializer(serializers.Serializer):
 
 class NetworkInputProcessSerializer(serializers.Serializer):
     architecture = serializers.PrimaryKeyRelatedField(queryset=Architecture.objects.all())
-    file = serializers.PrimaryKeyRelatedField(queryset=NetworkInput.objects.all())
+    network_input = serializers.PrimaryKeyRelatedField(queryset=NetworkInput.objects.all())
     layer_index = serializers.IntegerField(min_value=0)
+    normalization_method = serializers.ChoiceField(choices=['global', 'local'])
 
     def validate(self, data: Mapping[str, Any]) -> Mapping[str, Any]:
         if data['layer_index'] >= len(data['architecture'].layers) \
@@ -44,29 +42,37 @@ class NetworkInputProcessSerializer(serializers.Serializer):
 
     def create(self, validated_data: Mapping[str, Any]) -> Activation:
         architecture = validated_data['architecture']
-        file = validated_data['file']
+        network_input = validated_data['network_input']
         layer_index = validated_data['layer_index']
+        normalization_method = validated_data['normalization_method']
 
-        model = architecture.get_model()
-
-        # TODO: Remove rescaling in favour of creating custom input tensor as in keras applications documentation
-        image = cv2.imread(file.file.path, cv2.IMREAD_COLOR) / 255
+        image = cv2.imread(network_input.file.path, cv2.IMREAD_COLOR) / 255
         assert image is not None, 'image cannot be obtained'
-        image = cv2.resize(image, model.input.shape[1: 3], interpolation=cv2.INTER_CUBIC)
+        model = architecture.get_model(image.shape)
         image = np.expand_dims(image, axis=0)
-
         layer_outputs = [layer.output for layer in model.layers[:layer_index]]
         activation_model = keras.Model(inputs=model.input, outputs=layer_outputs)
         activations = activation_model.predict(image)
         activations = activations[-1][0]
 
-        activation_norm = (activations - np.min(activations)) / np.max(activations)
+        match normalization_method:
+            case 'global':
+                maximum = np.max(activations)
+                maximum[maximum == 0.] = 1.
+                activation_norm = (activations - np.min(activations)) / maximum
+
+            case 'local':
+                maximum = np.max(activations, axis=(0, 1))
+                maximum[maximum == 0.] = 1.
+                activation_norm = (activations - np.min(activations, axis=(0, 1))) / maximum
+
+            case _:
+                assert False, 'Unknown normalization method provided'
+
         activation_norm = (activation_norm * 255.).astype(np.uint8)
 
-        instance = Activation.objects.create(
-            activation_binary=activation_norm.tobytes(),
-            shape=activation_norm.shape,
-        )
+        instance = Activation.objects.create(activation_binary=activation_norm.tobytes(),
+                                             shape=activation_norm.shape)
         instance.save()
 
         return instance

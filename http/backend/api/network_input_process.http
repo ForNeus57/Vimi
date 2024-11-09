@@ -3,6 +3,18 @@ Content-Type: application/json
 
 {
   "architecture": 1,
-  "file": "fdcaab1e-36c3-4d08-ac55-e0af0aefb6ab",
-  "layer_index": 4
+  "layer_index": 4,
+  "network_input": "fdcaab1e-36c3-4d08-ac55-e0af0aefb6ab",
+  "normalization_method": "global"
+}
+
+###
+POST {{host}}/api/1/network_input/process/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "architecture": 1,
+  "layer_index": 4,
+  "network_input": "fdcaab1e-36c3-4d08-ac55-e0af0aefb6ab",
+  "normalization_method": "local"
 }

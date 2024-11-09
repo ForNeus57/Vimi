@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="API - Network Input Upload" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" folderName="Backend" path="$PROJECT_DIR$/http/backend/api/network_input_upload.http" requestIdentifier="#1" runType="Run single request">
+  <configuration default="false" name="API - Network Input Upload" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" folderName="Backend" path="$PROJECT_DIR$/http/backend/api/network_input_upload.http" requestIdentifier="#1">
     <method v="2" />
   </configuration>
 </component>

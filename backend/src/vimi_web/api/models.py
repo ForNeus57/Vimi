@@ -133,12 +133,8 @@ class ColorMap(models.Model):
 
     @staticmethod
     def get_generated_texture(array: np.ndarray, extension: Optional[str] = None, quality: Optional[int] = None) -> ContentFile:
-        if extension is None:
-            extension = '.png'
-
-        if quality is None:
-            quality = 8
-
+        extension = extension or '.png'
+        quality = quality or 8
         assert quality > 1, 'quality level must be above 1'
 
         array = np.repeat(np.repeat(array, quality, axis=0), quality, axis=1)

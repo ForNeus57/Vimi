@@ -20,6 +20,7 @@ export class ImageSet {
     public textureUrls: URL[],
     // TODO: Make mode an enum
     public mode: string,
+    public shape: Array<number>,
   ) {
   }
 }
