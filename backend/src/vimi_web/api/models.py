@@ -153,6 +153,7 @@ class ColorMap(models.Model):
 
 class Activation(models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True)
+    # TODO: Change this to a file pointer to a static file
     activation_binary = models.BinaryField(max_length=1024 * 512)             # 512KiB
     shape = postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(), size=3)
 

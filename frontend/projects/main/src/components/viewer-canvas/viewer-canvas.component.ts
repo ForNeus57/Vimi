@@ -66,10 +66,10 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         this.continueAnimation = false;
 
         const textureLoader = new THREE.TextureLoader();
+        const maximumHeight = imageSet.shape[0];
         if (imageSet.mode == '1d') {
           let xDimensionCumulative = 0;
-          let totalXLength = imageSet.textureUrls.length * imageSet.shape[1] + (imageSet.textureUrls.length - 1) * this.standardGap;
-          let maximumHeight = imageSet.shape[0];
+          const totalXLength = imageSet.textureUrls.length * imageSet.shape[1] + (imageSet.textureUrls.length - 1) * this.standardGap;
 
           imageSet.textureUrls.forEach((texture) => {
             const geometry = new THREE.BoxGeometry(imageSet.shape[1], imageSet.shape[0], 1);
@@ -89,17 +89,51 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
             xDimensionCumulative += this.standardGap + imageSet.shape[1];
 
-            const grid = new THREE.GridHelper(totalXLength * 1.5, totalXLength / 100);
+            const grid = new THREE.GridHelper(totalXLength * 1.25, totalXLength / 100);
             this.objectsToDisposal.push(grid);
             this.scene.add(grid);
           });
         } else if (imageSet.mode == '2d') {
           let xDimensionCumulative = 0;
           let yDimensionCumulative = 0;
-          let totalXLength = Math.floor(Math.sqrt(imageSet.textureUrls.length))// * imageSet.shape[0] + (imageSet.textureUrls.length - 1) * this.standardGap;
-          let totalYLength = Math.ceil(Math.sqrt(imageSet.textureUrls.length))// * imageSet.shape[0] + (imageSet.textureUrls.length - 1) * this.standardGap;
+          let xCellNumber = 0;
+          let yCellNumber = 0;
+          const cellNumbers = Math.ceil(Math.sqrt(imageSet.textureUrls.length))
+          const totalXLength = cellNumbers * imageSet.shape[0] + (cellNumbers - 1) * this.standardGap;
+          const totalYLength = cellNumbers * imageSet.shape[1] + (cellNumbers - 1) * this.standardGap;
 
-          console.log(totalXLength, totalYLength, imageSet.textureUrls.length)
+          imageSet.textureUrls.forEach((texture) => {
+            const geometry = new THREE.BoxGeometry(imageSet.shape[1], imageSet.shape[0], 1);
+            const material = new THREE.MeshBasicMaterial({
+              // TODO: Implement error handling here
+              map: textureLoader.load(texture.href),
+            });
+            const layerMesh = new THREE.Mesh(geometry, material);
+
+            layerMesh.position.x = xDimensionCumulative + imageSet.shape[1] / 2 - totalXLength / 2;
+            layerMesh.position.y = yDimensionCumulative + imageSet.shape[0] / 2;
+            // layerMesh.position.y = maximumHeight / 2;
+            layerMesh.updateMatrix();
+
+            this.objectsToDisposal.push(geometry);
+            this.objectsToDisposal.push(material);
+            this.scene.add(layerMesh);
+
+            xDimensionCumulative += this.standardGap + imageSet.shape[1];
+
+            xCellNumber++;
+            yCellNumber++;
+
+            if (xCellNumber == cellNumbers) {
+              xCellNumber = 0;
+              yDimensionCumulative += this.standardGap + imageSet.shape[0];
+              xDimensionCumulative = 0;
+            }
+
+            const grid = new THREE.GridHelper(totalXLength * 1.25, totalXLength / 100);
+            this.objectsToDisposal.push(grid);
+            this.scene.add(grid);
+          });
 
         } else {
           // TODO: Throw error that unknown mode was hit
