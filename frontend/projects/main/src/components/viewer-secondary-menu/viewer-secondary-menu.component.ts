@@ -22,4 +22,8 @@ export class ViewerSecondaryMenuComponent {
       new CameraOrientation(new THREE.Vector3(0, 5, -10), new THREE.Vector3(0, 0, 0), 1.0)
     );
   }
+
+  onCanvasClear() {
+    this.viewerController.setClearCanvas();
+  }
 }

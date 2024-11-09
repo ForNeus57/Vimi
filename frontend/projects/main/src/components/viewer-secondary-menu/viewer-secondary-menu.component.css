@@ -1,10 +1,14 @@
 :host {
   position: absolute;
-  bottom: calc(var(--horizontal-navigation-bar-height) + var(--standard-gap));
-  right: calc(100% - var(--horizontal-navigation-bar-height));
+  bottom: var(--horizontal-navigation-bar-height);
+  padding: var(--half-gap) var(--standard-gap);
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  gap: var(--standard-gap);
 }
 
-button.btn-change-camera {
+button.btn-change-canvas-properties {
   aspect-ratio: 1/1;
 }
 
