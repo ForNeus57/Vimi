@@ -8,7 +8,7 @@ export class NetworkOutputRequestData {
     public architecture: number,
     public network_input: string,
     public layer_index: number,
-    public normalization_method: string,
+    public normalization: number,
   ) {
   }
 }

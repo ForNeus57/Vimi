@@ -9,6 +9,7 @@ urlpatterns = [
     path('network_input/process/', views.NetworkInputProcessView.as_view(), name='api-network-input-process'),
 
     path('color_map/', views.ColorMapAllView.as_view(), name='api-color-map'),
+    # TODO: Consider changing the order of arguments in this url
     path('color_map/process/<uuid:activation>/<int:filter_index>/<int:color_map>/',
          view=views.ColorMapProcessView.as_view(),
          name='api-color-map-process'),

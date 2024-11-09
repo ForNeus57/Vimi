@@ -26,19 +26,18 @@
           name="normalizatioName"
           class="viewer-control-menu"
           style="align-self: stretch"
-          [(ngModel)]="selectedNormalization">
+          [(ngModel)]="selectedNormalizationId">
     <option value="null">
       Normalization ...
     </option>
-    <option value="local">
-      Local
-    </option>
-    <option value="global">
-      Global
-    </option>
+    @for (normalization of normalizations; track normalization.id) {
+      <option [value]="normalization.id">
+        {{normalization.name}}
+      </option>
+    }
   </select>
   <button class="btn-small btn-primary"
-          [disabled]="isDownloadActivationsDisabled"
+          [disabled]="isDownloadActivationsDisabled()"
           (click)="onDownloadActivations()">
     Download
   </button>
@@ -48,7 +47,7 @@
           name="colorMapName"
           class="viewer-control-menu"
           style="align-self: stretch"
-          [(ngModel)]="selectedColorMapIndex">
+          [(ngModel)]="selectedColorMapId">
     <option value="null">
       Color Map ...
     </option>
@@ -59,7 +58,7 @@
     }
   </select>
   <button class="btn-small btn-primary"
-          [disabled]="isColorMapChangeDisabled"
+          [disabled]="isColorMapChangeDisabled()"
           (click)="onColorMapChange()">
     Change
   </button>

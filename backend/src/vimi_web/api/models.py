@@ -25,6 +25,7 @@ class Architecture(models.Model):
     name = models.CharField(max_length=64, unique=True, editable=False)
     module = models.CharField(max_length=64, editable=False)
     layers = postgresql_fields.ArrayField(base_field=models.CharField(max_length=64))
+    # TODO: Consider removing this model parameter
     dimensions = postgresql_fields.ArrayField(
         base_field=postgresql_fields.ArrayField(
             base_field=models.PositiveIntegerField(default=1),

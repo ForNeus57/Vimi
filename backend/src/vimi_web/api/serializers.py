@@ -60,7 +60,6 @@ class NetworkInputProcessSerializer(serializers.ModelSerializer):
         match normalization:
             case Activation.Normalization.LOCAL:
                 maximum = np.max(activation)
-                maximum[maximum == 0.] = 1.
                 activation_norm = (activation - np.min(activation)) / maximum
 
             case Activation.Normalization.GLOBAL:

@@ -9,6 +9,7 @@ import {DataLayerService} from "../../services/data-layer/data-layer.service";
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {Layer} from "../../models/layer";
 import {FormsModule} from "@angular/forms";
+import {Normalization} from "../../models/normalization";
 
 @Component({
   selector: 'app-viewer-menu-file',
@@ -33,10 +34,10 @@ export class ViewerMenuFileComponent implements OnInit {
 
   internalArchitecture = signal<Architecture | null>(null);
   selectedLayerIndex = signal<number | null>(null);
-  selectedColorMapIndex = signal<number | null>(null);
+  selectedColorMapId = signal<number | null>(null);
   selectedFileId = signal<string | null>(null);
   selectedActivations = signal<NetworkOutput | null>(null);
-  selectedNormalization = signal<string | null>(null);
+  selectedNormalizationId = signal<number | null>(null);
 
   readonly computedLayers = computed(() => {
     const architecture = this.internalArchitecture();
@@ -52,14 +53,16 @@ export class ViewerMenuFileComponent implements OnInit {
     const architecture = this.internalArchitecture();
     const fileId = this.selectedFileId();
     const layerIndex = this.selectedLayerIndex();
+    const normalization = this.selectedNormalizationId();
 
     return architecture == null
       || fileId == null
-      || layerIndex == null;
+      || layerIndex == null
+      || normalization == null;
   });
   readonly isColorMapChangeDisabled = computed(() => {
     // TODO: Fix the fact that this do not update once in a while
-    const colorMapIndex = this.selectedColorMapIndex();
+    const colorMapIndex = this.selectedColorMapId();
     const activations = this.selectedActivations();
 
     return colorMapIndex == null
@@ -68,6 +71,7 @@ export class ViewerMenuFileComponent implements OnInit {
 
   viewMode = '1d';
   colorMaps = Array<ColorMap>();
+  normalizations = Array<Normalization>();
 
   constructor(
     private dataLayer: DataLayerService,
@@ -85,6 +89,18 @@ export class ViewerMenuFileComponent implements OnInit {
         },
         error: (error) => {
           this.notificationHandler.error('Failed to load color maps');
+          this.notificationHandler.error(error);
+        },
+      });
+
+    this.dataLayer.get<Normalization[]>('/api/1/activation/normalization/')
+      .subscribe({
+        next: (normalizations) => {
+          this.normalizations = normalizations;
+          this.notificationHandler.success('Normalizations loaded');
+        },
+        error: (error) => {
+          this.notificationHandler.error('Failed to load normalizations');
           this.notificationHandler.error(error);
         },
       });
@@ -124,16 +140,12 @@ export class ViewerMenuFileComponent implements OnInit {
 
   onDownloadActivations() {
     const architecture = this.internalArchitecture();
-    const fileId = this.selectedFileId();
     const layerIndex = this.selectedLayerIndex();
+    const fileId = this.selectedFileId();
+    const normalization = this.selectedNormalizationId();
 
     if (architecture == null) {
       this.notificationHandler.info('Architecture is not selected');
-      return;
-    }
-
-    if (fileId == null) {
-      this.notificationHandler.info('File has no UUID assigned');
       return;
     }
 
@@ -142,11 +154,22 @@ export class ViewerMenuFileComponent implements OnInit {
       return;
     }
 
+    if (fileId == null) {
+      this.notificationHandler.info('File has no UUID assigned');
+      return;
+    }
+
+    if (normalization == null) {
+      this.notificationHandler.info('Normalization is not selected');
+      return;
+    }
+
+
     const postData = new NetworkOutputRequestData(
       architecture.id,
       fileId,
       layerIndex,
-      "local",
+      normalization,
     );
     this.dataLayer.post<NetworkOutput>('/api/1/network_input/process/', postData)
       .subscribe({
@@ -155,10 +178,10 @@ export class ViewerMenuFileComponent implements OnInit {
           this.selectedActivations.set(output);
 
           // TODO: Make it less dodgy
-          const previousColorMap = this.selectedColorMapIndex();
-          this.selectedColorMapIndex.set(this.colorMaps[0].id)
+          const previousColorMap = this.selectedColorMapId();
+          this.selectedColorMapId.set(this.colorMaps[0].id)
           this.onColorMapChange();
-          this.selectedColorMapIndex.set(previousColorMap);
+          this.selectedColorMapId.set(previousColorMap);
         },
         error: (error) => {
           this.notificationHandler.error('Failed to download activations');
@@ -168,7 +191,7 @@ export class ViewerMenuFileComponent implements OnInit {
   }
 
   onColorMapChange() {
-    const colorMap = this.selectedColorMapIndex();
+    const colorMap = this.selectedColorMapId();
     const activations = this.selectedActivations();
 
     if (colorMap == null) {
