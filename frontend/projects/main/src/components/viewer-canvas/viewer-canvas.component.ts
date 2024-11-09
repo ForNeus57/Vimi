@@ -40,7 +40,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   private controls: MapControls | null = null;
   private renderer: THREE.WebGLRenderer | null = null;
 
-  // I hate the fact it has to be like that
+  // TODO: I hate the fact it has to be like that
   private animate = () => {
     if (this.controls != null
         && this.renderer != null
@@ -65,17 +65,20 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((imageSet) => {
         this.continueAnimation = false;
 
+        this.cleanCanvas()
+
         const textureLoader = new THREE.TextureLoader();
         const maximumHeight = imageSet.shape[0];
         if (imageSet.mode == '1d') {
           let xDimensionCumulative = 0;
           const totalXLength = imageSet.textureUrls.length * imageSet.shape[1] + (imageSet.textureUrls.length - 1) * this.standardGap;
 
-          imageSet.textureUrls.forEach((texture) => {
+          imageSet.textureUrls.forEach((textureUrl) => {
             const geometry = new THREE.BoxGeometry(imageSet.shape[1], imageSet.shape[0], 1);
+            const texture = textureLoader.load(textureUrl.href);
             const material = new THREE.MeshBasicMaterial({
               // TODO: Implement error handling here
-              map: textureLoader.load(texture.href),
+              map: texture
             });
             const layerMesh = new THREE.Mesh(geometry, material);
 
@@ -83,8 +86,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
             layerMesh.position.y = maximumHeight / 2;
             layerMesh.updateMatrix();
 
-            this.objectsToDisposal.push(geometry);
-            this.objectsToDisposal.push(material);
+            this.objectsToDisposal.push(layerMesh);
             this.scene.add(layerMesh);
 
             xDimensionCumulative += this.standardGap + imageSet.shape[1];
@@ -99,8 +101,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
           let xCellNumber = 0;
           let yCellNumber = 0;
           const cellNumbers = Math.ceil(Math.sqrt(imageSet.textureUrls.length))
-          const totalXLength = cellNumbers * imageSet.shape[0] + (cellNumbers - 1) * this.standardGap;
-          const totalYLength = cellNumbers * imageSet.shape[1] + (cellNumbers - 1) * this.standardGap;
+          const totalXLength = cellNumbers * imageSet.shape[1] + (cellNumbers - 1) * this.standardGap;
 
           imageSet.textureUrls.forEach((texture) => {
             const geometry = new THREE.BoxGeometry(imageSet.shape[1], imageSet.shape[0], 1);
@@ -112,11 +113,9 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
             layerMesh.position.x = xDimensionCumulative + imageSet.shape[1] / 2 - totalXLength / 2;
             layerMesh.position.y = yDimensionCumulative + imageSet.shape[0] / 2;
-            // layerMesh.position.y = maximumHeight / 2;
             layerMesh.updateMatrix();
 
-            this.objectsToDisposal.push(geometry);
-            this.objectsToDisposal.push(material);
+            this.objectsToDisposal.push(layerMesh);
             this.scene.add(layerMesh);
 
             xDimensionCumulative += this.standardGap + imageSet.shape[1];
@@ -134,80 +133,9 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
             this.objectsToDisposal.push(grid);
             this.scene.add(grid);
           });
-
         } else {
           // TODO: Throw error that unknown mode was hit
         }
-
-        // if (dimensions.every(item => item.every(item2 => !Array.isArray(item2)))) {
-        //   dimensions = dimensions as number[][]
-        //   let z_dimension = 0
-        //   dimensions.forEach((layer, index) => {
-        //     const geometry = new THREE.BoxGeometry(layer[0], layer[1], layer[2]);
-        //     const material = new THREE.MeshBasicMaterial({
-        //       color: new THREE.Color(Math.random() * 0xffffff)
-        //     });
-        //     const layerMesh = new THREE.Mesh(geometry, material);
-        //
-        //     layerMesh.name = index.toString()
-        //     layerMesh.position.z = z_dimension + layer[2] / 2;
-        //     layerMesh.updateMatrix();
-        //
-        //     this.objectsToDisposal.push(layerMesh.name);
-        //     this.scene.add(layerMesh);
-        //
-        //     z_dimension += 50 + layer[2];
-        //   });
-        //
-        //   const grid = new THREE.GridHelper(z_dimension * 3, z_dimension * 3 / 100);
-        //   this.objectsToDisposal.push(grid.name);
-        //   this.scene.add(grid);
-        // } else {
-        // const objectCount = imageSet.length * imageSet[0].length * imageSet[0][0].length * imageSet[0][0][0].length;
-        //
-        // const geometry = new BoxGeometry(1, 1, 1);
-        // const material = new THREE.MeshBasicMaterial();
-        // const mesh = new THREE.InstancedMesh(geometry, material, objectCount);
-        // mesh.matrixAutoUpdate = false;
-        // this.objectsToDisposal.push(mesh);
-        // this.objectsToDisposal.push(material);
-        // this.objectsToDisposal.push(geometry);
-        // this.scene.add(mesh);
-        //
-        // const obj = new THREE.Object3D();
-        // obj.position.z = this.z_shift;
-        // let counter = 0;
-        // let distanceX = 0;
-        // const color = new THREE.Color();
-        //
-        // for (let i = 0; i < imageSet.length; ++i) {
-        //   for (let j = 0; j < imageSet[i].length; ++j) {
-        //     for (let k = 0; k < imageSet[i][j].length; ++k) {
-        //       obj.position.x = distanceX;
-        //       obj.position.y = k * 1.05;
-        //       obj.updateMatrix();
-        //       obj.matrixAutoUpdate = false;
-        //       mesh.setMatrixAt(counter, obj.matrix);
-        //
-        //       color.set(
-        //         imageSet[i][j][k][0] / 255,
-        //         imageSet[i][j][k][1] / 255,
-        //         imageSet[i][j][k][2] / 255,
-        //       );
-        //       mesh.setColorAt(counter, color);
-        //
-        //       counter++;
-        //     }
-        //     distanceX += 1.05;
-        //   }
-        //   distanceX += 10;
-        // }
-
-        // const grid = new THREE.GridHelper(distanceX * 1.5, distanceX * 3 / 100);
-        // grid.position.x = distanceX / 2;
-        // const grid = new THREE.GridHelper(1000, 30);
-        // this.objectsToDisposal.push(grid);
-        // this.scene.add(grid);
 
         this.continueAnimation = true;
         this.animate();
@@ -233,12 +161,11 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       )
       .subscribe(() => {
         this.continueAnimation = false;
+        this.cleanCanvas()
 
-        this.objectsToDisposal.forEach((object) => {
-          object.dispose();
-          this.scene.remove(object);
-        });
-        this.objectsToDisposal.length = 0;
+        const grid = new THREE.GridHelper(100, 10);
+        this.objectsToDisposal.push(grid);
+        this.scene.add(grid);
 
         this.continueAnimation = true;
         this.animate();
@@ -289,5 +216,17 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.renderer) {
       this.renderer.setSize(canvasElement.clientWidth, canvasElement.clientHeight);
     }
+  }
+
+  private cleanCanvas() {
+    this.objectsToDisposal.forEach((object) => {
+      this.scene.remove(object);
+      object.geometry.dispose();
+      if (object.material.map != null) {
+        object.material.map.dispose();
+      }
+      object.material.dispose();
+    });
+    this.objectsToDisposal.length = 0;
   }
 }
