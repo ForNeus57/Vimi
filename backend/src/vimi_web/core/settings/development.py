@@ -181,6 +181,7 @@ REST_FRAMEWORK = {
     ),
 }
 
+# TODO: Consider using a static file instead of this
 SIGNING_KEY = generate_rsa_private_key(1024).private_bytes(
     encoding=serialization.Encoding.PEM,
     format=serialization.PrivateFormat.TraditionalOpenSSL,

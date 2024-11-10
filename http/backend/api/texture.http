@@ -1,0 +1,1 @@
+GET {{host}}/api/1/texture/?texture=12ebdf7b-6388-4468-9e4a-4228b6e80b20&filter_index=31&cube_side=5&quality=4&compression_level=9 HTTP/1.1

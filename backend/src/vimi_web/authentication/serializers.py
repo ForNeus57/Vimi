@@ -5,9 +5,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password, get_password_validators
 from rest_framework import serializers
 
-from vimi_web.api.models import UserDetail
+from vimi_web.authentication.models import UserDetail
 
 User = get_user_model()
+
 
 class RegisterUserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(

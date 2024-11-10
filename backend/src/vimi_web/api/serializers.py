@@ -4,33 +4,36 @@ from typing import Any
 import cv2
 import keras
 import numpy as np
+from django.core.files.base import ContentFile
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 
-from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation
+from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation, Texture
 
 
 class ArchitectureAllSerializer(serializers.ModelSerializer):
     class Meta:
         model = Architecture
-        fields = ('id', 'name', 'layers', 'dimensions',)
+        fields = ('uuid', 'name', 'layers',)
 
 
-class UploadNetworkInputSerializer(serializers.Serializer):
+class NetworkInputSerializer(serializers.Serializer):
     # TODO: Validate the file is not too big
     file = serializers.FileField(max_length=128)
 
     def create(self, validated_data: Mapping[str, Any]) -> NetworkInput:
         instance = NetworkInput.objects.create(file=validated_data['file'])
         instance.save()
-
         return instance
 
 
 class NetworkInputProcessSerializer(serializers.ModelSerializer):
-    architecture = serializers.PrimaryKeyRelatedField(queryset=Architecture.objects.all())
-    network_input = serializers.PrimaryKeyRelatedField(queryset=NetworkInput.objects.all())
+    architecture = serializers.SlugRelatedField(slug_field='uuid',
+                                                queryset=Architecture.objects.all())
+    network_input = serializers.SlugRelatedField(slug_field='uuid',
+                                                 queryset=NetworkInput.objects.all())
     layer_index = serializers.IntegerField(min_value=0)
+    normalization = serializers.ChoiceField(choices=Activation.Normalization.choices)
 
     class Meta:
         model = Activation
@@ -72,34 +75,62 @@ class NetworkInputProcessSerializer(serializers.ModelSerializer):
 
         activation_norm = (activation_norm * 255.).astype(np.uint8)
 
-        instance = Activation.objects.create(activation_binary=activation_norm.tobytes(),
-                                             shape=activation_norm.shape,
+        instance = Activation.objects.create(architecture=architecture,
+                                             network_input=network_input,
+                                             activation_binary=Activation.to_file(activation_norm),
                                              normalization=normalization)
         instance.save()
-
         return instance
+
+
+class ActivationNormalizationAllSerializer(serializers.Serializer):
+    id = serializers.CharField(max_length=32)
+    name = serializers.CharField(max_length=32)
 
 
 class ColorMapAllSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColorMap
-        fields = ('id', 'name',)
+        fields = ('uuid', 'name',)
 
 
 class ColorMapProcessSerializer(serializers.Serializer):
-    activation = serializers.PrimaryKeyRelatedField(queryset=Activation.objects.all())
+    activation = serializers.SlugRelatedField(slug_field='uuid',
+                                              queryset=Activation.objects.all())
+    color_map = serializers.SlugRelatedField(slug_field='uuid',
+                                             queryset=ColorMap.objects.all())
+
+    def create(self, validated_data: Mapping[str, Any]) -> Texture:
+        activation = validated_data['activation']
+        color_map = validated_data['color_map']
+
+        activation_data = activation.to_numpy()
+        activations_colored = color_map.apply_color_map(activation_data)
+
+        instance = Texture.objects.create(activation=activation,
+                                          color_map=color_map,
+                                          binary_data_file=Texture.to_file(activations_colored))
+        instance.save()
+        return instance
+
+
+class TextureSerializer(serializers.Serializer):
+    texture = serializers.SlugRelatedField(slug_field='uuid',
+                                           queryset=Texture.objects.all())
+    # TODO: Validate this field
     filter_index = serializers.IntegerField(min_value=0)
-    color_map = serializers.PrimaryKeyRelatedField(queryset=ColorMap.objects.all())
+    cube_side = serializers.ChoiceField(choices=Texture.CubeSide.choices)
+    quality = serializers.IntegerField(min_value=1, max_value=16)
+    compression_level = serializers.IntegerField(min_value=0, max_value=9)
 
-    def validate(self, data: Mapping[str, Any]) -> Mapping[str, Any]:
-        _, _, z_size = data['activation'].to_numpy().shape
+    def create(self, validated_data: Mapping[str, Any]) -> ContentFile:
+        texture = validated_data['texture']
+        filter_index = validated_data['filter_index']
+        cube_size = validated_data['cube_side']
+        quality = validated_data['quality']
+        compression_level = validated_data['cube_side']
 
-        if data['filter_index'] >= z_size:
-            raise ValidationError("filter_index is out of range for given activations")
-
-        return data
+        filter_slice = texture.get_slice(filter_index, cube_size, quality)
+        return texture.get_file(filter_slice, compression_level)
 
 
-class ActivationNormalizationAllSerializer(serializers.Serializer):
-    id = serializers.IntegerField(min_value=0)
-    name = serializers.CharField(max_length=32)

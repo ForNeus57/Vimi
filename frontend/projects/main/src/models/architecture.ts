@@ -1,6 +1,6 @@
 export class Architecture {
   constructor(
-    public id: number,
+    public uuid: string,
     public name: string,
     public layers: Array<string>,
     public dimensions: Array<Array<number>>,

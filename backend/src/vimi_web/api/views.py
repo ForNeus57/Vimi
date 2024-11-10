@@ -1,8 +1,7 @@
-"""All views for API Application"""
-from uuid import UUID
-
+"""All views for Django API Application"""
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny
+from rest_framework.renderers import JSONRenderer, BaseRenderer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -11,10 +10,11 @@ from vimi_web.api.models import Architecture, ColorMap, Activation
 from vimi_web.api.renderers import TextureFileRenderer
 from vimi_web.api.serializers import (
     ArchitectureAllSerializer,
-    UploadNetworkInputSerializer,
+    NetworkInputSerializer,
     NetworkInputProcessSerializer,
     ColorMapAllSerializer,
-    ColorMapProcessSerializer, ActivationNormalizationAllSerializer,
+    ColorMapProcessSerializer,
+    ActivationNormalizationAllSerializer, TextureSerializer,
 )
 
 
@@ -31,9 +31,9 @@ class ArchitectureAllView(APIView):
         return Response(serializer.data, status=200)
 
 
-class UploadNetworkInputView(APIView):
+class NetworkInputView(APIView):
     permission_classes = (AllowAny,)
-    serializer_class = UploadNetworkInputSerializer
+    serializer_class = NetworkInputSerializer
     parser_classes = (MultiPartParser, FormParser,)
 
     def post(self, request: Request) -> Response:
@@ -42,7 +42,8 @@ class UploadNetworkInputView(APIView):
 
         if serializer.is_valid():
             instance = serializer.save()
-            return Response({'id': instance.id}, status=201)
+
+            return Response({'uuid': instance.uuid}, status=201)
 
         return Response(serializer.errors, status=400)
 
@@ -57,9 +58,21 @@ class NetworkInputProcessView(APIView):
         if serializer.is_valid():
             instance = serializer.save()
 
-            return Response({'id': instance.id, 'filters_shape': instance.shape}, status=201)
+            return Response({'uuid': instance.uuid}, status=201)
 
         return Response(serializer.errors, status=400)
+
+
+class ActivationNormalizationAllView(APIView):
+    """Return all supported Activation Normalization Types"""
+    permission_classes = (AllowAny,)
+    serializer_class = ActivationNormalizationAllSerializer
+
+    def get(self, request: Request) -> Response:
+        serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]}, Activation.Normalization.choices),
+                                           many=True)
+
+        return Response(serializer.data, status=200)
 
 
 class ColorMapAllView(APIView):
@@ -77,38 +90,33 @@ class ColorMapAllView(APIView):
 class ColorMapProcessView(APIView):
     permission_classes = (AllowAny,)
     serializer_class = ColorMapProcessSerializer
-    renderer_classes = (TextureFileRenderer,)
 
-    def get(self, request: Request, activation: UUID, filter_index: int, color_map: int) -> Response:
-        serializer = self.serializer_class(data={
-            'activation': activation,
-            'filter_index': filter_index,
-            'color_map': color_map,
-        })
+    def post(self, request: Request) -> Response:
+        serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            activation = serializer.validated_data['activation']
-            filter_index = serializer.validated_data['filter_index']
-            color_map = serializer.validated_data['color_map']
+            instance = serializer.save()
 
-            filter_activations = activation.to_numpy()[:, :, filter_index]
-            filter_colored = color_map.apply_color_map(filter_activations)
-            texture = ColorMap.get_generated_texture(filter_colored)
-
-            return Response(texture.read(),
-                            status=200,
-                            headers={'Content-Disposition': f'attachment; filename="{texture.name}"'},
-                            content_type='image/png')
+            return Response({'urls': instance.get_available_urls(request)}, status=201)
 
         return Response(serializer.errors, status=400)
 
 
-class ActivationNormalizationAllView(APIView):
+class TextureView(APIView):
     permission_classes = (AllowAny,)
-    serializer_class = ActivationNormalizationAllSerializer
+    serializer_class = TextureSerializer
+    # TODO: Write custom negotiation of the renderer
+    renderer_classes = (TextureFileRenderer, JSONRenderer,)
 
     def get(self, request: Request) -> Response:
-        serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]}, Activation.Normalization.choices),
-                                           many=True)
+        serializer = self.serializer_class(data=request.query_params)
 
-        return Response(serializer.data, status=200)
+        if serializer.is_valid():
+            instance = serializer.save()
+
+            return Response(instance.read(),
+                            status=200,
+                            headers={'Content-Disposition': f'attachment; filename="{instance.name}"'},
+                            content_type='image/png')
+
+        return Response(serializer.errors, status=400)

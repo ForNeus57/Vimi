@@ -5,9 +5,9 @@ export interface NetworkOutput {
 
 export class NetworkOutputRequestData {
   constructor(
-    public architecture: number,
-    public network_input: string,
+    public architecture: string,
     public layer_index: number,
+    public network_input: string,
     public normalization: number,
   ) {
   }

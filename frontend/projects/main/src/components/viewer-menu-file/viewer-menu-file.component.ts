@@ -166,9 +166,9 @@ export class ViewerMenuFileComponent implements OnInit {
 
 
     const postData = new NetworkOutputRequestData(
-      architecture.id,
-      fileId,
+      architecture.uuid,
       layerIndex,
+      fileId,
       normalization,
     );
     this.dataLayer.post<NetworkOutput>('/api/1/network_input/process/', postData)

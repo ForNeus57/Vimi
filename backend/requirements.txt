@@ -3,7 +3,6 @@ asgiref==3.8.1
 astroid==3.2.4
 astunparse==1.6.3
 bcrypt==4.2.0
-certifi==2024.8.30
 cffi==1.17.0
 charset-normalizer==3.4.0
 colorama==0.4.6
@@ -46,9 +45,10 @@ nvidia-cusolver-cu12==11.5.4.101
 nvidia-cusparse-cu12==12.2.0.103
 nvidia-nccl-cu12==2.19.3
 nvidia-nvjitlink-cu12==12.3.101
+opencv-python==4.10.0.84
 opt_einsum==3.4.0
 optree==0.13.0
-packaging==24.1
+pillow==11.0.0
 platformdirs==4.2.2
 pluggy==1.5.0
 protobuf==4.25.5
@@ -60,11 +60,11 @@ PyJWT==2.9.0
 pylint==3.2.6
 pytest==8.3.2
 pytest-cov==5.0.0
+pytest-django==4.9.0
+python-dotenv==1.0.1
 redis==5.0.8
-requests==2.32.3
 rich==13.9.2
 setuptools==72.1.0
-six==1.16.0
 sqlparse==0.5.1
 tensorboard==2.17.1
 tensorboard-data-server==0.7.2
@@ -73,7 +73,6 @@ termcolor==2.5.0
 tomlkit==0.13.2
 typing_extensions==4.12.2
 tzdata==2024.1
-urllib3==2.2.3
 websockets==12.0
 Werkzeug==3.0.4
 wheel==0.43.0

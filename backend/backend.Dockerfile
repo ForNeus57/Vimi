@@ -1,4 +1,4 @@
-FROM python:latest
+FROM tensorflow/tensorflow:latest-gpu
 
 WORKDIR /opt/vimi_backend
 
