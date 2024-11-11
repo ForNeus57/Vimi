@@ -1,4 +1,4 @@
-<li class="viewer-menu viewer-menu-side standard-shadow">
+<li class="viewer-menu viewer-menu-main standard-shadow">
   <select id="layerName"
           name="layerName"
           class="viewer-control-menu"
@@ -12,56 +12,6 @@
       </option>
     }
   </select>
-</li>
-<li class="viewer-menu viewer-menu-main standard-shadow">
-  <input id="file"
-         type="file"
-         style="display: none"
-         (change)="onFileChange($event)" #fileUpload>
-  <button class="btn-small btn-primary"
-          (click)="fileUpload.click()">
-    Upload
-  </button>
-  <select id="normalizationName"
-          name="normalizatioName"
-          class="viewer-control-menu"
-          style="align-self: stretch"
-          [(ngModel)]="selectedNormalizationId">
-    <option value="null">
-      Normalization ...
-    </option>
-    @for (normalization of normalizations; track normalization.id) {
-      <option [value]="normalization.id">
-        {{normalization.name}}
-      </option>
-    }
-  </select>
-  <button class="btn-small btn-primary"
-          [disabled]="isDownloadActivationsDisabled()"
-          (click)="onDownloadActivations()">
-    Download
-  </button>
-</li>
-<li class="viewer-menu viewer-menu-main-secondary standard-shadow">
-  <select id="colorMapName"
-          name="colorMapName"
-          class="viewer-control-menu"
-          style="align-self: stretch"
-          [(ngModel)]="selectedColorMapUUID">
-    <option value="null">
-      Color Map ...
-    </option>
-    @for(colorMap of colorMaps; track colorMap.uuid) {
-      <option [value]="colorMap.uuid">
-        {{colorMap.name}}
-      </option>
-    }
-  </select>
-  <button class="btn-small btn-primary"
-          [disabled]="isColorMapChangeDisabled()"
-          (click)="onColorMapChange()">
-    Change
-  </button>
 </li>
 <li class="viewer-menu viewer-control-menu standard-shadow">
   <button class="viewer-control-menu"

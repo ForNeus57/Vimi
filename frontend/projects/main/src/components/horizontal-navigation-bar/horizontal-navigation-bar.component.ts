@@ -1,8 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
-import {AuthenticationService} from "../../services/authentication/authentication.service";
 import {NgClass} from "@angular/common";
-import {Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-horizontal-navigation-bar',
@@ -11,32 +9,10 @@ import {Subject, takeUntil} from "rxjs";
   templateUrl: './horizontal-navigation-bar.component.html',
   styleUrl: './horizontal-navigation-bar.component.scss'
 })
-export class HorizontalNavigationBarComponent implements OnInit, OnDestroy {
-  private ngUnsubscribe = new Subject<void>();
-
-  public isLoggedIn = false;
-
+export class HorizontalNavigationBarComponent {
   constructor(
-      private AuthenticationService: AuthenticationService,
       private router: Router,
   ) {
-  }
-
-  ngOnInit() {
-    this.AuthenticationService.getIsLoggedInObs()
-      .pipe(takeUntil(this.ngUnsubscribe),)
-      .subscribe((isLoggedIn) => {
-        this.isLoggedIn = isLoggedIn;
-      });
-  }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
-
-  public logout() {
-    this.AuthenticationService.logout();
   }
 
   public checkIfActive(route: string) {

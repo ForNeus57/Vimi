@@ -192,6 +192,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     this.renderer.setClearColor(0xffffff, 1);
     this.renderer.setSize(canvasWidth, canvasHeight);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
 
     const grid = new THREE.GridHelper(100, 10);
     this.objectsToDisposal.push(grid);

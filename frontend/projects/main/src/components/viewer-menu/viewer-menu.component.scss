@@ -44,6 +44,14 @@ li.viewer-control-menu {
   width: calc(var(--horizontal-navigation-bar-height) - var(--standard-gap) * 2);
   aspect-ratio: 1 / 1;
 }
+li.viewer-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--standard-gap);
+
+  padding: 0 var(--standard-gap);
+}
 li.viewer-menu-main {
   flex: 1;
 
