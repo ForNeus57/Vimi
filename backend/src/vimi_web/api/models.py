@@ -206,19 +206,19 @@ class Texture(models.Model):
 
     def positive_x(self, index: int) -> np.ndarray:
         selected_filter = self.to_numpy()[:, :, :, index]
-        return selected_filter[:, -1, :]
+        return np.expand_dims(selected_filter[:, -1, :], axis=1)
 
     def negative_x(self, index: int) -> np.ndarray:
         selected_filter = self.to_numpy()[:, :, :, index]
-        return selected_filter[:, 0, :]
+        return np.expand_dims(selected_filter[:, 0, :], axis=1)
 
     def positive_y(self, index: int) -> np.ndarray:
         selected_filter = self.to_numpy()[:, :, :, index]
-        return selected_filter[-1, 0, :]
+        return np.expand_dims(selected_filter[-1, :, :], axis=0)
 
     def negative_y(self, index: int) -> np.ndarray:
         selected_filter = self.to_numpy()[:, :, :, index]
-        return selected_filter[0, :, :]
+        return np.expand_dims(selected_filter[0, :, :], axis=0)
 
     def positive_z(self, index: int) -> np.ndarray:
         selected_filter = self.to_numpy()[:, :, :, index]
