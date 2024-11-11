@@ -11,6 +11,9 @@ urlpatterns = [
     path('activation/normalization/',
          view=views.ActivationNormalizationAllView.as_view(),
          name='api-activation-normalization'),
+    path('activation/input_transformation/',
+         view=views.ActivationInputTransformationAllView.as_view(),
+         name='api-activation-input-mode'),
 
     path('color_map/', views.ColorMapAllView.as_view(), name='api-color-map'),
     path('color_map/process/', view=views.ColorMapProcessView.as_view(), name='api-color-map-process'),

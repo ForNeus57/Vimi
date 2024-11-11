@@ -12,12 +12,23 @@
       </option>
     }
   </select>
+
+  <button class="btn-small btn-primary">
+    Update Canvas
+  </button>
 </li>
 <li class="control-background control-state-button standard-shadow">
   <button class="control"
           [ngClass]="{'active': canvasElementPlacement === '1d'}"
           (click)="on1dViewModeActivation()">
     <i class="bi bi-three-dots control"></i>
+  </button>
+</li>
+<li class="control-background control-state-button standard-shadow">
+  <button class="control"
+          [ngClass]="{'active': canvasElementPlacement === '1dz'}"
+          (click)="on1dzViewModeActivation()">
+    <i class="bi bi-three-dots-vertical control"></i>
   </button>
 </li>
 <li class="control-background control-state-button standard-shadow">

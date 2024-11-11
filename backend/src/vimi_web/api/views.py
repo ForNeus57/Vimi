@@ -15,7 +15,7 @@ from vimi_web.api.serializers import (
     NetworkInputProcessSerializer,
     ColorMapAllSerializer,
     ColorMapProcessSerializer,
-    ActivationNormalizationAllSerializer, TextureSerializer,
+    ActivationNormalizationAllSerializer, TextureSerializer, ActivationInputTransformationAllSerializer,
 )
 
 
@@ -71,6 +71,18 @@ class ActivationNormalizationAllView(APIView):
 
     def get(self, request: Request) -> Response:
         serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]}, Activation.Normalization.choices),
+                                           many=True)
+
+        return Response(serializer.data, status=200)
+
+
+class ActivationInputTransformationAllView(APIView):
+    """Return all supported Activation Input Transformation"""
+    permission_classes = (AllowAny,)
+    serializer_class = ActivationInputTransformationAllSerializer
+
+    def get(self, request: Request) -> Response:
+        serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]}, Activation.InputTransformation.choices),
                                            many=True)
 
         return Response(serializer.data, status=200)

@@ -1,1 +1,35 @@
-<p>viewer-menu-detail works!</p>
+<li class="control-background control-main standard-shadow">
+  <select id="layerName"
+          name="layerName"
+          class="control"
+          [(ngModel)]="selectedLayerIndex">
+    <option value="null">
+      Layer ...
+    </option>
+    @for(layer of computedLayers(); track layer.id) {
+      <option [value]="layer.id">
+        {{layer.name}}
+      </option>
+    }
+  </select>
+  <select id="filterName"
+          name="filterName"
+          class="control"
+          [(ngModel)]="selectedLayerIndex">
+    <option value="null">
+      Filter Number ...
+    </option>
+    @for(layer of computedLayers(); track layer.id) {
+      <option [value]="layer.id">
+        {{layer.name}}
+      </option>
+    }
+  </select>
+
+  <button class="btn-small btn-primary">
+    Update Canvas
+  </button>
+</li>
+<li class="control-background control standard-shadow">
+  <p>333.222</p>
+</li>

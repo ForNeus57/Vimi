@@ -19,6 +19,8 @@ import {FormsModule} from "@angular/forms";
   encapsulation: ViewEncapsulation.None,
 })
 export class ViewerMenuFileComponent {
+  // TODO: Rename this to ViewMenuLayerComponent
+
   @Input({required: true})
   set architecture(newArchitecture: Architecture | null) {
     this.internalArchitecture.set(newArchitecture);
@@ -46,6 +48,10 @@ export class ViewerMenuFileComponent {
 
   on1dViewModeActivation() {
     this.canvasElementPlacement = '1d';
+  }
+
+  on1dzViewModeActivation() {
+    this.canvasElementPlacement = '1dz';
   }
 
   on2dViewModeActivation() {

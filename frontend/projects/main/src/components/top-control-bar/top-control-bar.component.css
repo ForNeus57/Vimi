@@ -1,6 +1,6 @@
 :host {
   height: var(--horizontal-menu-size);
-  z-index: 9999;
+  z-index: 1;
   background-color: var(--primary-color);
   border-radius: 0 0 var(--horizontal-menu-border-radius) var(--horizontal-menu-border-radius);
   padding: var(--horizontal-menu-inner-padding) var(--horizontal-menu-border-radius);

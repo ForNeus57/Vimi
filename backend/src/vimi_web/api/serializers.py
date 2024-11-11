@@ -88,6 +88,11 @@ class ActivationNormalizationAllSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=32)
 
 
+class ActivationInputTransformationAllSerializer(serializers.Serializer):
+    id = serializers.CharField(max_length=64)
+    name = serializers.CharField(max_length=64)
+
+
 class ColorMapAllSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColorMap
