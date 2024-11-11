@@ -12,8 +12,8 @@ import {MatSlider, MatSliderRangeThumb} from "@angular/material/slider";
   ],
   templateUrl: './viewer-menu-general.component.html',
   styleUrls: [
-    '../viewer-menu/viewer-menu.component.scss',
     './viewer-menu-general.component.scss',
+    '../model-viewer/model-viewer-list.scss',
   ],
   encapsulation: ViewEncapsulation.None,
 })

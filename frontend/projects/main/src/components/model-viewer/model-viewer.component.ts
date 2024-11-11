@@ -2,6 +2,9 @@ import {Component} from '@angular/core';
 import {ViewerMenuComponent} from "../viewer-menu/viewer-menu.component";
 import {ViewerCanvasComponent} from "../viewer-canvas/viewer-canvas.component";
 import {ViewerSecondaryMenuComponent} from "../viewer-secondary-menu/viewer-secondary-menu.component";
+import {HorizontalNavigationBarComponent} from "../horizontal-navigation-bar/horizontal-navigation-bar.component";
+import {TopControlBarComponent} from "../top-control-bar/top-control-bar.component";
+import {BottomControlBarComponent} from "../bottom-control-bar/bottom-control-bar.component";
 
 @Component({
   selector: 'app-model-viewer',
@@ -10,6 +13,9 @@ import {ViewerSecondaryMenuComponent} from "../viewer-secondary-menu/viewer-seco
     ViewerMenuComponent,
     ViewerCanvasComponent,
     ViewerSecondaryMenuComponent,
+    HorizontalNavigationBarComponent,
+    TopControlBarComponent,
+    BottomControlBarComponent,
   ],
   templateUrl: './model-viewer.component.html',
   styleUrl: './model-viewer.component.scss',

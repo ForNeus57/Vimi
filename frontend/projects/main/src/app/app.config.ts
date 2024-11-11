@@ -15,10 +15,10 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withFetch(),
     ),
-    provideAnimationsAsync(),
     {
       provide: ErrorHandler,
       useClass: NotificationErrorHandler,
-    }, provideAnimationsAsync(),
+    },
+    provideAnimationsAsync(),
   ],
 };

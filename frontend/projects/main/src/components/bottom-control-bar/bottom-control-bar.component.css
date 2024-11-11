@@ -1,0 +1,9 @@
+:host {
+  height: var(--horizontal-menu-size);
+  z-index: 9999;
+  background: var(--tertiary-color);
+  border-radius: var(--horizontal-menu-border-radius) var(--horizontal-menu-border-radius) 0 0;
+  padding: var(--horizontal-menu-inner-padding) var(--horizontal-menu-border-radius);
+}
+
+/*# sourceMappingURL=bottom-control-bar.component.css.map */

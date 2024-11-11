@@ -1,7 +1,7 @@
-<li class="viewer-menu viewer-menu-main standard-shadow">
+<li class="control-background control-main standard-shadow">
   <select id="layerName"
           name="layerName"
-          class="viewer-control-menu"
+          class="control"
           [(ngModel)]="selectedLayerIndex">
     <option value="null">
       Layer ...
@@ -13,17 +13,17 @@
     }
   </select>
 </li>
-<li class="viewer-menu viewer-control-menu standard-shadow">
-  <button class="viewer-control-menu"
-          [ngClass]="{'active': viewMode === '1d'}"
+<li class="control-background control-state-button standard-shadow">
+  <button class="control"
+          [ngClass]="{'active': canvasElementPlacement === '1d'}"
           (click)="on1dViewModeActivation()">
-    <i class="bi  bi-three-dots viewer-control-menu"></i>
+    <i class="bi bi-three-dots control"></i>
   </button>
 </li>
-<li class="viewer-menu viewer-control-menu standard-shadow">
-  <button class="viewer-control-menu"
-          [ngClass]="{'active': viewMode === '2d'}"
+<li class="control-background control-state-button standard-shadow">
+  <button class="control"
+          [ngClass]="{'active': canvasElementPlacement === '2d'}"
           (click)="on2dViewModeActivation()">
-    <i class="bi bi-grid-3x3-gap-fill viewer-control-menu"></i>
+    <i class="bi bi-grid-3x3-gap-fill control"></i>
   </button>
 </li>

@@ -1,0 +1,104 @@
+<menu class="control">
+  <li class="control-background control-state-button standard-shadow"
+      [ngClass]="{'active': canvasViewMode === 'general'}">
+    <button class="control"
+            (click)="onGeneralControl()">
+      <i class="bi bi-gpu-card control"></i>
+    </button>
+  </li>
+  <li class="control-background control-state-button standard-shadow"
+      [ngClass]="{'active': canvasViewMode === 'layer'}">
+    <button class="control"
+            (click)="onLayerControl()">
+      <i class="bi bi-layers-fill control"></i>
+    </button>
+  </li>
+  <li class="control-background control-state-button standard-shadow"
+      [ngClass]="{'active': canvasViewMode === 'detail'}">
+    <button class="control"
+            (click)="onDetailControl()">
+      <i class="bi bi-binoculars-fill control"></i>
+    </button>
+  </li>
+  <li class="control-background control standard-shadow">
+    <select id="architectureName"
+            name="architectureName"
+            class="control">
+<!--            [(ngModel)]="selectedArchitectureIndex">-->
+      <option value="null">
+        Architecture ...
+      </option>
+<!--      @for(architecture of architectures; track architectures.indexOf(architecture)) {-->
+<!--        <option [value]="architectures.indexOf(architecture)">-->
+<!--          {{architecture.name}}-->
+<!--        </option>-->
+<!--      }-->
+    </select>
+  </li>
+  <li class="control-background control-main standard-shadow">
+    <div class="control-file">
+      <input id="file"
+             type="file"
+             style="display: none">
+      <!--           (change)="onFileChange($event)" #fileUpload>-->
+      <button class="btn-small btn-primary">
+        <!--            (click)="fileUpload.click()">-->
+        Upload
+      </button>
+      <p class="control-file-name">
+        mandrill.png
+      </p>
+    </div>
+    <select id="inputMode"
+            name="inputMode"
+            class="control">
+      <!--            [(ngModel)]="selectedNormalizationId">-->
+      <option value="null">
+        Input Mode ...
+      </option>
+      <!--      @for (normalization of normalizations; track normalization.id) {-->
+      <!--        <option [value]="normalization.id">-->
+      <!--          {{normalization.name}}-->
+      <!--        </option>-->
+      <!--      }-->
+    </select>
+    <button class="btn-small btn-primary">
+<!--            [disabled]="isDownloadActivationsDisabled()"-->
+<!--            (click)="onDownloadActivations()">-->
+      Calculate
+    </button>
+  </li>
+  <li class="control-background control standard-shadow">
+    <select id="normalizationName"
+            name="normalizationName"
+            class="control">
+      <!--            [(ngModel)]="selectedNormalizationId">-->
+      <option value="null">
+        Normalization ...
+      </option>
+      <!--      @for (normalization of normalizations; track normalization.id) {-->
+      <!--        <option [value]="normalization.id">-->
+      <!--          {{normalization.name}}-->
+      <!--        </option>-->
+      <!--      }-->
+    </select>
+    <select id="colorMapName"
+            name="colorMapName"
+            class="control">
+<!--            [(ngModel)]="selectedColorMapUUID">-->
+      <option value="null">
+        Color Map ...
+      </option>
+<!--      @for(colorMap of colorMaps; track colorMap.uuid) {-->
+<!--        <option [value]="colorMap.uuid">-->
+<!--          {{colorMap.name}}-->
+<!--        </option>-->
+<!--      }-->
+    </select>
+    <button class="btn-small btn-primary">
+<!--            [disabled]="isColorMapChangeDisabled()"-->
+<!--            (click)="onColorMapChange()">-->
+      Apply
+    </button>
+  </li>
+</menu>

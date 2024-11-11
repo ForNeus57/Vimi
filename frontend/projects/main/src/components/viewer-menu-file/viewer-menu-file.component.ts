@@ -1,15 +1,8 @@
 import {Component, computed, Input, signal, ViewEncapsulation} from '@angular/core';
 import {NgClass} from "@angular/common";
-import {NetworkInput} from "../../models/network-input";
-import {NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
-import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {Architecture} from "../../models/architecture";
-import {ColorMap, ColorMapProcessOutput, ColorMapRequestData, ImageSet} from "../../models/color-map";
-import {DataLayerService} from "../../services/data-layer/data-layer.service";
-import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {Layer} from "../../models/layer";
 import {FormsModule} from "@angular/forms";
-import {Normalization} from "../../models/normalization";
 
 @Component({
   selector: 'app-viewer-menu-file',
@@ -20,8 +13,8 @@ import {Normalization} from "../../models/normalization";
   ],
   templateUrl: './viewer-menu-file.component.html',
   styleUrls: [
-    '../viewer-menu/viewer-menu.component.scss',
     './viewer-menu-file.component.scss',
+    '../model-viewer/model-viewer-list.scss',
   ],
   encapsulation: ViewEncapsulation.None,
 })
@@ -45,20 +38,17 @@ export class ViewerMenuFileComponent {
     return [];
   });
 
-  viewMode = '1d';
+  canvasElementPlacement = '1d';
 
   constructor(
-    private dataLayer: DataLayerService,
-    private notificationHandler: NotificationHandlerService,
-    private viewerControl: ViewerControlService,
   ) {
   }
 
   on1dViewModeActivation() {
-    this.viewMode = '1d';
+    this.canvasElementPlacement = '1d';
   }
 
   on2dViewModeActivation() {
-    this.viewMode = '2d';
+    this.canvasElementPlacement = '2d';
   }
 }

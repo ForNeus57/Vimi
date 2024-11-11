@@ -1,0 +1,79 @@
+:host {
+  --horizontal-menu-inner-padding: 2vh;
+  --horizontal-menu-border-radius: calc(var(--horizontal-menu-size) - var(--horizontal-menu-inner-padding));
+}
+
+
+menu.control {
+  height: 100%;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: var(--standard-gap);
+
+  list-style-type: none;
+}
+
+li.control-background {
+  background-color: var(--secondary-color);
+  border-radius: var(--standard-gap);
+
+  transition:
+          color 0.3s ease,
+          background-color 0.3s ease,
+          outline 0.3s ease;
+}
+
+li.control {
+  padding: var(--standard-gap);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--standard-gap);
+}
+li.control-main {
+  flex: 1;
+  padding: var(--standard-gap);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--standard-gap);
+}
+li.control-state-button {
+  width: calc(var(--horizontal-menu-size) - var(--horizontal-menu-inner-padding) * 2);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+li.active,
+li.control-state-button:hover {
+  background-color: var(--quaternary-color);
+  outline: solid var(--background-color) var(--standard-outline-width);
+}
+li.active i,
+li.control-state-button:hover i {
+  color: var(--background-color);
+}
+
+button.control {
+  flex: 1;
+
+  background: transparent;
+}
+
+i.control {
+  font-size: 2rem;
+  color: var(--quaternary-color);
+}
+
+select.control {
+  font-family: inherit;
+  padding: var(--half-gap);
+}

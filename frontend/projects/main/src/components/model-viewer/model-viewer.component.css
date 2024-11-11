@@ -1,6 +1,11 @@
 :host {
-  height: calc(100vh - var(--horizontal-navigation-bar-height));
+  height: 100%;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: stretch;
 }
 
 /*# sourceMappingURL=model-viewer.component.css.map */
