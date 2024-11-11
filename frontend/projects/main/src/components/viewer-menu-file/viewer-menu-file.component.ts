@@ -4,7 +4,7 @@ import {NetworkInput} from "../../models/network-input";
 import {NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {Architecture} from "../../models/architecture";
-import {ColorMap, ImageSet} from "../../models/color-map";
+import {ColorMap, ColorMapProcessOutput, ColorMapRequestData, ImageSet} from "../../models/color-map";
 import {DataLayerService} from "../../services/data-layer/data-layer.service";
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {Layer} from "../../models/layer";
@@ -34,10 +34,10 @@ export class ViewerMenuFileComponent implements OnInit {
 
   internalArchitecture = signal<Architecture | null>(null);
   selectedLayerIndex = signal<number | null>(null);
-  selectedColorMapId = signal<number | null>(null);
-  selectedFileId = signal<string | null>(null);
-  selectedActivations = signal<NetworkOutput | null>(null);
-  selectedNormalizationId = signal<number | null>(null);
+  selectedColorMapUUID = signal<string | null>(null);
+  selectedFileUUID = signal<string | null>(null);
+  selectedActivations = signal<string | null>(null);
+  selectedNormalizationId = signal<string | null>(null);
 
   readonly computedLayers = computed(() => {
     const architecture = this.internalArchitecture();
@@ -51,18 +51,18 @@ export class ViewerMenuFileComponent implements OnInit {
   readonly isDownloadActivationsDisabled = computed(() => {
     // TODO: Fix the fact that this do not update once in a while
     const architecture = this.internalArchitecture();
-    const fileId = this.selectedFileId();
+    const fileUUID = this.selectedFileUUID();
     const layerIndex = this.selectedLayerIndex();
     const normalization = this.selectedNormalizationId();
 
     return architecture == null
-      || fileId == null
+      || fileUUID == null
       || layerIndex == null
       || normalization == null;
   });
   readonly isColorMapChangeDisabled = computed(() => {
     // TODO: Fix the fact that this do not update once in a while
-    const colorMapIndex = this.selectedColorMapId();
+    const colorMapIndex = this.selectedColorMapUUID();
     const activations = this.selectedActivations();
 
     return colorMapIndex == null
@@ -129,7 +129,7 @@ export class ViewerMenuFileComponent implements OnInit {
       .subscribe({
         next: (value) => {
           this.notificationHandler.success(`Successfully generated file UUID for ${selectedFile.name}`);
-          this.selectedFileId.set(value.id);
+          this.selectedFileUUID.set(value.uuid);
         },
         error: (error) => {
           this.notificationHandler.error('File upload Failed');
@@ -141,7 +141,7 @@ export class ViewerMenuFileComponent implements OnInit {
   onDownloadActivations() {
     const architecture = this.internalArchitecture();
     const layerIndex = this.selectedLayerIndex();
-    const fileId = this.selectedFileId();
+    const fileUUID = this.selectedFileUUID();
     const normalization = this.selectedNormalizationId();
 
     if (architecture == null) {
@@ -154,7 +154,7 @@ export class ViewerMenuFileComponent implements OnInit {
       return;
     }
 
-    if (fileId == null) {
+    if (fileUUID == null) {
       this.notificationHandler.info('File has no UUID assigned');
       return;
     }
@@ -168,20 +168,20 @@ export class ViewerMenuFileComponent implements OnInit {
     const postData = new NetworkOutputRequestData(
       architecture.uuid,
       layerIndex,
-      fileId,
+      fileUUID,
       normalization,
     );
     this.dataLayer.post<NetworkOutput>('/api/1/network_input/process/', postData)
       .subscribe({
         next: (output) => {
           this.notificationHandler.success('Successfully fetched layer activations');
-          this.selectedActivations.set(output);
+          this.selectedActivations.set(output.uuid);
 
           // TODO: Make it less dodgy
-          const previousColorMap = this.selectedColorMapId();
-          this.selectedColorMapId.set(this.colorMaps[0].id)
+          const previousColorMap = this.selectedColorMapUUID();
+          this.selectedColorMapUUID.set(this.colorMaps[0].uuid)
           this.onColorMapChange();
-          this.selectedColorMapId.set(previousColorMap);
+          this.selectedColorMapUUID.set(previousColorMap);
         },
         error: (error) => {
           this.notificationHandler.error('Failed to download activations');
@@ -191,26 +191,37 @@ export class ViewerMenuFileComponent implements OnInit {
   }
 
   onColorMapChange() {
-    const colorMap = this.selectedColorMapId();
-    const activations = this.selectedActivations();
+    const activation = this.selectedActivations();
+    const colorMap = this.selectedColorMapUUID();
+
+    if (activation == null) {
+      this.notificationHandler.info('Activations not downloaded');
+      return;
+    }
 
     if (colorMap == null) {
       this.notificationHandler.info('Color Map is not selected');
       return;
     }
 
-    if (activations == null) {
-      this.notificationHandler.info('Activations not downloaded');
-      return;
-    }
-
-    this.viewerControl.setNewImage(new ImageSet(
-      Array.from({length: activations.filters_shape[activations.filters_shape.length - 1]}, (_, filter_id) => {
-        return this.dataLayer.createBackendUrl(`/api/1/color_map/process/${activations.id}/${filter_id}/${colorMap}/`);
-      }),
-      this.viewMode,
-      activations.filters_shape,
-    ));
+    const postData = new ColorMapRequestData(
+      activation,
+      colorMap
+    )
+    this.dataLayer.post<ColorMapProcessOutput>('api/1/color_map/process/', postData)
+      .subscribe({
+        next: (output) => {
+          this.viewerControl.setNewImage(new ImageSet(
+            output.urls,
+            output.shape,
+            this.viewMode
+          ));
+        },
+        error: (error) => {
+          this.notificationHandler.error('Failed to apply color map');
+          this.notificationHandler.error(error);
+        },
+      })
   }
 
   on1dViewModeActivation() {

@@ -10,7 +10,7 @@ import {ImageSet} from "../../models/color-map";
 export class ViewerControlService {
   private readonly imageSet = new BehaviorSubject<ImageSet | null>(null);
   private readonly cameraOrientation = new BehaviorSubject<CameraOrientation>(
-    new CameraOrientation(new THREE.Vector3(0, 5, -10), new THREE.Vector3(0, 0, 0), 1.0)
+    new CameraOrientation(new THREE.Vector3(0, 5, 10), new THREE.Vector3(0, 0, 0), 1.0)
   );
   private readonly clearCanvas = new BehaviorSubject<void>(undefined);
 

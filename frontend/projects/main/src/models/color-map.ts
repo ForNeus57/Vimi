@@ -1,6 +1,6 @@
 export class ColorMap {
   constructor(
-    public id: number,
+    public uuid: string,
     public name: string,
   ) {
   }
@@ -8,19 +8,23 @@ export class ColorMap {
 
 export class ColorMapRequestData {
   constructor(
-    public activations: string,
-    public color_map: number,
-    public filter_index: number,
+    public activation: string,
+    public color_map: string,
   ) {
   }
 }
 
+export interface ColorMapProcessOutput {
+  urls: string[][],
+  shape: number[]
+}
+
 export class ImageSet {
   constructor(
-    public textureUrls: URL[],
+    public textureUrls: string[][],
     // TODO: Make mode an enum
-    public mode: string,
     public shape: Array<number>,
+    public mode: string,
   ) {
   }
 }

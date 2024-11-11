@@ -47,12 +47,12 @@
           name="colorMapName"
           class="viewer-control-menu"
           style="align-self: stretch"
-          [(ngModel)]="selectedColorMapId">
+          [(ngModel)]="selectedColorMapUUID">
     <option value="null">
       Color Map ...
     </option>
-    @for(colorMap of colorMaps; track colorMap.id) {
-      <option [value]="colorMap.id">
+    @for(colorMap of colorMaps; track colorMap.uuid) {
+      <option [value]="colorMap.uuid">
         {{colorMap.name}}
       </option>
     }

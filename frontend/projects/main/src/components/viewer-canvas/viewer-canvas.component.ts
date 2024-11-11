@@ -15,6 +15,7 @@ import {isPlatformServer} from "@angular/common";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {filter, Subject, takeUntil} from "rxjs";
+import {ImageSet} from "../../models/color-map";
 
 @Component({
   selector: 'app-viewer-canvas',
@@ -74,13 +75,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
           const totalXLength = imageSet.textureUrls.length * imageSet.shape[1] + (imageSet.textureUrls.length - 1) * this.standardGap;
 
           imageSet.textureUrls.forEach((textureUrl) => {
-            const layerMesh = new THREE.Mesh(
-              new THREE.BoxGeometry(imageSet.shape[1], imageSet.shape[0], 1),
-              new THREE.MeshBasicMaterial({
-                // TODO: Implement error handling here
-                map: textureLoader.load(textureUrl.href)
-              }),
-            );
+            const layerMesh = this.createMesh(textureLoader, textureUrl, imageSet)
 
             layerMesh.position.x = xDimensionCumulative + imageSet.shape[1] / 2 - totalXLength / 2;
             layerMesh.position.y = maximumHeight / 2;
@@ -103,14 +98,8 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
           const cellNumbers = Math.ceil(Math.sqrt(imageSet.textureUrls.length))
           const totalXLength = cellNumbers * imageSet.shape[1] + (cellNumbers - 1) * this.standardGap;
 
-          imageSet.textureUrls.forEach((texture) => {
-            const layerMesh = new THREE.Mesh(
-              new THREE.BoxGeometry(imageSet.shape[1], imageSet.shape[0], 1),
-              new THREE.MeshBasicMaterial({
-                // TODO: Implement error handling here
-                map: textureLoader.load(texture.href),
-              }),
-            );
+          imageSet.textureUrls.forEach((textureUrl) => {
+            const layerMesh = this.createMesh(textureLoader, textureUrl, imageSet)
 
             layerMesh.position.x = xDimensionCumulative + imageSet.shape[1] / 2 - totalXLength / 2;
             layerMesh.position.y = yDimensionCumulative + imageSet.shape[0] / 2;
@@ -230,10 +219,43 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       this.scene.remove(object);
       object.geometry.dispose();
       if (object.material.map != null) {
-        object.material.map.dispose();
+        object.material.forEach((tex: any) => { tex.map.dispose(); });
+      } else {
+        object.material.dispose();
       }
-      object.material.dispose();
     });
     this.objectsToDisposal.length = 0;
+  }
+
+  private createMesh(loader: THREE.TextureLoader, urls: string[], imageSet: ImageSet) {
+    return new THREE.Mesh(
+      new THREE.BoxGeometry(imageSet.shape[1], imageSet.shape[0], 1),
+      [
+        new THREE.MeshBasicMaterial({
+          // TODO: Implement error handling here
+          map: loader.load(urls[0])
+        }),
+        new THREE.MeshBasicMaterial({
+          // TODO: Implement error handling here
+          map: loader.load(urls[1])
+        }),
+        new THREE.MeshBasicMaterial({
+          // TODO: Implement error handling here
+          map: loader.load(urls[2])
+        }),
+        new THREE.MeshBasicMaterial({
+          // TODO: Implement error handling here
+          map: loader.load(urls[3])
+        }),
+        new THREE.MeshBasicMaterial({
+          // TODO: Implement error handling here
+          map: loader.load(urls[4])
+        }),
+        new THREE.MeshBasicMaterial({
+          // TODO: Implement error handling here
+          map: loader.load(urls[5])
+        }),
+      ],
+    );
   }
 }

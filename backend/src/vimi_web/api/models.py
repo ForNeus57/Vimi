@@ -82,8 +82,8 @@ class NetworkInput(models.Model):
 
 class Activation(models.Model):
     class Normalization(models.TextChoices):
-        GLOBAL = 'local', _("Global")
-        LOCAL = 'global', _("Local")
+        GLOBAL = 'global', _("Global")
+        LOCAL = 'local', _("Local")
 
     uuid = models.UUIDField(default=uuid4, unique=True)
     architecture = models.ForeignKey(to=Architecture, on_delete=models.PROTECT)
@@ -174,6 +174,7 @@ class Texture(models.Model):
     color_map = models.ForeignKey(to=ColorMap, on_delete=models.PROTECT)
     # TODO: Validate this size
     binary_data_file = models.FileField(upload_to='texture/', max_length=64)
+    shape = postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(), size=4)
 
     # TODO: Do something with code duplication
     @staticmethod
@@ -214,11 +215,11 @@ class Texture(models.Model):
 
     def positive_y(self, index: int) -> np.ndarray:
         selected_filter = self.to_numpy()[:, :, :, index]
-        return np.expand_dims(selected_filter[-1, :, :], axis=0)
+        return np.expand_dims(selected_filter[0, :, :], axis=0)
 
     def negative_y(self, index: int) -> np.ndarray:
         selected_filter = self.to_numpy()[:, :, :, index]
-        return np.expand_dims(selected_filter[0, :, :], axis=0)
+        return np.expand_dims(selected_filter[-1, :, :], axis=0)
 
     def positive_z(self, index: int) -> np.ndarray:
         selected_filter = self.to_numpy()[:, :, :, index]

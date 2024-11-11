@@ -1,4 +1,5 @@
 """All views for Django API Application"""
+from django.core.files.base import ContentFile
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny
 from rest_framework.renderers import JSONRenderer, BaseRenderer
@@ -6,7 +7,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from vimi_web.api.models import Architecture, ColorMap, Activation
+from vimi_web.api.models import Architecture, ColorMap, Activation, NetworkInput, Texture
 from vimi_web.api.renderers import TextureFileRenderer
 from vimi_web.api.serializers import (
     ArchitectureAllSerializer,
@@ -41,7 +42,7 @@ class NetworkInputView(APIView):
         serializer = self.serializer_class(data={'file': request.FILES['file']})
 
         if serializer.is_valid():
-            instance = serializer.save()
+            instance: NetworkInput = serializer.save()
 
             return Response({'uuid': instance.uuid}, status=201)
 
@@ -56,7 +57,7 @@ class NetworkInputProcessView(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            instance = serializer.save()
+            instance: Activation = serializer.save()
 
             return Response({'uuid': instance.uuid}, status=201)
 
@@ -95,9 +96,9 @@ class ColorMapProcessView(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            instance = serializer.save()
+            instance: Texture = serializer.save()
 
-            return Response({'urls': instance.get_available_urls(request)}, status=201)
+            return Response({'urls': instance.get_available_urls(request), 'shape': instance.shape}, status=201)
 
         return Response(serializer.errors, status=400)
 
@@ -112,7 +113,7 @@ class TextureView(APIView):
         serializer = self.serializer_class(data=request.query_params)
 
         if serializer.is_valid():
-            instance = serializer.save()
+            instance: ContentFile = serializer.save()
 
             return Response(instance.read(),
                             status=200,

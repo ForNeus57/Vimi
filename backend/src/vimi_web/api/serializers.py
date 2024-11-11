@@ -109,7 +109,8 @@ class ColorMapProcessSerializer(serializers.Serializer):
 
         instance = Texture.objects.create(activation=activation,
                                           color_map=color_map,
-                                          binary_data_file=Texture.to_file(activations_colored))
+                                          binary_data_file=Texture.to_file(activations_colored),
+                                          shape=activations_colored.shape)
         instance.save()
         return instance
 

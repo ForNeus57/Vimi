@@ -1,3 +1,3 @@
 export interface NetworkInput {
-  id: string;
+  uuid: string;
 }

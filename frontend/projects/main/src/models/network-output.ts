@@ -1,6 +1,5 @@
 export interface NetworkOutput {
-  id: string,
-  filters_shape: Array<number>,
+  uuid: string,
 }
 
 export class NetworkOutputRequestData {
@@ -8,7 +7,7 @@ export class NetworkOutputRequestData {
     public architecture: string,
     public layer_index: number,
     public network_input: string,
-    public normalization: number,
+    public normalization: string,
   ) {
   }
 }
