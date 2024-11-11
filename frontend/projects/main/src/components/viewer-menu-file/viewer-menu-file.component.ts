@@ -1,8 +1,10 @@
-import {Component, computed, Input, signal, ViewEncapsulation} from '@angular/core';
+import {Component, computed, OnDestroy, OnInit, signal, ViewEncapsulation} from '@angular/core';
 import {NgClass} from "@angular/common";
 import {Architecture} from "../../models/architecture";
 import {Layer} from "../../models/layer";
 import {FormsModule} from "@angular/forms";
+import {ControlBarMediatorService} from "../../services/control-bar-mediator/control-bar-mediator.service";
+import {filter, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-viewer-menu-file',
@@ -18,32 +20,42 @@ import {FormsModule} from "@angular/forms";
   ],
   encapsulation: ViewEncapsulation.None,
 })
-export class ViewerMenuFileComponent {
+export class ViewerMenuFileComponent implements OnInit, OnDestroy {
   // TODO: Rename this to ViewMenuLayerComponent
+  private readonly ngUnsubscribe = new Subject<void>();
 
-  @Input({required: true})
-  set architecture(newArchitecture: Architecture | null) {
-    this.internalArchitecture.set(newArchitecture);
-    this.selectedLayerIndex.set(null);
-  };
-
-  internalArchitecture = signal<Architecture | null>(null);
   selectedLayerIndex = signal<number | null>(null);
 
-  readonly computedLayers = computed(() => {
-    const architecture = this.internalArchitecture();
-    if (architecture) {
-      const layers = architecture.layers;
-      return layers.map((value) => new Layer(layers.indexOf(value), value));
-    }
-
-    return [];
-  });
-
   canvasElementPlacement = '1d';
+  architecture: Architecture | null = null;
+  layers = Array<Layer>();
 
   constructor(
+    private controlBarMediator: ControlBarMediatorService,
   ) {
+  }
+
+  ngOnInit() {
+    this.controlBarMediator.getArchitectureObservable()
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe({
+        next: (newArchitecture) => {
+          this.architecture = newArchitecture;
+          if (newArchitecture != null) {
+            this.layers = newArchitecture.layers.map((value) => new Layer(newArchitecture.layers.indexOf(value), value));
+          } else {
+            this.layers = [];
+          }
+        },
+      });
+
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   on1dViewModeActivation() {

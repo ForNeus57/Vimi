@@ -87,13 +87,13 @@
   </li>
   @switch (controlMode) {
     @case ('general') {
-      <app-viewer-menu-general [architecture]="selectedArchitecture()"></app-viewer-menu-general>
+      <app-viewer-menu-general></app-viewer-menu-general>
     }
     @case ('layer') {
-      <app-viewer-menu-file [architecture]="selectedArchitecture()"></app-viewer-menu-file>
+      <app-viewer-menu-file></app-viewer-menu-file>
     }
     @case ('detail') {
-      <app-viewer-menu-detail [architecture]="selectedArchitecture()"></app-viewer-menu-detail>
+      <app-viewer-menu-detail></app-viewer-menu-detail>
     }
   }
 </menu>

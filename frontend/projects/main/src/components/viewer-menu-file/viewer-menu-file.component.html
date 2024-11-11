@@ -6,7 +6,7 @@
     <option value="null">
       Layer ...
     </option>
-    @for(layer of computedLayers(); track layer.id) {
+    @for(layer of layers; track layer.id) {
       <option [value]="layer.id">
         {{layer.name}}
       </option>
@@ -17,23 +17,23 @@
     Update Canvas
   </button>
 </li>
-<li class="control-background control-state-button standard-shadow">
+<li class="control-background control-state-button standard-shadow"
+    [ngClass]="{'active': canvasElementPlacement === '1d'}">
   <button class="control"
-          [ngClass]="{'active': canvasElementPlacement === '1d'}"
           (click)="on1dViewModeActivation()">
     <i class="bi bi-three-dots control"></i>
   </button>
 </li>
-<li class="control-background control-state-button standard-shadow">
+<li class="control-background control-state-button standard-shadow"
+    [ngClass]="{'active': canvasElementPlacement === '1dz'}">
   <button class="control"
-          [ngClass]="{'active': canvasElementPlacement === '1dz'}"
           (click)="on1dzViewModeActivation()">
     <i class="bi bi-three-dots-vertical control"></i>
   </button>
 </li>
-<li class="control-background control-state-button standard-shadow">
+<li class="control-background control-state-button standard-shadow"
+    [ngClass]="{'active': canvasElementPlacement === '2d'}">
   <button class="control"
-          [ngClass]="{'active': canvasElementPlacement === '2d'}"
           (click)="on2dViewModeActivation()">
     <i class="bi bi-grid-3x3-gap-fill control"></i>
   </button>

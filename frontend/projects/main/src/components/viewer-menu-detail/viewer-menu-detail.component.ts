@@ -1,7 +1,9 @@
-import {Component, computed, Input, signal} from '@angular/core';
+import {Component, computed, OnDestroy, OnInit, signal} from '@angular/core';
 import {Architecture} from "../../models/architecture";
 import {Layer} from "../../models/layer";
 import {FormsModule} from "@angular/forms";
+import {filter, Subject, takeUntil} from "rxjs";
+import {ControlBarMediatorService} from "../../services/control-bar-mediator/control-bar-mediator.service";
 
 @Component({
   selector: 'app-viewer-menu-detail',
@@ -15,26 +17,39 @@ import {FormsModule} from "@angular/forms";
     '../model-viewer/model-viewer-list.scss',
   ]
 })
-export class ViewerMenuDetailComponent {
-  @Input({required: true})
-  set architecture(newArchitecture: Architecture | null) {
-    this.internalArchitecture.set(newArchitecture);
-  };
+export class ViewerMenuDetailComponent implements OnInit, OnDestroy {
+    // TODO: Rename this to ViewMenuLayerComponent
+  private readonly ngUnsubscribe = new Subject<void>();
 
-  internalArchitecture = signal<Architecture | null>(null);
   selectedLayerIndex = signal<number | null>(null);
 
-  readonly computedLayers = computed(() => {
-    const architecture = this.internalArchitecture();
-    if (architecture) {
-      const layers = architecture.layers;
-      return layers.map((value) => new Layer(layers.indexOf(value), value));
-    }
-
-    return [];
-  });
+  architecture: Architecture | null = null;
+  layers = Array<Layer>();
 
   constructor(
+    private controlBarMediator: ControlBarMediatorService,
   ) {
+  }
+
+  ngOnInit() {
+    this.controlBarMediator.getArchitectureObservable()
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe({
+        next: (newArchitecture) => {
+          this.architecture = newArchitecture;
+          if (newArchitecture != null) {
+            this.layers = newArchitecture.layers.map((value) => new Layer(newArchitecture.layers.indexOf(value), value));
+          } else {
+            this.layers = [];
+          }
+        },
+      });
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

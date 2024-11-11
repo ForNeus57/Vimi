@@ -1,13 +1,13 @@
 <menu class="control">
   @switch (currentCanvasViewMode) {
     @case ('general') {
-      <app-viewer-menu-general [architecture]="null"></app-viewer-menu-general>
+      <app-viewer-menu-general></app-viewer-menu-general>
     }
     @case ('layer') {
-      <app-viewer-menu-file [architecture]="null"></app-viewer-menu-file>
+      <app-viewer-menu-file></app-viewer-menu-file>
     }
     @case ('detail') {
-      <app-viewer-menu-detail [architecture]="null"></app-viewer-menu-detail>
+      <app-viewer-menu-detail></app-viewer-menu-detail>
     }
   }
 </menu>

@@ -2,20 +2,20 @@
   <mat-slider class="slider"
               discrete
               [displayWith]="formatSlider"
-              [disabled]="isSliderDisabled()"
+              [disabled]="isSliderDisabled"
               [min]="0"
-              [max]="selectedSliderMax()"
+              [max]="selectedSliderMax"
               [step]="1">
     <input matSliderStartThumb
            value="0"
            (valueChange)="onSliderStartChange($event)">
     <input matSliderEndThumb
-           [value]="selectedSliderEnd()"
+           [value]="selectedSliderEnd"
            (valueChange)="onSliderEndChange($event)">
   </mat-slider>
 
   <button class="btn-small btn-primary"
-          [disabled]="isSliderDisabled()"
+          [disabled]="isSliderDisabled"
           (click)="onCanvasUpdate()">
     Update Canvas
   </button>

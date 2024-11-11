@@ -23,16 +23,16 @@
   <li class="control-background control standard-shadow">
     <select id="architectureName"
             name="architectureName"
-            class="control">
-<!--            [(ngModel)]="selectedArchitectureIndex">-->
+            class="control"
+            [(ngModel)]="selectedArchitectureUUID">
       <option value="null">
         Architecture ...
       </option>
-<!--      @for(architecture of architectures; track architectures.indexOf(architecture)) {-->
-<!--        <option [value]="architectures.indexOf(architecture)">-->
-<!--          {{architecture.name}}-->
-<!--        </option>-->
-<!--      }-->
+      @for(architecture of architectures; track architecture.uuid) {
+        <option [value]="architecture.uuid">
+          {{architecture.name}}
+        </option>
+      }
     </select>
   </li>
   <li class="control-background control-main standard-shadow">
@@ -54,7 +54,7 @@
             class="control">
       <!--            [(ngModel)]="selectedNormalizationId">-->
       <option value="null">
-        Input Mode ...
+        Input Transformation ...
       </option>
       <!--      @for (normalization of normalizations; track normalization.id) {-->
       <!--        <option [value]="normalization.id">-->

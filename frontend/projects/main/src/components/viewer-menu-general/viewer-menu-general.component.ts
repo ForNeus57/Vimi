@@ -1,7 +1,8 @@
-import {Component, computed, effect, Input, signal, ViewEncapsulation} from '@angular/core';
+import {Component, computed, OnDestroy, OnInit, signal, ViewEncapsulation} from '@angular/core';
 import {Architecture} from "../../models/architecture";
-import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {MatSlider, MatSliderRangeThumb} from "@angular/material/slider";
+import {ControlBarMediatorService} from "../../services/control-bar-mediator/control-bar-mediator.service";
+import {filter, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-viewer-menu-general',
@@ -17,40 +18,44 @@ import {MatSlider, MatSliderRangeThumb} from "@angular/material/slider";
   ],
   encapsulation: ViewEncapsulation.None,
 })
-export class ViewerMenuGeneralComponent {
-  @Input({required: true})
-  set architecture(newArchitecture: Architecture | null) {
-    this.internalArchitecture.set(newArchitecture);
-  };
+export class ViewerMenuGeneralComponent implements OnInit, OnDestroy {
+  private readonly ngUnsubscribe = new Subject<void>();
 
-  internalArchitecture = signal<Architecture | null>(null);
+  architecture: Architecture | null = null;
 
-  readonly isSliderDisabled = computed(() => {
-    return this.internalArchitecture() == null
-  });
-  // TODO: Fix so that if I change the architecture the slider values restart
-  readonly selectedSliderMax = computed(() => {
-    const architecture = this.internalArchitecture();
-    if (architecture == null) {
-      return 1;
-    }
-
-    return architecture.layers.length - 1;
-  });
-  readonly selectedSliderEnd = computed(() => {
-    return Math.max(Math.floor(this.selectedSliderMax() * 0.5), 1);
-  });
-
+  isSliderDisabled = true;
+  selectedSliderMax = 1;
+  selectedSliderEnd = 1;
   sliderStartValue = 0;
   sliderEndValue = 0;
 
   constructor(
-    private viewerControl: ViewerControlService,
-  ) {}
+    private controlBarMediator: ControlBarMediatorService,
+  ) {
+  }
+
+  ngOnInit() {
+    this.controlBarMediator.getArchitectureObservable()
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe({
+        next: (newArchitecture) => {
+          this.architecture = newArchitecture;
+          this.isSliderDisabled = newArchitecture == null;
+          this.selectedSliderMax = this.architecture == null? 1: (this.architecture.layers.length - 1)
+          this.selectedSliderEnd = Math.max(Math.floor(this.selectedSliderMax * 0.5), 1);
+        },
+      });
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
   onCanvasUpdate() {
-    const architecture = this.internalArchitecture();
-    if (architecture == null) {
+    if (this.architecture == null) {
       return;
     }
 
