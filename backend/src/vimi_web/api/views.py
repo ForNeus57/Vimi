@@ -15,7 +15,7 @@ from vimi_web.api.serializers import (
     NetworkInputProcessSerializer,
     ColorMapAllSerializer,
     ColorMapProcessSerializer,
-    ActivationNormalizationAllSerializer, TextureSerializer, ActivationInputTransformationAllSerializer,
+    TextureNormalizationAllSerializer, TextureSerializer, NetworkInputTransformationAllSerializer,
 )
 
 
@@ -64,29 +64,30 @@ class NetworkInputProcessView(APIView):
         return Response(serializer.errors, status=400)
 
 
-class ActivationNormalizationAllView(APIView):
-    """Return all supported Activation Normalization Types"""
+
+class NetworkInputTransformationAllView(APIView):
+    """Return all supported Network Input Transformations"""
     permission_classes = (AllowAny,)
-    serializer_class = ActivationNormalizationAllSerializer
+    serializer_class = NetworkInputTransformationAllSerializer
 
     def get(self, request: Request) -> Response:
-        serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]}, Activation.Normalization.choices),
+        serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]},
+                                               NetworkInput.Transformation.choices),
                                            many=True)
 
         return Response(serializer.data, status=200)
 
 
-class ActivationInputTransformationAllView(APIView):
-    """Return all supported Activation Input Transformation"""
+class TextureNormalizationAllView(APIView):
+    """Return all supported Texture Normalization Types"""
     permission_classes = (AllowAny,)
-    serializer_class = ActivationInputTransformationAllSerializer
+    serializer_class = TextureNormalizationAllSerializer
 
     def get(self, request: Request) -> Response:
-        serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]}, Activation.InputTransformation.choices),
+        serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]}, Texture.Normalization.choices),
                                            many=True)
 
         return Response(serializer.data, status=200)
-
 
 class ColorMapAllView(APIView):
     """Returns all supported Color Maps"""

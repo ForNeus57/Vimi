@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="API - Network Input Transformation All" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" folderName="Backend" path="$PROJECT_DIR$/http/backend/api/network_input_transformation_all.http" requestIdentifier="#1">
+    <method v="2" />
+  </configuration>
+</component>

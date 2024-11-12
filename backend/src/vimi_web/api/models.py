@@ -62,6 +62,12 @@ class Layer(models.Model):
 
 
 class NetworkInput(models.Model):
+    class Transformation(models.TextChoices):
+        RESCALE_NEAREST_NEIGHBOR = 'rescale_nearest_neighbor', _("Rescale Image Nearest Neighbor")
+        RESCALE_LINEAR = 'rescale_linear', _("Rescale Image Linear")
+        RESCALE_CUBIC = 'rescale_cubic', _("Rescale Image Cubic")
+        KEEP_ORIGINAL = 'keep_original', _("Keep Image Original Dimensions")
+
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     # TODO: Consider changing it to image file
     file = models.FileField(upload_to='upload/', max_length=128, editable=False)
@@ -71,23 +77,14 @@ class NetworkInput(models.Model):
         db_table = 'api_network_input'
 
 
+
 class Activation(models.Model):
-    class InputTransformation(models.TextChoices):
-        RESCALE_NEAREST_NEIGHBOR = 'rescale_nearest_neighbor', _("Rescale Image Nearest Neighbor")
-        RESCALE_LINEAR = 'rescale_linear', _("Rescale Image Linear")
-        RESCALE_CUBIC = 'rescale_cubic', _("Rescale Image Cubic")
-        KEEP_ORIGINAL = 'keep_original', _("Keep Image Original Dimensions")
-
-    class Normalization(models.TextChoices):
-        GLOBAL = 'global', _("Global")
-        LOCAL = 'local', _("Local")
-
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     architecture = models.ForeignKey(to=Architecture, related_name='activations', on_delete=models.PROTECT)
     network_input = models.ForeignKey(to=NetworkInput, related_name='activations', on_delete=models.PROTECT)
     # TODO: Validate this size
     activation_binary = models.FileField(upload_to='activation/', max_length=64)
-    normalization = models.CharField(choices=Normalization)
+    input_transformation = models.CharField(choices=NetworkInput.Transformation)
 
     # TODO: Do something with code duplication
     @staticmethod
@@ -163,12 +160,17 @@ class Texture(models.Model):
         POS_Z = 4, _("Positive Z")
         NEG_Z = 5, _("Negative Z")
 
+    class Normalization(models.TextChoices):
+        GLOBAL = 'global', _("Global")
+        LOCAL = 'local', _("Local")
+
     class Extension(models.TextChoices):
         PNG = ".png", _("PNG")
 
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     activation = models.ForeignKey(to=Activation, related_name='textures', on_delete=models.PROTECT)
     color_map = models.ForeignKey(to=ColorMap, related_name='color_maps', on_delete=models.PROTECT)
+    normalization = models.CharField(choices=Normalization)
     # TODO: Validate this size
     binary_data_file = models.FileField(upload_to='texture/', max_length=64)
     shape = postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(), size=4)

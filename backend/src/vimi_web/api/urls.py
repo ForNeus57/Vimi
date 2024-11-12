@@ -7,16 +7,15 @@ urlpatterns = [
 
     path('network_input/', views.NetworkInputView.as_view(), name='api-upload-network-input'),
     path('network_input/process/', views.NetworkInputProcessView.as_view(), name='api-network-input-process'),
-
-    path('activation/normalization/',
-         view=views.ActivationNormalizationAllView.as_view(),
-         name='api-activation-normalization'),
-    path('activation/input_transformation/',
-         view=views.ActivationInputTransformationAllView.as_view(),
-         name='api-activation-input-mode'),
+    path('network_input/transformation/',
+         view=views.NetworkInputTransformationAllView.as_view(),
+         name='api-network-input-transformation'),
 
     path('color_map/', views.ColorMapAllView.as_view(), name='api-color-map'),
     path('color_map/process/', view=views.ColorMapProcessView.as_view(), name='api-color-map-process'),
 
+    path('texture/normalization/',
+         view=views.TextureNormalizationAllView.as_view(),
+         name='api-texture-normalization'),
     path('texture/', views.TextureView.as_view(), name='api-texture')
 ]

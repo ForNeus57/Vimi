@@ -92,7 +92,7 @@ export class TopControlBarComponent implements OnInit {
         },
       });
 
-    this.dataLayer.get<InputTransformation[]>('api/1/activation/input_transformation/')
+    this.dataLayer.get<InputTransformation[]>('api/1/network_input/transformation/')
       .subscribe({
         next: (inputTransformations) => {
           this.inputTransformations = inputTransformations;
@@ -100,17 +100,6 @@ export class TopControlBarComponent implements OnInit {
         },
       });
 
-    this.dataLayer.get<Normalization[]>('/api/1/activation/normalization/')
-      .subscribe({
-        next: (normalizations) => {
-          this.normalizations = normalizations;
-          this.notificationHandler.success('Normalizations loaded');
-        },
-        error: (error) => {
-          this.notificationHandler.error(error);
-          this.notificationHandler.error('Failed to load normalizations');
-        },
-      });
 
     this.dataLayer.get<ColorMap[]>('/api/1/color_map/')
       .subscribe({
@@ -121,6 +110,18 @@ export class TopControlBarComponent implements OnInit {
         error: (error) => {
           this.notificationHandler.error(error);
           this.notificationHandler.error('Failed to load color maps');
+        },
+      });
+
+    this.dataLayer.get<Normalization[]>('/api/1/texture/normalization/')
+      .subscribe({
+        next: (normalizations) => {
+          this.normalizations = normalizations;
+          this.notificationHandler.success('Normalizations loaded');
+        },
+        error: (error) => {
+          this.notificationHandler.error(error);
+          this.notificationHandler.error('Failed to load normalizations');
         },
       });
   }

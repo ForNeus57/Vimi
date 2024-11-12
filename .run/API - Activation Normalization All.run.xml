@@ -1,5 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="API - Activation Normalization All" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" folderName="Backend" path="$PROJECT_DIR$/http/backend/api/activation_normalization_all.http" requestIdentifier="#1">
-    <method v="2" />
-  </configuration>
-</component>

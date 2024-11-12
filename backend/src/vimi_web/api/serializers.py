@@ -5,7 +5,6 @@ import cv2
 import keras
 import numpy as np
 from django.core.files.base import ContentFile
-from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 
 from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation, Texture, Layer
@@ -41,27 +40,20 @@ class NetworkInputProcessSerializer(serializers.ModelSerializer):
                                                 queryset=Architecture.objects.all())
     network_input = serializers.SlugRelatedField(slug_field='uuid',
                                                  queryset=NetworkInput.objects.all())
-    layer_index = serializers.IntegerField(min_value=0)
-    normalization = serializers.ChoiceField(choices=Activation.Normalization.choices)
+    input_transformation = serializers.ChoiceField(choices=NetworkInput.Transformation.choices)
 
     class Meta:
         model = Activation
-        fields = ('normalization', 'architecture', 'network_input', 'layer_index',)
-
-    def validate(self, data: Mapping[str, Any]) -> Mapping[str, Any]:
-        if data['layer_index'] >= len(data['architecture'].layers) \
-            or data['layer_index'] >= len(data['architecture'].dimensions):
-            raise ValidationError("layer_index is out of range for given architecture")
-
-        return data
+        fields = ('normalization', 'architecture', 'network_input')
 
     def create(self, validated_data: Mapping[str, Any]) -> Activation:
         architecture = validated_data['architecture']
         network_input = validated_data['network_input']
-        layer_index = validated_data['layer_index']
-        normalization = validated_data['normalization']
+        input_transformation = validated_data['input_transformation']
 
         image = cv2.imread(network_input.file.path, cv2.IMREAD_COLOR) / 255
+        assert image is not None, 'Image could not be loaded'
+
         model = architecture.get_model(image.shape)
         image = np.expand_dims(image, axis=0)
         layer_outputs = [layer.output for layer in model.layers[:layer_index]]
@@ -92,12 +84,7 @@ class NetworkInputProcessSerializer(serializers.ModelSerializer):
         return instance
 
 
-class ActivationNormalizationAllSerializer(serializers.Serializer):
-    id = serializers.CharField(max_length=32)
-    name = serializers.CharField(max_length=32)
-
-
-class ActivationInputTransformationAllSerializer(serializers.Serializer):
+class NetworkInputTransformationAllSerializer(serializers.Serializer):
     id = serializers.CharField(max_length=64)
     name = serializers.CharField(max_length=64)
 
@@ -127,6 +114,11 @@ class ColorMapProcessSerializer(serializers.Serializer):
                                           shape=activations_colored.shape)
         instance.save()
         return instance
+
+
+class TextureNormalizationAllSerializer(serializers.Serializer):
+    id = serializers.CharField(max_length=32)
+    name = serializers.CharField(max_length=32)
 
 
 class TextureSerializer(serializers.Serializer):

@@ -1,8 +1,8 @@
-import {Component, computed, OnDestroy, OnInit, signal, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {Architecture} from "../../models/architecture";
 import {MatSlider, MatSliderRangeThumb} from "@angular/material/slider";
 import {ControlBarMediatorService} from "../../services/control-bar-mediator/control-bar-mediator.service";
-import {filter, Subject, takeUntil} from "rxjs";
+import {Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-viewer-menu-general',
