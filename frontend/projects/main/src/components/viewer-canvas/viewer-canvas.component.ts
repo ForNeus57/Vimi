@@ -16,12 +16,14 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {filter, Subject, takeUntil} from "rxjs";
 import {ImageSet} from "../../models/color-map";
+import {ViewerCanvasControlComponent} from "../viewer-canvas-control/viewer-canvas-control.component";
 
 @Component({
   selector: 'app-viewer-canvas',
   standalone: true,
   imports: [
     ViewerMenuComponent,
+    ViewerCanvasControlComponent,
   ],
   templateUrl: './viewer-canvas.component.html',
   styleUrl: './viewer-canvas.component.scss',

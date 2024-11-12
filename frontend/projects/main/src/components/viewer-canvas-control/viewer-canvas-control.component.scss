@@ -1,0 +1,18 @@
+:host {
+  position: absolute;
+  //bottom: var(--horizontal-navigation-bar-height);
+
+  // TODO: Fix the positioning so it is in the middle
+  padding: var(--half-gap) var(--standard-gap);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  gap: var(--standard-gap);
+
+  transform: translateY(-50%);
+}
+
+button.btn-change-canvas-properties {
+  aspect-ratio: 1 / 1;
+}

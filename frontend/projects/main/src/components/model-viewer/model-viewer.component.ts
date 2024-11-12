@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {ViewerMenuComponent} from "../viewer-menu/viewer-menu.component";
 import {ViewerCanvasComponent} from "../viewer-canvas/viewer-canvas.component";
-import {ViewerSecondaryMenuComponent} from "../viewer-secondary-menu/viewer-secondary-menu.component";
 import {TopControlBarComponent} from "../top-control-bar/top-control-bar.component";
 import {BottomControlBarComponent} from "../bottom-control-bar/bottom-control-bar.component";
 
@@ -11,7 +10,6 @@ import {BottomControlBarComponent} from "../bottom-control-bar/bottom-control-ba
   imports: [
     ViewerMenuComponent,
     ViewerCanvasComponent,
-    ViewerSecondaryMenuComponent,
     TopControlBarComponent,
     BottomControlBarComponent,
   ],
