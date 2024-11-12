@@ -72,10 +72,7 @@ export class TopControlBarComponent implements OnInit {
     private notificationHandler: NotificationHandlerService,
   ) {
     effect(() => {
-      const architectureUUID = this.selectedArchitectureUUID();
-      const architectureElement = this.architectures.find((value) => value.uuid == architectureUUID);
-      const architecture = architectureElement ?? null;
-
+      const architecture = this.selectedArchitecture();
       this.controlBarMediator.setArchitecture(architecture);
     });
   }

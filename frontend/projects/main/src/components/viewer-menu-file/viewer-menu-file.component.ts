@@ -44,7 +44,15 @@ export class ViewerMenuFileComponent implements OnInit, OnDestroy {
         next: (newArchitecture) => {
           this.architecture = newArchitecture;
           if (newArchitecture != null) {
-            this.layers = newArchitecture.layers.map((value) => new Layer(newArchitecture.layers.indexOf(value), value));
+            this.layers = newArchitecture.layers.sort((a, b) => {
+              if (a < b) {
+                return -1;
+              }
+              if (b > a) {
+                return 1;
+              }
+              return 0;
+            }) ;
           } else {
             this.layers = [];
           }

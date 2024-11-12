@@ -1,8 +1,7 @@
-export class Architecture {
-  constructor(
-    public uuid: string,
-    public name: string,
-    public layers: Array<string>,
-  ) {
-  }
+import {Layer} from "./layer";
+
+export interface Architecture {
+  uuid: string,
+  name: string,
+  layers: Array<Layer>,
 }

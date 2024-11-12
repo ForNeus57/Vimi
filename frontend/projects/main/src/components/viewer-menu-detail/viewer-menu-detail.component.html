@@ -6,9 +6,9 @@
     <option value="null">
       Layer ...
     </option>
-    @for(layer of layers; track layer.id) {
-      <option [value]="layer.id">
-        {{layer.name}}
+    @for(layer of layers; track layer.uuid) {
+      <option [value]="layer.uuid">
+        {{layer.order}} - {{layer.name}}
       </option>
     }
   </select>
@@ -19,9 +19,9 @@
     <option value="null">
       Filter Number ...
     </option>
-    @for(layer of layers; track layer.id) {
-      <option [value]="layer.id">
-        {{layer.name}}
+    @for(layer of layers; track layer.uuid) {
+      <option [value]="layer.uuid">
+        {{layer.order}} - {{layer.name}}
       </option>
     }
   </select>

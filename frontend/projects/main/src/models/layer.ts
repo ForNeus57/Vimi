@@ -1,7 +1,5 @@
-export class Layer {
-  constructor(
-    public id: number,
-    public name: string,
-  ) {
-  }
+export interface Layer {
+  uuid: string,
+  order: number,
+  name: string,
 }
