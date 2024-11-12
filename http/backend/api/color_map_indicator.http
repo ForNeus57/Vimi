@@ -1,0 +1,1 @@
+GET {{host}}/api/1/color_map/indicator/?color_map=818177f0-05c5-4c4e-b7af-8fe25a174087 HTTP/1.1

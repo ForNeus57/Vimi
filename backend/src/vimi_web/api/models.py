@@ -63,10 +63,10 @@ class Layer(models.Model):
 
 class NetworkInput(models.Model):
     class Transformation(models.TextChoices):
-        RESCALE_NEAREST_NEIGHBOR = 'rescale_nearest_neighbor', _("Rescale Image Nearest Neighbor")
-        RESCALE_LINEAR = 'rescale_linear', _("Rescale Image Linear")
-        RESCALE_CUBIC = 'rescale_cubic', _("Rescale Image Cubic")
-        KEEP_ORIGINAL = 'keep_original', _("Keep Image Original Dimensions")
+        RESCALE_NEAREST_NEIGHBOR = 'rescale_nearest_neighbor', _("Rescale Image - Nearest Neighbor")
+        RESCALE_LINEAR = 'rescale_linear', _("Rescale Image - Linear")
+        RESCALE_CUBIC = 'rescale_cubic', _("Rescale Image - Cubic")
+        KEEP_ORIGINAL = 'keep_original', _("Keep Image Dimensions")
 
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     # TODO: Consider changing it to image file

@@ -2,7 +2,10 @@ from collections.abc import Mapping
 from typing import Any, List
 
 import keras
+import numpy as np
 from django.core.files.base import ContentFile
+from django.urls import reverse
+from django.utils.http import urlencode
 from rest_framework import serializers
 
 from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation, Texture, Layer
@@ -82,9 +85,18 @@ class NetworkInputTransformationAllSerializer(serializers.Serializer):
 
 
 class ColorMapAllSerializer(serializers.ModelSerializer):
+    indicator = serializers.SerializerMethodField('get_indicator')
+
     class Meta:
         model = ColorMap
-        fields = ('uuid', 'name',)
+        fields = ('uuid', 'name', 'indicator')
+
+    def get_indicator(self, obj) -> str:
+        request = self.context.get('request')
+        color_map_uuid = obj.uuid
+        return request.build_absolute_uri(f'{reverse('api-color-map-normalization')}?{urlencode({
+            'color_map': color_map_uuid,
+        })}')
 
 
 class ColorMapProcessSerializer(serializers.Serializer):
@@ -117,6 +129,23 @@ class ColorMapNormalizationAllSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=32)
 
 
+class ColorMapIndicatorSerializer(serializers.Serializer):
+    color_map = serializers.SlugRelatedField(slug_field='uuid',
+                                             queryset=ColorMap.objects.all())
+
+    def create(self, validated_data: Mapping[str, Any]) -> ContentFile:
+        color_map: ColorMap = validated_data['color_map']
+
+        base_array = np.arange(256, 0, -1, dtype=np.uint8)
+        repeated_base_array = np.repeat(base_array, repeats=3, axis=0)
+        expanded_repeated_array = np.expand_dims(repeated_base_array, axis=1)
+        repeated_expanded_array = np.repeat(expanded_repeated_array, repeats=16, axis=1)
+        input_vector = np.expand_dims(repeated_expanded_array, axis=2)
+
+        return Texture().get_file(color_map.apply_color_map(input_vector)[:, :, :, 0], 9)
+
+
+
 class TextureSerializer(serializers.Serializer):
     texture = serializers.SlugRelatedField(slug_field='uuid',
                                            queryset=Texture.objects.all())
@@ -127,7 +156,7 @@ class TextureSerializer(serializers.Serializer):
     compression_level = serializers.IntegerField(min_value=0, max_value=9)
 
     def create(self, validated_data: Mapping[str, Any]) -> ContentFile:
-        texture = validated_data['texture']
+        texture: Texture = validated_data['texture']
         filter_index = validated_data['filter_index']
         cube_size = validated_data['cube_side']
         quality = validated_data['quality']

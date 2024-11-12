@@ -16,6 +16,7 @@ from vimi_web.api.serializers import (
     ColorMapAllSerializer,
     ColorMapProcessSerializer,
     ColorMapNormalizationAllSerializer, TextureSerializer, NetworkInputTransformationAllSerializer,
+    ColorMapIndicatorSerializer,
 )
 
 
@@ -87,7 +88,7 @@ class ColorMapAllView(APIView):
     serializer_class = ColorMapAllSerializer
 
     def get(self, request: Request) -> Response:
-        serializer = self.serializer_class(self.queryset.all(), many=True)
+        serializer = self.serializer_class(self.queryset.all(), context={'request': request}, many=True)
 
         return Response(serializer.data, status=200)
 
@@ -117,6 +118,25 @@ class ColorMapNormalizationAllView(APIView):
                                            many=True)
 
         return Response(serializer.data, status=200)
+
+
+class ColorMapIndicatorView(APIView):
+    permission_classes = (AllowAny,)
+    serializer_class = ColorMapIndicatorSerializer
+    renderer_classes = (TextureFileRenderer, JSONRenderer,)
+
+    def get(self, request: Request) -> Response:
+        serializer = self.serializer_class(data=request.query_params)
+
+        if serializer.is_valid():
+            instance: ContentFile = serializer.save()
+
+            return Response(instance.read(),
+                            status=200,
+                            headers={'Content-Disposition': f'attachment; filename="{instance.name}"'},
+                            content_type='image/png')
+
+        return Response(serializer.errors, status=400)
 
 class TextureView(APIView):
     permission_classes = (AllowAny,)

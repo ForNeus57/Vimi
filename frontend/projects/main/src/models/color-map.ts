@@ -1,9 +1,7 @@
-export class ColorMap {
-  constructor(
-    public uuid: string,
-    public name: string,
-  ) {
-  }
+export interface ColorMap {
+  uuid: string;
+  name: string;
+  indicator: string
 }
 
 export class ColorMapRequestData {

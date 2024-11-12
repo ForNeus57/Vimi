@@ -17,6 +17,9 @@ import {ViewerControlService} from "../../services/viewer-control/viewer-control
 import {filter, Subject, takeUntil} from "rxjs";
 import {ImageSet} from "../../models/color-map";
 import {ViewerCanvasControlComponent} from "../viewer-canvas-control/viewer-canvas-control.component";
+import {
+  ViewerCanvasColorMapIndicatorComponent
+} from "../viewer-canvas-color-map-indicator/viewer-canvas-color-map-indicator.component";
 
 @Component({
   selector: 'app-viewer-canvas',
@@ -24,6 +27,7 @@ import {ViewerCanvasControlComponent} from "../viewer-canvas-control/viewer-canv
   imports: [
     ViewerMenuComponent,
     ViewerCanvasControlComponent,
+    ViewerCanvasColorMapIndicatorComponent,
   ],
   templateUrl: './viewer-canvas.component.html',
   styleUrl: './viewer-canvas.component.scss',

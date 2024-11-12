@@ -1,0 +1,28 @@
+:host {
+  position: absolute;
+  right: 0;
+  //bottom: var(--horizontal-navigation-bar-height);
+
+  // TODO: Fix the positioning so it is in the middle
+  padding: var(--standard-gap) var(--half-gap);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  gap: var(--standard-gap);
+
+  transform: translateY(-50%);
+
+  border-radius: 9999px 0 0 9999px;
+
+  background-color: var(--quaternary-color);
+}
+
+i.indicator {
+  font-size: 2rem;
+  color: var(--secondary-color);
+}
+
+img.indicator {
+
+}
