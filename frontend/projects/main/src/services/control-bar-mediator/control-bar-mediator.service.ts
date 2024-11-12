@@ -12,6 +12,7 @@ export class ControlBarMediatorService {
   private readonly architecture = new BehaviorSubject<Architecture | null>(null);
   private readonly calculatePayload = new BehaviorSubject<CalculatePayload | null>(null);
   private readonly applyPayload  = new BehaviorSubject<ApplyPayload | null>(null);
+  private readonly indicator = new BehaviorSubject<string | null>(null);
 
   constructor() {}
 
@@ -41,5 +42,12 @@ export class ControlBarMediatorService {
   }
   getApplyPayload() {
     return this.applyPayload.asObservable();
+  }
+
+  setIndicator(newIndicator: string) {
+    this.indicator.next(newIndicator);
+  }
+  getIndicator() {
+    return this.indicator.asObservable();
   }
 }

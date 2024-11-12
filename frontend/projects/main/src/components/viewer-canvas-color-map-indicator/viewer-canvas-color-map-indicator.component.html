@@ -1,3 +1,5 @@
 <i class="bi bi-plus indicator"></i>
-<img fill>
+@if (indicator != null) {
+  <img [src]="indicator" fill>
+}
 <i class="bi bi-dash indicator"></i>

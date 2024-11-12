@@ -94,7 +94,7 @@ class ColorMapAllSerializer(serializers.ModelSerializer):
     def get_indicator(self, obj) -> str:
         request = self.context.get('request')
         color_map_uuid = obj.uuid
-        return request.build_absolute_uri(f'{reverse('api-color-map-normalization')}?{urlencode({
+        return request.build_absolute_uri(f'{reverse('api-color-map-indicator')}?{urlencode({
             'color_map': color_map_uuid,
         })}')
 
@@ -136,9 +136,8 @@ class ColorMapIndicatorSerializer(serializers.Serializer):
     def create(self, validated_data: Mapping[str, Any]) -> ContentFile:
         color_map: ColorMap = validated_data['color_map']
 
-        base_array = np.arange(256, 0, -1, dtype=np.uint8)
-        repeated_base_array = np.repeat(base_array, repeats=3, axis=0)
-        expanded_repeated_array = np.expand_dims(repeated_base_array, axis=1)
+        base_array = np.arange(255, -1, -1, dtype=np.uint8)
+        expanded_repeated_array = np.expand_dims(base_array, axis=1)
         repeated_expanded_array = np.repeat(expanded_repeated_array, repeats=16, axis=1)
         input_vector = np.expand_dims(repeated_expanded_array, axis=2)
 

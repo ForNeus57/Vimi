@@ -208,6 +208,7 @@ export class TopControlBarComponent implements OnInit {
   onColorMapChange() {
     const normalization = this.selectedNormalizationId();
     const colorMapUUID = this.selectedColorMapUUID();
+    const colorMap = this.colorMaps.find((value) => value.uuid == colorMapUUID) ?? null;
 
     if (normalization == null) {
       this.notificationHandler.info('Normalization is not assigned');
@@ -219,9 +220,17 @@ export class TopControlBarComponent implements OnInit {
       return;
     }
 
+    if (colorMap == null) {
+      this.notificationHandler.error('Unknown color map UUID found')
+      return;
+    }
+
     this.controlBarMediator.setApplyPayload(new ApplyPayload(
       normalization,
       colorMapUUID,
     ));
+    this.controlBarMediator.setIndicator(
+      colorMap.indicator
+    );
   }
 }

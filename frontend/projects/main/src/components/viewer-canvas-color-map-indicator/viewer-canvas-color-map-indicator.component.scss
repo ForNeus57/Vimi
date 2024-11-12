@@ -9,7 +9,6 @@
   display: flex;
   flex-direction: column;
   justify-content: stretch;
-  gap: var(--standard-gap);
 
   transform: translateY(-50%);
 
@@ -20,6 +19,7 @@
 
 i.indicator {
   font-size: 2rem;
+  aspect-ratio: 1 / 1;
   color: var(--secondary-color);
 }
 
