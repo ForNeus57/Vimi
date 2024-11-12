@@ -39,28 +39,28 @@
     <div class="control-file">
       <input id="file"
              type="file"
-             style="display: none">
-      <!--           (change)="onFileChange($event)" #fileUpload>-->
-      <button class="btn-small btn-primary">
-        <!--            (click)="fileUpload.click()">-->
+             style="display: none"
+             (change)="onFileChange($event)" #fileUpload>
+      <button class="btn-small btn-primary"
+              (click)="fileUpload.click()">
         Upload
       </button>
       <p class="control-file-name">
-        mandrill.png
+       {{ fileName ?? "File not provided"}}
       </p>
     </div>
-    <select id="inputMode"
-            name="inputMode"
-            class="control">
-      <!--            [(ngModel)]="selectedNormalizationId">-->
+    <select id="inputTransformation"
+            name="inputTransformation"
+            class="control"
+            [(ngModel)]="selectedInputTransformationId">
       <option value="null">
         Input Transformation ...
       </option>
-      <!--      @for (normalization of normalizations; track normalization.id) {-->
-      <!--        <option [value]="normalization.id">-->
-      <!--          {{normalization.name}}-->
-      <!--        </option>-->
-      <!--      }-->
+        @for (transformation of inputTransformations; track transformation.id) {
+          <option [value]="transformation.id">
+            {{transformation.name}}
+          </option>
+        }
     </select>
     <button class="btn-small btn-primary">
 <!--            [disabled]="isDownloadActivationsDisabled()"-->
@@ -71,29 +71,29 @@
   <li class="control-background control standard-shadow">
     <select id="normalizationName"
             name="normalizationName"
-            class="control">
-      <!--            [(ngModel)]="selectedNormalizationId">-->
+            class="control"
+            [(ngModel)]="selectedNormalizationId">
       <option value="null">
         Normalization ...
       </option>
-      <!--      @for (normalization of normalizations; track normalization.id) {-->
-      <!--        <option [value]="normalization.id">-->
-      <!--          {{normalization.name}}-->
-      <!--        </option>-->
-      <!--      }-->
+        @for (normalization of normalizations; track normalization.id) {
+          <option [value]="normalization.id">
+            {{normalization.name}}
+          </option>
+        }
     </select>
     <select id="colorMapName"
             name="colorMapName"
-            class="control">
-<!--            [(ngModel)]="selectedColorMapUUID">-->
+            class="control"
+            [(ngModel)]="selectedColorMapUUID">
       <option value="null">
         Color Map ...
       </option>
-<!--      @for(colorMap of colorMaps; track colorMap.uuid) {-->
-<!--        <option [value]="colorMap.uuid">-->
-<!--          {{colorMap.name}}-->
-<!--        </option>-->
-<!--      }-->
+      @for(colorMap of colorMaps; track colorMap.uuid) {
+        <option [value]="colorMap.uuid">
+          {{colorMap.name}}
+        </option>
+      }
     </select>
     <button class="btn-small btn-primary">
 <!--            [disabled]="isColorMapChangeDisabled()"-->

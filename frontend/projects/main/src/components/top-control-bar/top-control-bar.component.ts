@@ -1,4 +1,4 @@
-import {Component, computed, effect, OnInit, signal} from '@angular/core';
+import {Component, effect, OnInit, signal} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {ControlBarMediatorService} from "../../services/control-bar-mediator/control-bar-mediator.service";
 import {NgClass} from "@angular/common";
@@ -8,6 +8,7 @@ import {NotificationHandlerService} from "../../services/notification-handler/no
 import {ColorMap} from "../../models/color-map";
 import {Normalization} from "../../models/normalization";
 import {InputTransformation} from "../../models/input-transformation";
+import {NetworkInput} from "../../models/network-input";
 
 @Component({
   selector: 'app-top-control-bar',
@@ -24,6 +25,10 @@ import {InputTransformation} from "../../models/input-transformation";
 })
 export class TopControlBarComponent implements OnInit {
   selectedArchitectureUUID = signal<string | null>(null);
+  selectedFileUUID = signal<string | null>(null);
+  selectedInputTransformationId = signal<string | null>(null);
+  selectedNormalizationId = signal<string | null>(null);
+  selectedColorMapUUID = signal<string | null>(null);
 
   // readonly selectedArchitecture = computed(() => {
   //   const architectureUUID = this.selectedArchitectureUUID();
@@ -40,6 +45,8 @@ export class TopControlBarComponent implements OnInit {
   inputTransformations = Array<InputTransformation>();
   colorMaps = Array<ColorMap>();
   normalizations = Array<Normalization>();
+
+  fileName: string | null = null;
 
   constructor(
     private controlBarMediator: ControlBarMediatorService,
@@ -76,7 +83,7 @@ export class TopControlBarComponent implements OnInit {
           this.inputTransformations = inputTransformations;
           this.notificationHandler.success('Input Transformations loaded');
         },
-      })
+      });
 
     this.dataLayer.get<Normalization[]>('/api/1/activation/normalization/')
       .subscribe({
@@ -101,7 +108,39 @@ export class TopControlBarComponent implements OnInit {
           this.notificationHandler.error('Failed to load color maps');
         },
       });
+  }
 
+  onFileChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const files = target.files;
+
+    if (files == null) {
+      this.notificationHandler.info('No files provided');
+      return;
+    }
+
+    if (files.length > 1) {
+      this.notificationHandler.info('Too many files provided');
+      return;
+    }
+
+    // TODO: Check if the files change and if not do not make an request
+    const selectedFile = files[0];
+    this.fileName = selectedFile.name;
+    const formData = new FormData();
+    formData.append('file', selectedFile, selectedFile.name);
+
+    this.dataLayer.post<NetworkInput>('/api/1/network_input/', formData)
+      .subscribe({
+        next: (value) => {
+          this.notificationHandler.success(`Successfully generated file UUID for ${selectedFile.name}`);
+          this.selectedFileUUID.set(value.uuid);
+        },
+        error: (error) => {
+          this.notificationHandler.error('File upload Failed');
+          this.notificationHandler.error(error);
+        },
+      });
   }
 
   onGeneralControl() {
