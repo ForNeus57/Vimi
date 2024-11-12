@@ -1,9 +1,7 @@
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, List
 
-import cv2
 import keras
-import numpy as np
 from django.core.files.base import ContentFile
 from rest_framework import serializers
 
@@ -14,11 +12,11 @@ from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation
 class LayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Layer
-        fields = ('uuid', 'order', 'name',)
+        fields = ('uuid', 'layer_number', 'name',)
 
 
 class ArchitectureAllSerializer(serializers.ModelSerializer):
-    layers = LayerSerializer(many=True)
+    layers = LayerSerializer(read_only=True, many=True)
 
     class Meta:
         model = Architecture
@@ -40,48 +38,39 @@ class NetworkInputProcessSerializer(serializers.ModelSerializer):
                                                 queryset=Architecture.objects.all())
     network_input = serializers.SlugRelatedField(slug_field='uuid',
                                                  queryset=NetworkInput.objects.all())
-    input_transformation = serializers.ChoiceField(choices=NetworkInput.Transformation.choices)
+    transformation = serializers.ChoiceField(choices=NetworkInput.Transformation.choices)
+    # TODO: Add validation with architecture
+    layers = serializers.SlugRelatedField(slug_field='uuid',
+                                          queryset=Layer.objects.all(),
+                                          many=True)
 
     class Meta:
         model = Activation
-        fields = ('normalization', 'architecture', 'network_input')
+        fields = ('architecture', 'network_input', 'transformation', 'layers')
 
-    def create(self, validated_data: Mapping[str, Any]) -> Activation:
-        architecture = validated_data['architecture']
-        network_input = validated_data['network_input']
-        input_transformation = validated_data['input_transformation']
+    def create(self, validated_data: Mapping[str, Any]) -> List[Activation]:
+        architecture: Architecture = validated_data['architecture']
+        network_input: NetworkInput = validated_data['network_input']
+        transformation: NetworkInput.Transformation = validated_data['transformation']
+        layers: List[Layer] = validated_data['layers']
 
-        image = cv2.imread(network_input.file.path, cv2.IMREAD_COLOR) / 255
-        assert image is not None, 'Image could not be loaded'
+        image, model = network_input.transform_input_adjust_model(architecture, transformation)
 
-        model = architecture.get_model(image.shape)
-        image = np.expand_dims(image, axis=0)
-        layer_outputs = [layer.output for layer in model.layers[:layer_index]]
+        layer_outputs = [model.layers[provided_layer.layer_number].output for provided_layer in layers]
+        # assert len(layer_outputs) == len(architecture.layers.all()), 'Layers must be corresponding'
         activation_model = keras.Model(inputs=model.input, outputs=layer_outputs)
-        activation = activation_model.predict(image)
-        activation = activation[-1][0]
+        activations = activation_model.predict(image)
 
-        match normalization:
-            case Activation.Normalization.LOCAL:
-                maximum = np.max(activation)
-                activation_norm = (activation - np.min(activation)) / maximum
-
-            case Activation.Normalization.GLOBAL:
-                maximum = np.max(activation, axis=(0, 1))
-                maximum[maximum == 0.] = 1.
-                activation_norm = (activation - np.min(activation, axis=(0, 1))) / maximum
-
-            case _:
-                assert False, 'Unknown normalization method provided'
-
-        activation_norm = (activation_norm * 255.).astype(np.uint8)
-
-        instance = Activation.objects.create(architecture=architecture,
-                                             network_input=network_input,
-                                             activation_binary=Activation.to_file(activation_norm),
-                                             normalization=normalization)
-        instance.save()
-        return instance
+        activations = [
+            Activation(architecture=architecture,
+                       network_input=network_input,
+                       layer=layer,
+                       transformation=transformation,
+                       activation_binary=Activation.to_file(activation[0]))
+            for activation, layer in zip(activations, layers)
+        ]
+        Activation.objects.bulk_create(activations)
+        return activations
 
 
 class NetworkInputTransformationAllSerializer(serializers.Serializer):
@@ -100,23 +89,27 @@ class ColorMapProcessSerializer(serializers.Serializer):
                                               queryset=Activation.objects.all())
     color_map = serializers.SlugRelatedField(slug_field='uuid',
                                              queryset=ColorMap.objects.all())
+    normalization = serializers.ChoiceField(choices=ColorMap.Normalization.choices)
 
     def create(self, validated_data: Mapping[str, Any]) -> Texture:
-        activation = validated_data['activation']
-        color_map = validated_data['color_map']
+        activation: Activation = validated_data['activation']
+        color_map: ColorMap = validated_data['color_map']
+        normalization: ColorMap.Normalization = validated_data['normalization']
 
         activation_data = activation.to_numpy()
-        activations_colored = color_map.apply_color_map(activation_data)
+        normalized_data = color_map.normalize_activations(activation_data, normalization)
+        activations_colored = color_map.apply_color_map(normalized_data)
 
         instance = Texture.objects.create(activation=activation,
                                           color_map=color_map,
+                                          normalization=normalization,
                                           binary_data_file=Texture.to_file(activations_colored),
                                           shape=activations_colored.shape)
         instance.save()
         return instance
 
 
-class TextureNormalizationAllSerializer(serializers.Serializer):
+class ColorMapNormalizationAllSerializer(serializers.Serializer):
     id = serializers.CharField(max_length=32)
     name = serializers.CharField(max_length=32)
 

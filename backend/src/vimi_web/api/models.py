@@ -55,7 +55,7 @@ class Layer(models.Model):
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     architecture = models.ForeignKey(to=Architecture, related_name='layers', on_delete=models.CASCADE)
     # TODO: Validate this field
-    order = models.PositiveIntegerField()
+    layer_number = models.PositiveIntegerField()
     name = models.CharField(max_length=128)
     dimensions = postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(default=1),
                                               size=3)
@@ -76,15 +76,47 @@ class NetworkInput(models.Model):
         # TODO: Automatically determine 'api' prefix
         db_table = 'api_network_input'
 
+    def transform_input_adjust_model(self, architecture: Architecture, transformation: Transformation) -> Tuple[np.ndarray, keras.Model]:
+        image = cv2.imread(self.file.path, cv2.IMREAD_COLOR) / 255
+        assert image is not None, 'Image could not be loaded'
+
+        match transformation:
+            case self.Transformation.KEEP_ORIGINAL:
+                return np.expand_dims(image, axis=0), architecture.get_model(image.shape)
+
+            case self.Transformation.RESCALE_NEAREST_NEIGHBOR:
+                model = architecture.get_model()
+                scaled_image =cv2.resize(image,
+                                         dsize=model.input.shape[1:3],
+                                         interpolation=cv2.INTER_NEAREST)
+                return np.expand_dims(scaled_image, axis=0), model
+
+            case self.Transformation.RESCALE_LINEAR:
+                model = architecture.get_model()
+                scaled_image =cv2.resize(image,
+                                         dsize=model.input.shape[1:3],
+                                         interpolation=cv2.INTER_LINEAR)
+                return np.expand_dims(scaled_image, axis=0), model
+
+            case self.Transformation.RESCALE_CUBIC:
+                model = architecture.get_model()
+                scaled_image =cv2.resize(image,
+                                         dsize=model.input.shape[1:3],
+                                         interpolation=cv2.INTER_CUBIC)
+                return np.expand_dims(scaled_image, axis=0), model
+
+            case _:
+                assert False, 'Unknown transformation provided'
 
 
 class Activation(models.Model):
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     architecture = models.ForeignKey(to=Architecture, related_name='activations', on_delete=models.PROTECT)
     network_input = models.ForeignKey(to=NetworkInput, related_name='activations', on_delete=models.PROTECT)
+    layer = models.ForeignKey(to=Layer, related_name='activations', on_delete=models.PROTECT)
+    transformation = models.CharField(choices=NetworkInput.Transformation)
     # TODO: Validate this size
     activation_binary = models.FileField(upload_to='activation/', max_length=64)
-    input_transformation = models.CharField(choices=NetworkInput.Transformation)
 
     # TODO: Do something with code duplication
     @staticmethod
@@ -103,6 +135,10 @@ class Activation(models.Model):
 
 
 class ColorMap(models.Model):
+    class Normalization(models.TextChoices):
+        GLOBAL = 'global', _("Global")
+        LOCAL = 'local', _("Local")
+
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     name = models.CharField(max_length=32, unique=True)
     # TODO: Validate this field
@@ -132,6 +168,20 @@ class ColorMap(models.Model):
     def get_user_map(self) -> np.ndarray:
         return np.frombuffer(self.user_map_binary, dtype=np.uint8).reshape((256, 3))
 
+    def normalize_activations(self, activation: np.ndarray, normalization: Normalization) -> np.ndarray:
+        match normalization:
+            case self.Normalization.LOCAL:
+                activation_range = np.ptp(activation)
+                return (((activation - np.min(activation)) / activation_range) * 255.).astype(np.uint8)
+
+            case self.Normalization.GLOBAL:
+                activation_range = np.ptp(activation, axis=(0, 1))
+                activation_range[activation_range == 0.] = 1.
+                return (((activation - np.min(activation, axis=(0, 1))) / activation_range) * 255.).astype(np.uint8)
+
+            case _:
+                assert False, 'Unknown normalization method provided'
+
     def apply_color_map(self, activations: np.ndarray) -> np.ndarray:
         assert len(activations.shape) == 3, 'activations must be grayscale stream'
         assert activations.dtype == np.uint8, 'activations colors must be uint8'
@@ -160,17 +210,13 @@ class Texture(models.Model):
         POS_Z = 4, _("Positive Z")
         NEG_Z = 5, _("Negative Z")
 
-    class Normalization(models.TextChoices):
-        GLOBAL = 'global', _("Global")
-        LOCAL = 'local', _("Local")
-
     class Extension(models.TextChoices):
         PNG = ".png", _("PNG")
 
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     activation = models.ForeignKey(to=Activation, related_name='textures', on_delete=models.PROTECT)
     color_map = models.ForeignKey(to=ColorMap, related_name='color_maps', on_delete=models.PROTECT)
-    normalization = models.CharField(choices=Normalization)
+    normalization = models.CharField(choices=ColorMap.Normalization)
     # TODO: Validate this size
     binary_data_file = models.FileField(upload_to='texture/', max_length=64)
     shape = postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(), size=4)

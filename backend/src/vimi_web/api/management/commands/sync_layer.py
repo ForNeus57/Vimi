@@ -25,7 +25,7 @@ class Command(BaseCommand):
 
             Layer.objects.bulk_create([
                 Layer(architecture=architecture,
-                      order=index,
+                      layer_number=index,
                       name=name,
                       dimensions=dimension) for index, (name, dimension) in enumerate(zip(layer_names, dimensions))
             ])

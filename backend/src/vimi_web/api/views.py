@@ -15,7 +15,7 @@ from vimi_web.api.serializers import (
     NetworkInputProcessSerializer,
     ColorMapAllSerializer,
     ColorMapProcessSerializer,
-    TextureNormalizationAllSerializer, TextureSerializer, NetworkInputTransformationAllSerializer,
+    ColorMapNormalizationAllSerializer, TextureSerializer, NetworkInputTransformationAllSerializer,
 )
 
 
@@ -46,23 +46,8 @@ class NetworkInputView(APIView):
 
             return Response({'uuid': instance.uuid}, status=201)
 
-        return Response(serializer.errors, status=400)
-
-
-class NetworkInputProcessView(APIView):
-    permission_classes = (AllowAny,)
-    serializer_class = NetworkInputProcessSerializer
-
-    def post(self, request: Request) -> Response:
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-            instance: Activation = serializer.save()
-
-            return Response({'uuid': instance.uuid}, status=201)
 
         return Response(serializer.errors, status=400)
-
 
 
 class NetworkInputTransformationAllView(APIView):
@@ -78,16 +63,22 @@ class NetworkInputTransformationAllView(APIView):
         return Response(serializer.data, status=200)
 
 
-class TextureNormalizationAllView(APIView):
-    """Return all supported Texture Normalization Types"""
+
+class NetworkInputProcessView(APIView):
     permission_classes = (AllowAny,)
-    serializer_class = TextureNormalizationAllSerializer
+    serializer_class = NetworkInputProcessSerializer
 
-    def get(self, request: Request) -> Response:
-        serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]}, Texture.Normalization.choices),
-                                           many=True)
+    def post(self, request: Request) -> Response:
+        serializer = self.serializer_class(data=request.data)
 
-        return Response(serializer.data, status=200)
+        if serializer.is_valid():
+            instances = serializer.save()
+
+            return Response(map(lambda x: {'activation_uuid': x.uuid, 'layer_uuid': x.layer.uuid}, instances),
+                            status=201)
+
+        return Response(serializer.errors, status=400)
+
 
 class ColorMapAllView(APIView):
     """Returns all supported Color Maps"""
@@ -115,6 +106,17 @@ class ColorMapProcessView(APIView):
 
         return Response(serializer.errors, status=400)
 
+
+class ColorMapNormalizationAllView(APIView):
+    """Return all supported Color Map Normalization Types"""
+    permission_classes = (AllowAny,)
+    serializer_class = ColorMapNormalizationAllSerializer
+
+    def get(self, request: Request) -> Response:
+        serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]}, ColorMap.Normalization.choices),
+                                           many=True)
+
+        return Response(serializer.data, status=200)
 
 class TextureView(APIView):
     permission_classes = (AllowAny,)

@@ -113,7 +113,7 @@ export class TopControlBarComponent implements OnInit {
         },
       });
 
-    this.dataLayer.get<Normalization[]>('/api/1/texture/normalization/')
+    this.dataLayer.get<Normalization[]>('/api/1/color_map/normalization/')
       .subscribe({
         next: (normalizations) => {
           this.normalizations = normalizations;

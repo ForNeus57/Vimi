@@ -1,5 +1,5 @@
 export interface Layer {
   uuid: string,
-  order: number,
+  layer_number: number,
   name: string,
 }

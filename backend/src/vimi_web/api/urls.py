@@ -13,9 +13,9 @@ urlpatterns = [
 
     path('color_map/', views.ColorMapAllView.as_view(), name='api-color-map'),
     path('color_map/process/', view=views.ColorMapProcessView.as_view(), name='api-color-map-process'),
+    path('color_map/normalization/',
+         view=views.ColorMapNormalizationAllView.as_view(),
+         name='api-color-map-normalization'),
 
-    path('texture/normalization/',
-         view=views.TextureNormalizationAllView.as_view(),
-         name='api-texture-normalization'),
     path('texture/', views.TextureView.as_view(), name='api-texture')
 ]
