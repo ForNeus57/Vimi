@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Backend Synchronize Architecture" type="Python.DjangoServer" factoryName="Django server">
+  <configuration default="false" name="Backend Synchronize Layer" type="Python.DjangoServer" factoryName="Django server">
     <module name="Vimi" />
     <option name="ENV_FILES" value="$PROJECT_DIR$/backend/backend.env" />
     <option name="INTERPRETER_OPTIONS" value="" />
@@ -20,7 +20,7 @@
     <option name="runTestServer" value="false" />
     <option name="runNoReload" value="false" />
     <option name="useCustomRunCommand" value="true" />
-    <option name="customRunCommand" value="sync_architecture" />
+    <option name="customRunCommand" value="sync_layer" />
     <method v="2" />
   </configuration>
 </component>

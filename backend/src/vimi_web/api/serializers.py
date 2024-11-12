@@ -8,10 +8,19 @@ from django.core.files.base import ContentFile
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 
-from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation, Texture
+from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation, Texture, Layer
+
+
+# TODO: Consider splitting this two serializers into two views
+class LayerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Layer
+        fields = ('uuid', 'order', 'name',)
 
 
 class ArchitectureAllSerializer(serializers.ModelSerializer):
+    layers = LayerSerializer(many=True)
+
     class Meta:
         model = Architecture
         fields = ('uuid', 'name', 'layers',)

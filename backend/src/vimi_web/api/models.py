@@ -20,31 +20,12 @@ from rest_framework.request import Request
 
 class Architecture(models.Model):
     # TODO: consider changing name, module into enums to prevent remote code execution
-    # TODO: Join layers and dimensions into a single field and create a custom postgresql field for it!
-    uuid = models.UUIDField(default=uuid4, unique=True)
+    uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     name = models.CharField(max_length=64, unique=True, editable=False)
     module = models.CharField(max_length=64, editable=False)
-    layers = postgresql_fields.ArrayField(base_field=models.CharField(max_length=64))
-    # TODO: Consider removing this model parameter in favour of binary format
-    dimensions = postgresql_fields.ArrayField(base_field=postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(default=1),
-                                                                                      size=3))
 
     def __str__(self) -> str:
         return self.name
-
-    def clean(self) -> None:
-        if len(self.layers) != len(self.dimensions):
-            raise ValueError("The number of layers and dimensions should be equal!")
-
-        model = self.get_model()
-        computed_layers = self.get_computed_layers(model)
-        computed_dimensions = self.get_computed_dimensions(model)
-
-        if self.layers != computed_layers:
-            raise ValueError("The layers are not the same as the computed layers!")
-
-        if self.dimensions != computed_dimensions:
-            raise ValueError("The dimensions are not the same as the computed dimensions!")
 
     def get_model(self, input_shape: Optional[Tuple[int | None, ...]] = None) -> keras.Model:
         module = import_module(self.module)
@@ -70,8 +51,18 @@ class Architecture(models.Model):
         return [dimension + [1] * (3 - len(dimension)) for dimension in dimensions]
 
 
+class Layer(models.Model):
+    uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
+    architecture = models.ForeignKey(to=Architecture, related_name='layers', on_delete=models.CASCADE)
+    # TODO: Validate this field
+    order = models.PositiveIntegerField()
+    name = models.CharField(max_length=128)
+    dimensions = postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(default=1),
+                                              size=3)
+
+
 class NetworkInput(models.Model):
-    uuid = models.UUIDField(default=uuid4, unique=True)
+    uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     # TODO: Consider changing it to image file
     file = models.FileField(upload_to='upload/', max_length=128, editable=False)
 
@@ -91,9 +82,9 @@ class Activation(models.Model):
         GLOBAL = 'global', _("Global")
         LOCAL = 'local', _("Local")
 
-    uuid = models.UUIDField(default=uuid4, unique=True)
-    architecture = models.ForeignKey(to=Architecture, on_delete=models.PROTECT)
-    network_input = models.ForeignKey(to=NetworkInput, on_delete=models.PROTECT)
+    uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
+    architecture = models.ForeignKey(to=Architecture, related_name='activations', on_delete=models.PROTECT)
+    network_input = models.ForeignKey(to=NetworkInput, related_name='activations', on_delete=models.PROTECT)
     # TODO: Validate this size
     activation_binary = models.FileField(upload_to='activation/', max_length=64)
     normalization = models.CharField(choices=Normalization)
@@ -115,7 +106,7 @@ class Activation(models.Model):
 
 
 class ColorMap(models.Model):
-    uuid = models.UUIDField(default=uuid4, unique=True)
+    uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     name = models.CharField(max_length=32, unique=True)
     # TODO: Validate this field
     attribute = models.CharField(max_length=32, editable=False, null=True)
@@ -175,9 +166,9 @@ class Texture(models.Model):
     class Extension(models.TextChoices):
         PNG = ".png", _("PNG")
 
-    uuid = models.UUIDField(default=uuid4, unique=True)
-    activation = models.ForeignKey(to=Activation, on_delete=models.PROTECT)
-    color_map = models.ForeignKey(to=ColorMap, on_delete=models.PROTECT)
+    uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
+    activation = models.ForeignKey(to=Activation, related_name='textures', on_delete=models.PROTECT)
+    color_map = models.ForeignKey(to=ColorMap, related_name='color_maps', on_delete=models.PROTECT)
     # TODO: Validate this size
     binary_data_file = models.FileField(upload_to='texture/', max_length=64)
     shape = postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(), size=4)
