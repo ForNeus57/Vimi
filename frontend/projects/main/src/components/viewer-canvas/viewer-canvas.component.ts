@@ -75,7 +75,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
           const totalXLength = imageSet.textureUrls.length * imageSet.shape[1] + (imageSet.textureUrls.length - 1) * this.standardGap;
 
           imageSet.textureUrls.forEach((textureUrl) => {
-            const layerMesh = this.createMesh(textureLoader, textureUrl, imageSet)
+            const layerMesh = this.createMesh(textureLoader, textureUrl, imageSet);
 
             layerMesh.position.x = xDimensionCumulative + imageSet.shape[1] / 2 - totalXLength / 2;
             layerMesh.position.y = maximumHeight / 2;
@@ -90,6 +90,27 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
           const grid = new THREE.GridHelper(totalXLength * 1.25, totalXLength / 100);
           this.objectsToDisposal.push(grid);
           this.scene.add(grid);
+        } else if (imageSet.mode == '1dz') {
+          let zDimensionCumulative = 0;
+          const zGap = this.standardGap * 15;
+          const totalZLength = imageSet.textureUrls.length + (imageSet.textureUrls.length - 1) * zGap;
+
+          imageSet.textureUrls.forEach((textureUrl, index) => {
+            const layerMesh = this.createMesh(textureLoader, textureUrl, imageSet);
+
+            layerMesh.position.y = maximumHeight / 2;
+            layerMesh.position.z = zDimensionCumulative + 0.5 - totalZLength / 2;
+            layerMesh.updateMatrix();
+
+            this.objectsToDisposal.push(layerMesh);
+            this.scene.add(layerMesh);
+
+            zDimensionCumulative += zGap + 0.5;
+          });
+
+          const grid = new THREE.GridHelper(totalZLength * 1.25, totalZLength / 100);
+          this.objectsToDisposal.push(grid);
+          this.scene.add(grid);
         } else if (imageSet.mode == '2d') {
           let xDimensionCumulative = 0;
           let yDimensionCumulative = 0;
@@ -99,7 +120,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
           const totalXLength = cellNumbers * imageSet.shape[1] + (cellNumbers - 1) * this.standardGap;
 
           imageSet.textureUrls.forEach((textureUrl) => {
-            const layerMesh = this.createMesh(textureLoader, textureUrl, imageSet)
+            const layerMesh = this.createMesh(textureLoader, textureUrl, imageSet);
 
             layerMesh.position.x = xDimensionCumulative + imageSet.shape[1] / 2 - totalXLength / 2;
             layerMesh.position.y = yDimensionCumulative + imageSet.shape[0] / 2;
