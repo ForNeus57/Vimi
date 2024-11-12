@@ -15,11 +15,12 @@ import {isPlatformServer} from "@angular/common";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 import {filter, Subject, takeUntil} from "rxjs";
-import {ImageSet} from "../../models/color-map";
+import {ColorMapProcessOutput, ImageSet} from "../../models/color-map";
 import {ViewerCanvasControlComponent} from "../viewer-canvas-control/viewer-canvas-control.component";
 import {
   ViewerCanvasColorMapIndicatorComponent
 } from "../viewer-canvas-color-map-indicator/viewer-canvas-color-map-indicator.component";
+import {MapControls} from "three/addons/controls/MapControls.js";
 
 @Component({
   selector: 'app-viewer-canvas',
@@ -44,15 +45,22 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private scene = new THREE.Scene();
   private camera = new THREE.PerspectiveCamera(75, 1., 0.001, 10000);
-  private controls: OrbitControls | null = null;
+  private orbitControls: OrbitControls | null = null;
+  private mapControls: MapControls | null = null;
   private renderer: THREE.WebGLRenderer | null = null;
 
   // TODO: I hate the fact it has to be like that
   private animate = () => {
-    if (this.controls != null
+    if (this.orbitControls != null
+        && this.mapControls != null
         && this.renderer != null
         && this.continueAnimation != null) {
-      this.controls.update();
+      if (this.orbitControls.enabled) {
+        this.orbitControls.update();
+      }
+      if (this.mapControls.enabled) {
+        this.mapControls.update();
+      }
       this.renderer.render(this.scene, this.camera);
       window.requestAnimationFrame(this.animate);
     }
@@ -158,14 +166,65 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         this.animate();
       });
 
+    this.viewerControl.getImageSet3d()
+      .pipe(
+        filter(() => !isPlatformServer(this.platform)),
+        filter((newImageSet3d) => newImageSet3d != null),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe({
+        next: (newImageSet3d) => {
+          this.continueAnimation = false;
+
+          this.cleanCanvas()
+
+          const zGap = this.standardGap * 7.5;
+          const zGapBig = this.standardGap * 10;
+          const totalZLength = newImageSet3d.reduce((prev, value) => {
+            return prev + value.urls.length + (value.urls.length - 1) * zGap;
+          }, 0) + (newImageSet3d.length - 1) * zGapBig;
+          let zDimensionCumulative = 0;
+
+          const textureLoader = new THREE.TextureLoader();
+          newImageSet3d.forEach((imageSet) => {
+            const totalZLengthSmall = imageSet.urls.length + (imageSet.urls.length - 1) * zGap;
+            const maximumHeight = imageSet.shape[0];
+
+            imageSet.urls.forEach((textureUrl) => {
+              const layerMesh = this.createMesh(textureLoader, textureUrl, imageSet);
+
+              layerMesh.position.y = maximumHeight / 2;
+              layerMesh.position.z = zDimensionCumulative + 0.5 - totalZLength / 2;
+              layerMesh.updateMatrix();
+
+              this.objectsToDisposal.push(layerMesh);
+              this.scene.add(layerMesh);
+              zDimensionCumulative += zGap + 0.5;
+            });
+
+            zDimensionCumulative += zGapBig;
+          });
+
+          const grid = new THREE.GridHelper(totalZLength * 1.25, totalZLength / 100);
+          this.objectsToDisposal.push(grid);
+          this.scene.add(grid);
+
+          this.continueAnimation = true;
+          this.animate();
+        },
+      });
+
     this.viewerControl.getCameraObservable()
       .pipe(
         filter(() => !isPlatformServer(this.platform)),
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe((orientation) => {
-        if (this.controls != null) {
-          this.controls.reset();
+        if (this.orbitControls != null) {
+          this.orbitControls.reset();
+        }
+        if (this.mapControls != null) {
+          this.mapControls.reset();
         }
         this.camera.position.set(orientation.position.x, orientation.position.y, orientation.position.z);
         this.camera.lookAt(orientation.lookAt);
@@ -190,6 +249,21 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         this.continueAnimation = true;
         this.animate();
       });
+
+    this.viewerControl.getControlsToggleObservable()
+      .pipe(
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe({
+        next: () => {
+          if (this.orbitControls != null) {
+            this.orbitControls.enabled = !this.orbitControls.enabled;
+          }
+          if (this.mapControls != null) {
+            this.mapControls.enabled = !this.mapControls.enabled;
+          }
+        },
+      })
   }
 
   ngOnDestroy() {
@@ -211,7 +285,8 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.camera.updateProjectionMatrix();
     this.scene.add(this.camera);
 
-    this.controls = new OrbitControls(this.camera, canvasElement);
+    this.orbitControls = new OrbitControls(this.camera, canvasElement);
+    this.mapControls = new MapControls(this.camera, canvasElement);
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvasElement,
@@ -225,7 +300,10 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.objectsToDisposal.push(grid);
     this.scene.add(grid);
 
-    this.controls.saveState();
+    this.orbitControls.saveState();
+    this.mapControls.saveState();
+    this.orbitControls.enabled = false;
+    this.mapControls.enabled = true;
 
     this.animate();
   }
@@ -255,7 +333,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.objectsToDisposal.length = 0;
   }
 
-  private createMesh(loader: THREE.TextureLoader, urls: string[], imageSet: ImageSet) {
+  private createMesh(loader: THREE.TextureLoader, urls: string[], imageSet: ImageSet | ColorMapProcessOutput) {
     return new THREE.Mesh(
       new THREE.BoxGeometry(imageSet.shape[1], imageSet.shape[0], 1),
       [

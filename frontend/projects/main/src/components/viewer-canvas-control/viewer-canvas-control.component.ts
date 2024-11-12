@@ -26,4 +26,8 @@ export class ViewerCanvasControlComponent {
   onCanvasClear() {
     this.viewerController.setClearCanvas();
   }
+
+  onControlsToggle() {
+    this.viewerController.setControlsToggle();
+  }
 }

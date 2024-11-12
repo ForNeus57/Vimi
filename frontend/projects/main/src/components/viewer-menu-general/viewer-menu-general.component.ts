@@ -2,7 +2,12 @@ import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {Architecture} from "../../models/architecture";
 import {MatSlider, MatSliderRangeThumb} from "@angular/material/slider";
 import {ControlBarMediatorService} from "../../services/control-bar-mediator/control-bar-mediator.service";
-import {Subject, takeUntil} from "rxjs";
+import {filter, forkJoin, Subject, takeUntil} from "rxjs";
+import {NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
+import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
+import {DataLayerService} from "../../services/data-layer/data-layer.service";
+import {ColorMapProcessOutput, ColorMapRequestData, ImageSet} from "../../models/color-map";
+import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 
 @Component({
   selector: 'app-viewer-menu-general',
@@ -27,10 +32,15 @@ export class ViewerMenuGeneralComponent implements OnInit, OnDestroy {
   selectedSliderMax = 1;
   selectedSliderEnd = 1;
   sliderStartValue = 0;
-  sliderEndValue = 0;
+  sliderEndValue = 1;
+
+  activations: NetworkOutput[] | null = null;
 
   constructor(
     private controlBarMediator: ControlBarMediatorService,
+    private notificationHandler: NotificationHandlerService,
+    private dataLayer: DataLayerService,
+    private viewerControl: ViewerControlService,
   ) {
   }
 
@@ -44,7 +54,83 @@ export class ViewerMenuGeneralComponent implements OnInit, OnDestroy {
           this.architecture = newArchitecture;
           this.isSliderDisabled = newArchitecture == null;
           this.selectedSliderMax = this.architecture == null? 1: (this.architecture.layers.length - 1)
-          this.selectedSliderEnd = Math.max(Math.floor(this.selectedSliderMax * 0.5), 1);
+          this.selectedSliderEnd = Math.max(Math.floor(this.selectedSliderMax * 0.25), 1);
+        },
+      });
+
+    this.controlBarMediator.getCalculatePayloadObservable()
+      .pipe(
+        filter((calculatePayload) => calculatePayload != null),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe({
+        next: (calculatePayload) => {
+          const architecture = this.architecture;
+
+          if (architecture == null) {
+            this.notificationHandler.info('Architecture is not selected');
+            return;
+          }
+
+          const layers = architecture.layers.slice(this.sliderStartValue, this.sliderEndValue);
+
+
+          const endpointData = new NetworkOutputRequestData(
+            architecture.uuid,
+            calculatePayload.fileUUID,
+            calculatePayload.transformationId,
+            layers.map((layer) => layer.uuid),
+          );
+
+          this.dataLayer.post<NetworkOutput[]>('api/1/network_input/process/', endpointData)
+            .subscribe({
+              next: (networkOutput) => {
+                this.activations = networkOutput;
+                this.notificationHandler.success('Successfully calculated activations');
+
+              },
+              error: (error) => {
+                this.activations = null;
+                this.notificationHandler.error(error);
+                this.notificationHandler.error('Failed to calculate activations');
+              },
+            });
+        },
+      });
+
+
+    this.controlBarMediator.getApplyPayload()
+      .pipe(
+        filter((applyPayload) => applyPayload != null),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe({
+        next: (applyPayload) => {
+          const activations = this.activations;
+
+          if (activations == null) {
+            this.notificationHandler.info('Activations is not calculated');
+            return;
+          }
+
+          forkJoin(activations.map((activation) => {
+            const endpointData = new ColorMapRequestData(
+              activation.activation_uuid,
+              applyPayload.colorMapUUID,
+              applyPayload.normalization,
+            );
+
+            return this.dataLayer.post<ColorMapProcessOutput>('api/1/color_map/process/', endpointData)
+          }))
+            .subscribe({
+              next: (colorMapOutputs) => {
+                this.viewerControl.setImageSet3d(colorMapOutputs);
+              },
+              error: (error) => {
+                this.notificationHandler.error(error);
+                this.notificationHandler.error('Failed to apply color map');
+              },
+            });
         },
       });
   }

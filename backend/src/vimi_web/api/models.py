@@ -173,11 +173,11 @@ class ColorMap(models.Model):
         assert len(activation.shape) == 3, 'activations must be grayscale stream'
 
         match normalization:
-            case self.Normalization.LOCAL:
+            case self.Normalization.GLOBAL:
                 activation_range = np.ptp(activation)
                 return (((activation - np.min(activation)) / activation_range) * 255.).astype(np.uint8)
 
-            case self.Normalization.GLOBAL:
+            case self.Normalization.LOCAL:
                 activation_range = np.ptp(activation, axis=(0, 1))
                 activation_range[activation_range == 0.] = 1.
                 return (((activation - np.min(activation, axis=(0, 1))) / activation_range) * 255.).astype(np.uint8)
