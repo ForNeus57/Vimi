@@ -34,7 +34,7 @@ export class ViewerMenuComponent implements OnInit {
   selectedArchitectureIndex = signal<number | null>(null);
   selectedFileUUID = signal<string | null>(null);
   selectedNormalizationId = signal<string | null>(null);
-  selectedActivations = signal<string | null>(null);
+  selectedActivation = signal<string | null>(null);
   selectedColorMapUUID = signal<string | null>(null);
 
   readonly selectedArchitecture = computed(() => {
@@ -59,7 +59,7 @@ export class ViewerMenuComponent implements OnInit {
   });
   readonly isColorMapChangeDisabled = computed(() => {
     // TODO: Fix the fact that this do not update once in a while
-    const activations = this.selectedActivations();
+    const activations = this.selectedActivation();
     const colorMapUUID = this.selectedColorMapUUID();
 
     return activations == null
@@ -202,7 +202,7 @@ export class ViewerMenuComponent implements OnInit {
   }
 
   onColorMapChange() {
-    const activation = this.selectedActivations();
+    const activation = this.selectedActivation();
     const colorMap = this.selectedColorMapUUID();
 
     if (activation == null) {

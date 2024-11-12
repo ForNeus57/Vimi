@@ -1,4 +1,4 @@
-import {Component, effect, OnInit, signal} from '@angular/core';
+import {Component, computed, effect, OnInit, signal} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {ControlBarMediatorService} from "../../services/control-bar-mediator/control-bar-mediator.service";
 import {NgClass} from "@angular/common";
@@ -27,17 +27,35 @@ export class TopControlBarComponent implements OnInit {
   selectedArchitectureUUID = signal<string | null>(null);
   selectedFileUUID = signal<string | null>(null);
   selectedInputTransformationId = signal<string | null>(null);
+  selectedActivation = signal<string | null>(null);
   selectedNormalizationId = signal<string | null>(null);
   selectedColorMapUUID = signal<string | null>(null);
 
-  // readonly selectedArchitecture = computed(() => {
-  //   const architectureUUID = this.selectedArchitectureUUID();
-  //   const architectureElement = this.architectures.find((value) => value.uuid == architectureUUID);
-  //   const architecture = architectureElement ?? null;
-  //
-  //   this.controlBarMediator.setArchitecture(architecture);
-  //   return architecture;
-  // });
+  readonly selectedArchitecture = computed(() => {
+    const architectureUUID = this.selectedArchitectureUUID();
+    const architectureElement = this.architectures.find((value) => value.uuid == architectureUUID);
+    return architectureElement ?? null;
+  });
+  readonly isDownloadActivationsDisabled = computed(() => {
+    // TODO: Fix the fact that this do not update once in a while
+    const architecture = this.selectedArchitecture();
+    const fileUUID = this.selectedFileUUID();
+    const inputTransformationId = this.selectedInputTransformationId();
+
+    return architecture == null
+      || fileUUID == null
+      || inputTransformationId == null;
+  });
+  readonly isColorMapChangeDisabled = computed(() => {
+    // TODO: Fix the fact that this do not update once in a while
+    const activations = this.selectedActivation();
+    const normalization = this.selectedNormalizationId();
+    const colorMapUUID = this.selectedColorMapUUID();
+
+    return activations == null
+      || normalization == null
+      || colorMapUUID == null;
+  });
 
   canvasViewMode = "general";
 
@@ -168,5 +186,13 @@ export class TopControlBarComponent implements OnInit {
 
     this.canvasViewMode = "detail";
     this.controlBarMediator.setViewMode(this.canvasViewMode);
+  }
+
+  onDownloadActivations() {
+
+  }
+
+  onColorMapChange() {
+
   }
 }

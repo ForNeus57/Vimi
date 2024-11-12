@@ -36,13 +36,13 @@
     </select>
   </li>
   <li class="control-background control-main standard-shadow">
-    <div class="control-file">
+    <div class="control-file"
+         (click)="fileUpload.click()">
       <input id="file"
              type="file"
              style="display: none"
              (change)="onFileChange($event)" #fileUpload>
-      <button class="btn-small btn-primary"
-              (click)="fileUpload.click()">
+      <button class="btn-small btn-primary">
         Upload
       </button>
       <p class="control-file-name">
@@ -62,9 +62,9 @@
           </option>
         }
     </select>
-    <button class="btn-small btn-primary">
-<!--            [disabled]="isDownloadActivationsDisabled()"-->
-<!--            (click)="onDownloadActivations()">-->
+    <button class="btn-small btn-primary"
+            [disabled]="isDownloadActivationsDisabled()"
+            (click)="onDownloadActivations()">
       Calculate
     </button>
   </li>
@@ -95,9 +95,9 @@
         </option>
       }
     </select>
-    <button class="btn-small btn-primary">
-<!--            [disabled]="isColorMapChangeDisabled()"-->
-<!--            (click)="onColorMapChange()">-->
+    <button class="btn-small btn-primary"
+            [disabled]="isColorMapChangeDisabled()"
+            (click)="onColorMapChange()">
       Apply
     </button>
   </li>

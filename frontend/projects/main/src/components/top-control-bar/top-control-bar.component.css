@@ -12,6 +12,7 @@ div.control-file {
   justify-content: center;
   align-items: center;
   gap: var(--standard-gap);
+  cursor: pointer;
 }
 
 p.control-file-name {

@@ -1,7 +1,6 @@
 :host {
   --opacity: 0.4;
 
-
   padding: 11vh 0;
 
   display: flex;
@@ -16,7 +15,6 @@
 .notification {
   background: var(--background-color);
   padding: var(--standard-gap);
-  z-index: 5;
 
   border: 1px solid rgba(255, 255, 255, 0.29);
   border-radius: var(--standard-border-radius);
