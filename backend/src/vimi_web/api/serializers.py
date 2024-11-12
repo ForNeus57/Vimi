@@ -61,6 +61,9 @@ class NetworkInputProcessSerializer(serializers.ModelSerializer):
         activation_model = keras.Model(inputs=model.input, outputs=layer_outputs)
         activations = activation_model.predict(image)
 
+        if not isinstance(activations, list):
+            activations = [activations]
+
         activations = [
             Activation(architecture=architecture,
                        network_input=network_input,

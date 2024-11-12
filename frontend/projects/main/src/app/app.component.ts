@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {HorizontalNavigationBarComponent} from "../components/horizontal-navigation-bar/horizontal-navigation-bar.component";
 import {NotificationHandlerComponent} from "../components/notification-handler/notification-handler.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HorizontalNavigationBarComponent, NotificationHandlerComponent],
+  imports: [RouterOutlet, NotificationHandlerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

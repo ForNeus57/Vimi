@@ -10,6 +10,7 @@ export class ColorMapRequestData {
   constructor(
     public activation: string,
     public color_map: string,
+    public normalization: string,
   ) {
   }
 }

@@ -79,6 +79,7 @@ class NetworkInput(models.Model):
     def transform_input_adjust_model(self, architecture: Architecture, transformation: Transformation) -> Tuple[np.ndarray, keras.Model]:
         image = cv2.imread(self.file.path, cv2.IMREAD_COLOR) / 255
         assert image is not None, 'Image could not be loaded'
+        assert len(image.shape) == 3, 'Image must have 3 channels'
 
         match transformation:
             case self.Transformation.KEEP_ORIGINAL:
@@ -169,6 +170,8 @@ class ColorMap(models.Model):
         return np.frombuffer(self.user_map_binary, dtype=np.uint8).reshape((256, 3))
 
     def normalize_activations(self, activation: np.ndarray, normalization: Normalization) -> np.ndarray:
+        assert len(activation.shape) == 3, 'activations must be grayscale stream'
+
         match normalization:
             case self.Normalization.LOCAL:
                 activation_range = np.ptp(activation)

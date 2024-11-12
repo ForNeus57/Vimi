@@ -21,7 +21,7 @@ export class ViewerMenuDetailComponent implements OnInit, OnDestroy {
     // TODO: Rename this to ViewMenuLayerComponent
   private readonly ngUnsubscribe = new Subject<void>();
 
-  selectedLayerIndex = signal<number | null>(null);
+  selectedLayerUUID = signal<string | null>(null);
 
   architecture: Architecture | null = null;
   layers = Array<Layer>();
@@ -41,10 +41,10 @@ export class ViewerMenuDetailComponent implements OnInit, OnDestroy {
           this.architecture = newArchitecture;
           if (newArchitecture != null) {
             this.layers = newArchitecture.layers.sort((a, b) => {
-              if (a < b) {
+              if (a.layer_number < b.layer_number) {
                 return -1;
               }
-              if (b > a) {
+              if (b.layer_number > a.layer_number) {
                 return 1;
               }
               return 0;

@@ -215,24 +215,24 @@ export class ViewerMenuComponent implements OnInit {
       return;
     }
 
-    const postData = new ColorMapRequestData(
-      activation,
-      colorMap
-    )
-    this.dataLayer.post<ColorMapProcessOutput>('api/1/color_map/process/', postData)
-      .subscribe({
-        next: (output) => {
-          // this.viewerControl.setNewImage(new ImageSet(
-          //   output.urls,
-          //   output.shape,
-          //   this.viewMode
-          // ));
-        },
-        error: (error) => {
-          this.notificationHandler.error('Failed to apply color map');
-          this.notificationHandler.error(error);
-        },
-      })
+    // const postData = new ColorMapRequestData(
+    //   activation,
+    //   colorMap
+    // )
+    // this.dataLayer.post<ColorMapProcessOutput>('api/1/color_map/process/', postData)
+    //   .subscribe({
+    //     next: (output) => {
+    //       // this.viewerControl.setNewImage(new ImageSet(
+    //       //   output.urls,
+    //       //   output.shape,
+    //       //   this.viewMode
+    //       // ));
+    //     },
+    //     error: (error) => {
+    //       this.notificationHandler.error('Failed to apply color map');
+    //       this.notificationHandler.error(error);
+    //     },
+    //   })
   }
 
   onGeneralControlActivation() {

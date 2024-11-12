@@ -2,13 +2,13 @@
   <select id="layerName"
           name="layerName"
           class="control"
-          [(ngModel)]="selectedLayerIndex">
+          [(ngModel)]="selectedLayerUUID">
     <option value="null">
       Layer ...
     </option>
     @for(layer of layers; track layer.uuid) {
       <option [value]="layer.uuid">
-        {{layer.order}} - {{layer.name}}
+        {{layer.layer_number}} - {{layer.name}}
       </option>
     }
   </select>

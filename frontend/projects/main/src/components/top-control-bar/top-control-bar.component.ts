@@ -9,6 +9,8 @@ import {ColorMap} from "../../models/color-map";
 import {Normalization} from "../../models/normalization";
 import {InputTransformation} from "../../models/input-transformation";
 import {NetworkInput} from "../../models/network-input";
+import {CalculatePayload} from "../../models/calculate-payload";
+import {ApplyPayload} from "../../models/apply-payload";
 
 @Component({
   selector: 'app-top-control-bar',
@@ -27,7 +29,6 @@ export class TopControlBarComponent implements OnInit {
   selectedArchitectureUUID = signal<string | null>(null);
   selectedFileUUID = signal<string | null>(null);
   selectedInputTransformationId = signal<string | null>(null);
-  selectedActivation = signal<string | null>(null);
   selectedNormalizationId = signal<string | null>(null);
   selectedColorMapUUID = signal<string | null>(null);
 
@@ -48,12 +49,10 @@ export class TopControlBarComponent implements OnInit {
   });
   readonly isColorMapChangeDisabled = computed(() => {
     // TODO: Fix the fact that this do not update once in a while
-    const activations = this.selectedActivation();
     const normalization = this.selectedNormalizationId();
     const colorMapUUID = this.selectedColorMapUUID();
 
-    return activations == null
-      || normalization == null
+    return normalization == null
       || colorMapUUID == null;
   });
 
@@ -187,10 +186,42 @@ export class TopControlBarComponent implements OnInit {
   }
 
   onDownloadActivations() {
+    const fileUUID = this.selectedFileUUID();
+    const transformationId = this.selectedInputTransformationId();
 
+    if (fileUUID == null) {
+      this.notificationHandler.info('File has no UUID assigned');
+      return;
+    }
+
+    if (transformationId == null) {
+      this.notificationHandler.info('Transformation is not assigned');
+      return;
+    }
+
+    this.controlBarMediator.setCalculatePayload(new CalculatePayload(
+      fileUUID,
+      transformationId,
+    ));
   }
 
   onColorMapChange() {
+    const normalization = this.selectedNormalizationId();
+    const colorMapUUID = this.selectedColorMapUUID();
 
+    if (normalization == null) {
+      this.notificationHandler.info('Normalization is not assigned');
+      return;
+    }
+
+    if (colorMapUUID == null) {
+      this.notificationHandler.info('Color Map is not assigned');
+      return;
+    }
+
+    this.controlBarMediator.setApplyPayload(new ApplyPayload(
+      normalization,
+      colorMapUUID,
+    ));
   }
 }
