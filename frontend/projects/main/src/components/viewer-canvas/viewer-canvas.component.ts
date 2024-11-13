@@ -44,7 +44,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   editorCanvas = viewChild.required<ElementRef<HTMLCanvasElement>>('editorCanvas');
 
   private scene = new THREE.Scene();
-  private camera = new THREE.PerspectiveCamera(75, 1., 0.001, 10000);
+  private camera = new THREE.PerspectiveCamera(75, 1., 0.001, 100000);
   private orbitControls: OrbitControls | null = null;
   private mapControls: MapControls | null = null;
   private renderer: THREE.WebGLRenderer | null = null;
@@ -101,7 +101,8 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
             xDimensionCumulative += this.standardGap + imageSet.shape[1];
           });
 
-          const grid = new THREE.GridHelper(totalXLength * 1.25, totalXLength / 100);
+          const grid = new THREE.GridHelper(totalXLength * 1.25, totalXLength / 1000);
+          grid.position.y = -0.1;
           this.objectsToDisposal.push(grid);
           this.scene.add(grid);
         } else if (imageSet.mode == '1dz') {
@@ -122,7 +123,8 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
             zDimensionCumulative += zGap + 0.5;
           });
 
-          const grid = new THREE.GridHelper(totalZLength * 1.25, totalZLength / 100);
+          const grid = new THREE.GridHelper(totalZLength * 1.25, totalZLength / 1000);
+          grid.position.y = -0.1;
           this.objectsToDisposal.push(grid);
           this.scene.add(grid);
         } else if (imageSet.mode == '2d') {
@@ -156,6 +158,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
           });
 
           const grid = new THREE.GridHelper(totalXLength * 1.25, totalXLength / 100);
+          grid.position.y = -0.1;
           this.objectsToDisposal.push(grid);
           this.scene.add(grid);
         } else {
@@ -179,7 +182,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
           this.cleanCanvas()
 
           const zGap = this.standardGap * 7.5;
-          const zGapBig = this.standardGap * 10;
+          const zGapBig = this.standardGap * 30;
           const totalZLength = newImageSet3d.reduce((prev, value) => {
             return prev + value.urls.length + (value.urls.length - 1) * zGap;
           }, 0) + (newImageSet3d.length - 1) * zGapBig;
@@ -205,7 +208,8 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
             zDimensionCumulative += zGapBig;
           });
 
-          const grid = new THREE.GridHelper(totalZLength * 1.25, totalZLength / 100);
+          const grid = new THREE.GridHelper(totalZLength * 1.25, totalZLength / 10000);
+          grid.position.y = -0.1;
           this.objectsToDisposal.push(grid);
           this.scene.add(grid);
 
@@ -243,6 +247,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
         this.cleanCanvas()
 
         const grid = new THREE.GridHelper(100, 10);
+        grid.position.y = -0.1;
         this.objectsToDisposal.push(grid);
         this.scene.add(grid);
 
@@ -297,6 +302,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
     this.renderer.setPixelRatio(window.devicePixelRatio);
 
     const grid = new THREE.GridHelper(100, 10);
+    grid.position.y = -0.1;
     this.objectsToDisposal.push(grid);
     this.scene.add(grid);
 
