@@ -1,21 +1,24 @@
 from collections.abc import Mapping
-from typing import Any, List
+from typing import Any, List, Tuple
 
-import keras
 import numpy as np
+import keras
 from django.core.files.base import ContentFile
 from django.urls import reverse
 from django.utils.http import urlencode
 from rest_framework import serializers
 
-from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation, Texture, Layer
+from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation, Texture, Layer, Interference, \
+    Prediction
 
 
 # TODO: Consider splitting this two serializers into two views
 class LayerSerializer(serializers.ModelSerializer):
+    presentation_name = serializers.CharField(source='get_presentation_name', read_only=True)
+
     class Meta:
         model = Layer
-        fields = ('uuid', 'layer_number', 'name',)
+        fields = ('uuid', 'layer_number', 'presentation_name',)
 
 
 class ArchitectureAllSerializer(serializers.ModelSerializer):
@@ -51,32 +54,41 @@ class NetworkInputProcessSerializer(serializers.ModelSerializer):
         model = Activation
         fields = ('architecture', 'network_input', 'transformation', 'layers')
 
-    def create(self, validated_data: Mapping[str, Any]) -> List[Activation]:
+    def create(self, validated_data: Mapping[str, Any]) -> Tuple[List[Prediction], List[Activation]]:
         architecture: Architecture = validated_data['architecture']
         network_input: NetworkInput = validated_data['network_input']
         transformation: NetworkInput.Transformation = validated_data['transformation']
         layers: List[Layer] = validated_data['layers']
 
         image, model = network_input.transform_input_adjust_model(architecture, transformation)
+        decode_predictions = architecture.get_decode_predictions_function()
 
-        layer_outputs = [model.layers[provided_layer.layer_number].output for provided_layer in layers]
-        # assert len(layer_outputs) == len(architecture.layers.all()), 'Layers must be corresponding'
+        layer_outputs = [model.output] + [model.get_layer(name=provided_layer.name).output for provided_layer in layers]
         activation_model = keras.Model(inputs=model.input, outputs=layer_outputs)
-        activations = activation_model.predict(image)
+        model_predictions = activation_model.predict(image)
 
-        if not isinstance(activations, list):
-            activations = [activations]
+        inference = Interference(architecture=architecture,
+                                 network_input=network_input,
+                                 transformation=transformation)
 
-        activations = [
+        inference.save()
+        predictions = Prediction.objects.bulk_create([
+            Prediction(inference=inference,
+                       prediction_number=index,
+                       class_id=class_id,
+                       class_name=class_name,
+                       class_score=class_score)
+            for index, (class_id, class_name, class_score) in enumerate(decode_predictions(model_predictions[0], 10)[0])
+        ])
+        activations = Activation.objects.bulk_create([
             Activation(architecture=architecture,
                        network_input=network_input,
                        layer=layer,
                        transformation=transformation,
                        activation_binary=Activation.to_file(activation[0]))
-            for activation, layer in zip(activations, layers)
-        ]
-        Activation.objects.bulk_create(activations)
-        return activations
+            for activation, layer in zip(model_predictions[1:], layers)
+        ])
+        return predictions, activations
 
 
 class NetworkInputTransformationAllSerializer(serializers.Serializer):

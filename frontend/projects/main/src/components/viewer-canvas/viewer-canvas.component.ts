@@ -9,7 +9,6 @@ import {
   PLATFORM_ID,
   viewChild,
 } from '@angular/core';
-import {ViewerMenuComponent} from "../viewer-menu/viewer-menu.component";
 import * as THREE from "three";
 import {isPlatformServer} from "@angular/common";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -26,7 +25,6 @@ import {MapControls} from "three/addons/controls/MapControls.js";
   selector: 'app-viewer-canvas',
   standalone: true,
   imports: [
-    ViewerMenuComponent,
     ViewerCanvasControlComponent,
     ViewerCanvasColorMapIndicatorComponent,
   ],

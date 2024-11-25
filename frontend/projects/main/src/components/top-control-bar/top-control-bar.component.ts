@@ -176,15 +176,6 @@ export class TopControlBarComponent implements OnInit {
     this.controlBarMediator.setViewMode(this.canvasViewMode);
   }
 
-  onDetailControl() {
-    if (this.canvasViewMode === "detail") {
-      return;
-    }
-
-    this.canvasViewMode = "detail";
-    this.controlBarMediator.setViewMode(this.canvasViewMode);
-  }
-
   onDownloadActivations() {
     const fileUUID = this.selectedFileUUID();
     const transformationId = this.selectedInputTransformationId();

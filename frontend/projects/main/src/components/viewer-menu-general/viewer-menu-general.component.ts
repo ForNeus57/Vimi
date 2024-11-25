@@ -3,10 +3,10 @@ import {Architecture} from "../../models/architecture";
 import {MatSlider, MatSliderRangeThumb} from "@angular/material/slider";
 import {ControlBarMediatorService} from "../../services/control-bar-mediator/control-bar-mediator.service";
 import {filter, forkJoin, Subject, takeUntil} from "rxjs";
-import {NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
+import {Activation, NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {DataLayerService} from "../../services/data-layer/data-layer.service";
-import {ColorMapProcessOutput, ColorMapRequestData, ImageSet} from "../../models/color-map";
+import {ColorMapProcessOutput, ColorMapRequestData} from "../../models/color-map";
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
 
 @Component({
@@ -34,7 +34,7 @@ export class ViewerMenuGeneralComponent implements OnInit, OnDestroy {
   sliderStartValue = 0;
   sliderEndValue = 1;
 
-  activations: NetworkOutput[] | null = null;
+  activations: Activation[] | null = null;
 
   constructor(
     private controlBarMediator: ControlBarMediatorService,
@@ -82,10 +82,10 @@ export class ViewerMenuGeneralComponent implements OnInit, OnDestroy {
             layers.map((layer) => layer.uuid),
           );
 
-          this.dataLayer.post<NetworkOutput[]>('api/1/network_input/process/', endpointData)
+          this.dataLayer.post<NetworkOutput>('api/1/network_input/process/', endpointData)
             .subscribe({
               next: (networkOutput) => {
-                this.activations = networkOutput;
+                this.activations = networkOutput.activations;
                 this.notificationHandler.success('Successfully calculated activations');
 
               },

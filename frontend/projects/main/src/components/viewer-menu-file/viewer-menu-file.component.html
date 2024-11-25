@@ -8,7 +8,7 @@
     </option>
     @for(layer of layers; track layer.uuid) {
       <option [value]="layer.uuid">
-        {{layer.layer_number}} - {{layer.name}}
+        {{layer.layer_number}} - {{layer.presentation_name}}
       </option>
     }
   </select>

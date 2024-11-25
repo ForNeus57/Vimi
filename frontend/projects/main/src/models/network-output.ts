@@ -1,6 +1,16 @@
 export interface NetworkOutput {
-  activation_uuid: string,
-  layer_uuid: string,
+  predictions: Prediction[];
+  activations: Activation[];
+}
+
+export interface Activation {
+  activation_uuid: string;
+  layer_uuid: string;
+}
+
+export interface Prediction {
+  prediction_number: number;
+  info: string;
 }
 
 export class NetworkOutputRequestData {

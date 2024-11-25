@@ -3,7 +3,6 @@ import {Subject, takeUntil} from "rxjs";
 import {ControlBarMediatorService} from "../../services/control-bar-mediator/control-bar-mediator.service";
 import {ViewerMenuGeneralComponent} from "../viewer-menu-general/viewer-menu-general.component";
 import {ViewerMenuFileComponent} from "../viewer-menu-file/viewer-menu-file.component";
-import {ViewerMenuDetailComponent} from "../viewer-menu-detail/viewer-menu-detail.component";
 
 @Component({
   selector: 'app-bottom-control-bar',
@@ -11,7 +10,6 @@ import {ViewerMenuDetailComponent} from "../viewer-menu-detail/viewer-menu-detai
   imports: [
     ViewerMenuGeneralComponent,
     ViewerMenuFileComponent,
-    ViewerMenuDetailComponent
   ],
   templateUrl: './bottom-control-bar.component.html',
   styleUrls: [

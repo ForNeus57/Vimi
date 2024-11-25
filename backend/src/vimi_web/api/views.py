@@ -1,4 +1,6 @@
 """All views for Django API Application"""
+from typing import Tuple, List
+
 from django.core.files.base import ContentFile
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -9,7 +11,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from vimi_web.api.models import Architecture, ColorMap, NetworkInput, Texture
+from vimi_web.api.models import Architecture, ColorMap, NetworkInput, Texture, Prediction, Activation
 from vimi_web.api.renderers import TextureFileRenderer
 from vimi_web.api.serializers import (
     ArchitectureAllSerializer,
@@ -22,9 +24,8 @@ from vimi_web.api.serializers import (
 )
 
 
-
 class ArchitectureAllView(APIView):
-    """Returns all supported Neural-Network Architectures"""
+    """Returns all supported Neural-Network Architectures with layers"""
 
     permission_classes = (AllowAny,)
     queryset = Architecture.objects.all()
@@ -51,7 +52,6 @@ class NetworkInputView(APIView):
 
             return Response({'uuid': instance.uuid}, status=201)
 
-
         return Response(serializer.errors, status=400)
 
 
@@ -62,8 +62,7 @@ class NetworkInputTransformationAllView(APIView):
 
     @method_decorator(cache_page(60 * 60 * 24))
     def get(self, request: Request) -> Response:
-        serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]},
-                                               NetworkInput.Transformation.choices),
+        serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]}, NetworkInput.Transformation.choices),
                                            many=True)
 
         return Response(serializer.data, status=200)
@@ -78,10 +77,16 @@ class NetworkInputProcessView(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            instances = serializer.save()
+            predictions, activations = serializer.save()
 
-            return Response(map(lambda x: {'activation_uuid': x.uuid, 'layer_uuid': x.layer.uuid}, instances),
-                            status=201)
+            return Response({
+                    'predictions': map(lambda x: {'prediction_number': x.prediction_number, 'info': str(x)},
+                                       predictions),
+                    'activations': map(lambda x: {'activation_uuid': x.uuid, 'layer_uuid': x.layer.uuid},
+                                       activations),
+                },
+                status=201,
+            )
 
         return Response(serializer.errors, status=400)
 

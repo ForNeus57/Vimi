@@ -1,12 +1,13 @@
 from importlib import import_module
 from tempfile import TemporaryFile
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Callable
 from uuid import uuid4
 
 import cv2
 import numpy as np
+import tensorflow as tf
 import keras
-from keras.api import layers
+from keras import backend as k
 from django.urls import reverse
 from django.core.cache import caches
 from django.utils.http import urlencode
@@ -30,46 +31,61 @@ class Architecture(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    def get_model(self, input_shape: Optional[Tuple[int | None, ...]] = None) -> keras.Model:
+    def get_model(self) -> keras.Model:
+        k.clear_session()
         module = import_module(self.module)
-        model_caller = getattr(module, self.name)
+        return getattr(module, self.name)()
 
-        if input_shape is None:
-            input_tensor = None
-        else:
-            input_tensor = layers.Input(shape=input_shape)
+    def get_preprocess_input_function(self) -> Callable[[np.ndarray, Optional[str]], np.ndarray]:
+        module = import_module(self.module)
+        return getattr(module, 'preprocess_input')
 
-        # TODO: Find why tensorflow logs a user warning here?
-        return model_caller(input_tensor=input_tensor)
+    def get_decode_predictions_function(self) -> Callable[[np.ndarray, int], np.ndarray]:
+        module = import_module(self.module)
+        return getattr(module, 'decode_predictions')
 
-    @staticmethod
-    def get_computed_layers(model: keras.Model) -> List[str]:
-        return [f'{layer.name} ({layer.__class__.__name__})' for layer in model.layers]
+    def get_layers(self) -> List:
+        # TODO: Fix this typing
+        dimension_field = Layer._meta.get_field('dimensions')
+        dimensions_default = dimension_field.base_field.default
+        dimensions_size = dimension_field.size
+        model = self.get_model()
 
-    @staticmethod
-    def get_computed_dimensions(model: keras.Model) -> List[List[int]]:
-        # TODO: Set reasonable defaults for the dimensions. Aka defaults from dimensions model class field!
-
-        dimensions = [list(model.input.shape[1:])] + [list(layer.output.shape[1:]) for layer in model.layers[1:]]
-        return [dimension + [1] * (3 - len(dimension)) for dimension in dimensions]
+        return [Layer(architecture=self,
+                      layer_number=index,
+                      name=layer.name,
+                      type=layer.__class__.__name__,
+                      dimensions=list(layer.output.shape[1:]) + [dimensions_default] * (dimensions_size - len(layer.output.shape[1:])))
+                for index, layer in enumerate(model.layers)]
 
 
 class Layer(models.Model):
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     architecture = models.ForeignKey(to=Architecture, related_name='layers', on_delete=models.CASCADE)
     # TODO: Validate this field
-    layer_number = models.PositiveIntegerField()
+    layer_number = models.PositiveIntegerField(editable=False)
     name = models.CharField(max_length=128)
+    type = models.CharField(max_length=64)
     dimensions = postgresql_fields.ArrayField(base_field=models.PositiveIntegerField(default=1),
                                               size=3)
+
+    def __str__(self) -> str:
+        return f'{self.name} ({self.type})'
+
+    def get_presentation_name(self) -> str:
+        return str(self)
 
 
 class NetworkInput(models.Model):
     class Transformation(models.TextChoices):
-        RESCALE_NEAREST_NEIGHBOR = 'rescale_nearest_neighbor', _("Rescale Image - Nearest Neighbor")
-        RESCALE_LINEAR = 'rescale_linear', _("Rescale Image - Linear")
-        RESCALE_CUBIC = 'rescale_cubic', _("Rescale Image - Cubic")
-        KEEP_ORIGINAL = 'keep_original', _("Keep Image Dimensions")
+        RESCALE_BILINEAR = 'rescale_bilinear', _("Bilinear interpolation")
+        RESCALE_LANCZOS3 = 'rescale_lanczos3', _("Lanczos kernel with radius 3")
+        RESCALE_LANCZOS5 = 'rescale_lanczos5', _("Lanczos kernel with radius 5")
+        RESCALE_BICUBIC = 'rescale_bicubic', _("Bicubic interpolation")
+        RESCALE_GAUSSIAN = 'rescale_gaussian', _("Gaussian kernel with radius 3, sigma = 0.5")
+        RESCALE_NEAREST = 'rescale_nearest', _("Nearest neighbor interpolation")
+        RESCALE_AREA = 'rescale_area', _("Anti-aliased resampling with area interpolation")
+        RESCALE_MITCHELLCUBIC = 'rescale_mitchellcubic', _("Mitchell-Netravali Cubic non-interpolating filter")
 
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     # TODO: Consider changing it to image file
@@ -79,46 +95,92 @@ class NetworkInput(models.Model):
         # TODO: Automatically determine 'api' prefix
         db_table = 'api_network_input'
 
-    def transform_input_adjust_model(self, architecture: Architecture, transformation: Transformation) -> Tuple[np.ndarray, keras.Model]:
-        image = cv2.imread(self.file.path, cv2.IMREAD_COLOR) / 255
+    def transform_input_adjust_model(self,
+                                     architecture: Architecture,
+                                     transformation: Transformation) -> Tuple[np.ndarray, keras.Model]:
+        image = cv2.imread(self.file.path, cv2.IMREAD_COLOR)
+        # TODO: Make this a part of NetworkInput Validation
         assert image is not None, 'Image could not be loaded'
-        assert len(image.shape) == 3, 'Image must have 3 channels'
+        assert len(image.shape) == 3, 'Image must be a tensor, as in color'
+        assert image.dtype == np.uint8, 'Image must be uint8 dtype'
+        assert image.shape[2] == 3, 'Image channels must be last and image must be in color'
+
+        model = architecture.get_model()
+        preprocess_input = architecture.get_preprocess_input_function()
+
+        processed_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).transpose(1, 0, 2)
+        processed_image = np.expand_dims(processed_image, axis=0)
+        processed_image = preprocess_input(processed_image, 'channels_last')
 
         match transformation:
-            case self.Transformation.KEEP_ORIGINAL:
-                return np.expand_dims(image, axis=0), architecture.get_model(image.shape)
+            case self.Transformation.RESCALE_BILINEAR:
+                processed_image = tf.image.resize(processed_image,
+                                                  size=model.input.shape[1:3],
+                                                  method=tf.image.ResizeMethod.BILINEAR)
 
-            case self.Transformation.RESCALE_NEAREST_NEIGHBOR:
-                model = architecture.get_model()
-                scaled_image = cv2.resize(image,
-                                          dsize=model.input.shape[1:3],
-                                          interpolation=cv2.INTER_NEAREST)
-                return np.expand_dims(scaled_image, axis=0), model
+            case self.Transformation.RESCALE_LANCZOS3:
+                processed_image = tf.image.resize(processed_image,
+                                                  size=model.input.shape[1:3],
+                                                  method=tf.image.ResizeMethod.LANCZOS3)
 
-            case self.Transformation.RESCALE_LINEAR:
-                model = architecture.get_model()
-                scaled_image =cv2.resize(image,
-                                         dsize=model.input.shape[1:3],
-                                         interpolation=cv2.INTER_LINEAR)
-                return np.expand_dims(scaled_image, axis=0), model
+            case self.Transformation.RESCALE_LANCZOS5:
+                processed_image = tf.image.resize(processed_image,
+                                                  size=model.input.shape[1:3],
+                                                  method=tf.image.ResizeMethod.LANCZOS5)
 
-            case self.Transformation.RESCALE_CUBIC:
-                model = architecture.get_model()
-                scaled_image =cv2.resize(image,
-                                         dsize=model.input.shape[1:3],
-                                         interpolation=cv2.INTER_CUBIC)
-                return np.expand_dims(scaled_image, axis=0), model
+            case self.Transformation.RESCALE_BICUBIC:
+                processed_image = tf.image.resize(processed_image,
+                                                  size=model.input.shape[1:3],
+                                                  method=tf.image.ResizeMethod.BICUBIC)
+
+            case self.Transformation.RESCALE_GAUSSIAN:
+                processed_image = tf.image.resize(processed_image,
+                                                  size=model.input.shape[1:3],
+                                                  method=tf.image.ResizeMethod.GAUSSIAN)
+
+            case self.Transformation.RESCALE_NEAREST:
+                processed_image = tf.image.resize(processed_image,
+                                                  size=model.input.shape[1:3],
+                                                  method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+                processed_image = tf.cast(processed_image, dtype=np.float32)
+
+            case self.Transformation.RESCALE_AREA:
+                processed_image = tf.image.resize(processed_image,
+                                                  size=model.input.shape[1:3],
+                                                  method=tf.image.ResizeMethod.AREA)
+
+            case self.Transformation.RESCALE_MITCHELLCUBIC:
+                processed_image = tf.image.resize(processed_image,
+                                                  size=model.input.shape[1:3],
+                                                  method=tf.image.ResizeMethod.MITCHELLCUBIC)
 
             case _:
                 assert False, 'Unknown transformation provided'
 
+        return processed_image, model
+
+
+class Interference(models.Model):
+    architecture = models.ForeignKey(to=Architecture, related_name='interferences', on_delete=models.PROTECT)
+    network_input = models.ForeignKey(to=NetworkInput, related_name='interferences', on_delete=models.PROTECT)
+    transformation = models.CharField(choices=NetworkInput.Transformation)
+
+
+class Prediction(models.Model):
+    inference = models.ForeignKey(to=Interference, related_name='predictions', on_delete=models.CASCADE)
+    # TODO: Validate order
+    prediction_number = models.PositiveIntegerField()
+    class_id = models.CharField(max_length=32)
+    class_name = models.CharField(max_length=32)
+    class_score = models.FloatField()
+
+    def __str__(self) -> str:
+        return f'{self.class_id}({self.class_name}) - {self.class_score}'
 
 class Activation(models.Model):
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
-    architecture = models.ForeignKey(to=Architecture, related_name='activations', on_delete=models.PROTECT)
-    network_input = models.ForeignKey(to=NetworkInput, related_name='activations', on_delete=models.PROTECT)
+    inference = models.ForeignKey(to=Interference, related_name='activations', on_delete=models.CASCADE)
     layer = models.ForeignKey(to=Layer, related_name='activations', on_delete=models.PROTECT)
-    transformation = models.CharField(choices=NetworkInput.Transformation)
     # TODO: Validate this size
     activation_binary = models.FileField(upload_to='activation/', max_length=64)
 

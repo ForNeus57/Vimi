@@ -28,15 +28,7 @@
     "pk": null,
     "fields": {
       "name": "ResNet50",
-      "module": "keras.api.applications.resnet50"
-    }
-  },
-  {
-    "model": "api.architecture",
-    "pk": null,
-    "fields": {
-      "name": "ResNet50V2",
-      "module": "keras.api.applications.resnet_v2"
+      "module": "keras.api.applications.resnet"
     }
   },
   {
@@ -51,7 +43,15 @@
     "model": "api.architecture",
     "pk": null,
     "fields": {
-      "name": "ResNet101V2",
+      "name": "ResNet152",
+      "module": "keras.api.applications.resnet"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": null,
+    "fields": {
+      "name": "ResNet50V2",
       "module": "keras.api.applications.resnet_v2"
     }
   },
@@ -59,8 +59,8 @@
     "model": "api.architecture",
     "pk": null,
     "fields": {
-      "name": "ResNet152",
-      "module": "keras.api.applications.resnet"
+      "name": "ResNet101V2",
+      "module": "keras.api.applications.resnet_v2"
     }
   },
   {
@@ -75,16 +75,16 @@
     "model": "api.architecture",
     "pk": null,
     "fields": {
-      "name": "InceptionV3",
-      "module": "keras.api.applications.inception_v3"
+      "name": "InceptionResNetV2",
+      "module": "keras.api.applications.inception_resnet_v2"
     }
   },
   {
     "model": "api.architecture",
     "pk": null,
     "fields": {
-      "name": "InceptionResNetV2",
-      "module": "keras.api.applications.inception_resnet_v2"
+      "name": "InceptionV3",
+      "module": "keras.api.applications.inception_v3"
     }
   },
   {
@@ -195,6 +195,14 @@
     "model": "api.architecture",
     "pk": null,
     "fields": {
+      "name": "EfficientNetB6",
+      "module": "keras.api.applications.efficientnet"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": null,
+    "fields": {
       "name": "EfficientNetB7",
       "module": "keras.api.applications.efficientnet"
     }
@@ -259,6 +267,14 @@
     "model": "api.architecture",
     "pk": null,
     "fields": {
+      "name": "ConvNeXtBase",
+      "module": "keras.api.applications.convnext"
+    }
+  },
+  {
+    "model": "api.architecture",
+    "pk": null,
+    "fields": {
       "name": "ConvNeXtTiny",
       "module": "keras.api.applications.convnext"
     }
@@ -268,14 +284,6 @@
     "pk": null,
     "fields": {
       "name": "ConvNeXtSmall",
-      "module": "keras.api.applications.convnext"
-    }
-  },
-  {
-    "model": "api.architecture",
-    "pk": null,
-    "fields": {
-      "name": "ConvNeXtBase",
       "module": "keras.api.applications.convnext"
     }
   },

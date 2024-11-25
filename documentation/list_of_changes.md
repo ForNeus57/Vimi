@@ -1,1 +1,9 @@
-- A
+- Added in-memory caching to speed texture data fetching
+- Added adequate input data processing and class decoding in the backend
+	- Removed data scaling feature as it is badly transforms input data and malforms model predictions
+	- Adjusted model imports paths in Architecture model
+	- Fixed incorrect input image loading:
+		- Added conversion from BGR to RGB
+		- Transposed the image, so X and Y are not switched
+		- 
+- 

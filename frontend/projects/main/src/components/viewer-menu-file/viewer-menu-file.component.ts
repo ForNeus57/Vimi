@@ -6,7 +6,7 @@ import {FormsModule} from "@angular/forms";
 import {ControlBarMediatorService} from "../../services/control-bar-mediator/control-bar-mediator.service";
 import {filter, Subject, takeUntil} from "rxjs";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
-import {NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
+import {Activation, NetworkOutput, NetworkOutputRequestData} from "../../models/network-output";
 import {DataLayerService} from "../../services/data-layer/data-layer.service";
 import {ColorMapProcessOutput, ColorMapRequestData, ImageSet} from "../../models/color-map";
 import {ViewerControlService} from "../../services/viewer-control/viewer-control.service";
@@ -34,7 +34,7 @@ export class ViewerMenuFileComponent implements OnInit, OnDestroy {
   canvasElementPlacement = '1d';
   architecture: Architecture | null = null;
   layers = Array<Layer>();
-  activation: NetworkOutput | null = null;
+  activation: Activation | null = null;
 
   constructor(
     private controlBarMediator: ControlBarMediatorService,
@@ -95,10 +95,10 @@ export class ViewerMenuFileComponent implements OnInit, OnDestroy {
             [layerUUID],
           );
 
-          this.dataLayer.post<NetworkOutput[]>('api/1/network_input/process/', endpointData)
+          this.dataLayer.post<NetworkOutput>('api/1/network_input/process/', endpointData)
             .subscribe({
               next: (networkOutput) => {
-                this.activation = networkOutput[0];
+                this.activation = networkOutput.activations[0];
                 this.notificationHandler.success('Successfully calculated activations');
 
               },

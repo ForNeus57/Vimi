@@ -1,5 +1,4 @@
 import {Component} from '@angular/core';
-import {ViewerMenuComponent} from "../viewer-menu/viewer-menu.component";
 import {ViewerCanvasComponent} from "../viewer-canvas/viewer-canvas.component";
 import {TopControlBarComponent} from "../top-control-bar/top-control-bar.component";
 import {BottomControlBarComponent} from "../bottom-control-bar/bottom-control-bar.component";
@@ -8,7 +7,6 @@ import {BottomControlBarComponent} from "../bottom-control-bar/bottom-control-ba
   selector: 'app-model-viewer',
   standalone: true,
   imports: [
-    ViewerMenuComponent,
     ViewerCanvasComponent,
     TopControlBarComponent,
     BottomControlBarComponent,
