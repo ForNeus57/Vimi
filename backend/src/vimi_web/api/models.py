@@ -247,7 +247,6 @@ class Texture(models.Model):
                      'texture': self.uuid,
                      'filter_index': filter_index,
                      'cube_side': cube_side_index,
-                     'quality': 4,
                      'compression_level': 9,
                  })}')
                  for cube_side_index, _ in self.CubeSide.choices]
@@ -277,7 +276,7 @@ class Texture(models.Model):
         selected_filter = self.to_numpy()[:, :, :, index]
         return np.flip(selected_filter, axis=1)
 
-    def get_slice(self, filter_index: int, cube_side: CubeSide, quality: int) -> np.ndarray:
+    def get_slice(self, filter_index: int, cube_side: CubeSide) -> np.ndarray:
         match cube_side:
             case self.CubeSide.POS_X:
                 selected_side = self.positive_x(filter_index)
@@ -300,7 +299,7 @@ class Texture(models.Model):
             case _:
                 assert False, 'Unknown mode provided'
 
-        return np.repeat(np.repeat(selected_side, quality, axis=0), quality, axis=1)
+        return selected_side
 
     def get_file(self, filter_slice: np.ndarray, compression_level: int) -> ContentFile:
         extension_key = self.Extension.PNG

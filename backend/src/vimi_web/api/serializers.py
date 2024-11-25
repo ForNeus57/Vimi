@@ -151,17 +151,15 @@ class TextureSerializer(serializers.Serializer):
     # TODO: Validate this field
     filter_index = serializers.IntegerField(min_value=0)
     cube_side = serializers.ChoiceField(choices=Texture.CubeSide.choices)
-    quality = serializers.IntegerField(min_value=1, max_value=16)
     compression_level = serializers.IntegerField(min_value=0, max_value=9)
 
     def create(self, validated_data: Mapping[str, Any]) -> ContentFile:
         texture: Texture = validated_data['texture']
         filter_index = validated_data['filter_index']
         cube_size = validated_data['cube_side']
-        quality = validated_data['quality']
         compression_level = validated_data['cube_side']
 
-        filter_slice = texture.get_slice(filter_index, cube_size, quality)
+        filter_slice = texture.get_slice(filter_index, cube_size)
         return texture.get_file(filter_slice, compression_level)
 
 

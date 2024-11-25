@@ -340,32 +340,46 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private createMesh(loader: THREE.TextureLoader, urls: string[], imageSet: ImageSet | ColorMapProcessOutput) {
+    const textures = [
+      loader.load(urls[0]),
+      loader.load(urls[1]),
+      loader.load(urls[2]),
+      loader.load(urls[3]),
+      loader.load(urls[4]),
+      loader.load(urls[5]),
+    ]
+
+    textures.forEach((texture) => {
+      texture.minFilter = THREE.NearestFilter;
+      texture.magFilter = THREE.NearestFilter;
+    });
+
     return new THREE.Mesh(
       new THREE.BoxGeometry(imageSet.shape[1], imageSet.shape[0], 1),
       [
         new THREE.MeshBasicMaterial({
           // TODO: Implement error handling here
-          map: loader.load(urls[0])
+          map: textures[0],
         }),
         new THREE.MeshBasicMaterial({
           // TODO: Implement error handling here
-          map: loader.load(urls[1])
+          map: textures[1],
         }),
         new THREE.MeshBasicMaterial({
           // TODO: Implement error handling here
-          map: loader.load(urls[2])
+          map: textures[2],
         }),
         new THREE.MeshBasicMaterial({
           // TODO: Implement error handling here
-          map: loader.load(urls[3])
+          map: textures[3],
         }),
         new THREE.MeshBasicMaterial({
           // TODO: Implement error handling here
-          map: loader.load(urls[4])
+          map: textures[4],
         }),
         new THREE.MeshBasicMaterial({
           // TODO: Implement error handling here
-          map: loader.load(urls[5])
+          map: textures[5],
         }),
       ],
     );

@@ -19,7 +19,7 @@ export class ViewerCanvasControlComponent {
 
   onCameraReset() {
     this.viewerController.setCameraOrientation(
-      new CameraOrientation(new THREE.Vector3(0, 5, -10), new THREE.Vector3(0, 0, 0), 1.0)
+      new CameraOrientation(new THREE.Vector3(0, 5, 10), new THREE.Vector3(0, 0, 0), 1.0)
     );
   }
 

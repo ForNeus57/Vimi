@@ -1,13 +1,15 @@
 """All views for Django API Application"""
 from django.core.files.base import ContentFile
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny
-from rest_framework.renderers import JSONRenderer, BaseRenderer
+from rest_framework.renderers import JSONRenderer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from vimi_web.api.models import Architecture, ColorMap, Activation, NetworkInput, Texture
+from vimi_web.api.models import Architecture, ColorMap, NetworkInput, Texture
 from vimi_web.api.renderers import TextureFileRenderer
 from vimi_web.api.serializers import (
     ArchitectureAllSerializer,
@@ -27,6 +29,7 @@ class ArchitectureAllView(APIView):
     queryset = Architecture.objects.all()
     serializer_class = ArchitectureAllSerializer
 
+    @method_decorator(cache_page(60 * 60 * 24))
     def get(self, request: Request) -> Response:
         serializer = self.serializer_class(self.queryset.all(), many=True)
 
@@ -56,6 +59,7 @@ class NetworkInputTransformationAllView(APIView):
     permission_classes = (AllowAny,)
     serializer_class = NetworkInputTransformationAllSerializer
 
+    @method_decorator(cache_page(60 * 60 * 24))
     def get(self, request: Request) -> Response:
         serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]},
                                                NetworkInput.Transformation.choices),
@@ -87,6 +91,7 @@ class ColorMapAllView(APIView):
     queryset = ColorMap.objects.all()
     serializer_class = ColorMapAllSerializer
 
+    @method_decorator(cache_page(60 * 60 * 24))
     def get(self, request: Request) -> Response:
         serializer = self.serializer_class(self.queryset.all(), context={'request': request}, many=True)
 
@@ -113,6 +118,7 @@ class ColorMapNormalizationAllView(APIView):
     permission_classes = (AllowAny,)
     serializer_class = ColorMapNormalizationAllSerializer
 
+    @method_decorator(cache_page(60 * 60 * 24))
     def get(self, request: Request) -> Response:
         serializer = self.serializer_class(map(lambda x: {'id': x[0], 'name': x[1]}, ColorMap.Normalization.choices),
                                            many=True)
@@ -125,6 +131,7 @@ class ColorMapIndicatorView(APIView):
     serializer_class = ColorMapIndicatorSerializer
     renderer_classes = (TextureFileRenderer, JSONRenderer,)
 
+    @method_decorator(cache_page(60 * 60 * 24))
     def get(self, request: Request) -> Response:
         serializer = self.serializer_class(data=request.query_params)
 
@@ -137,6 +144,7 @@ class ColorMapIndicatorView(APIView):
                             content_type='image/png')
 
         return Response(serializer.errors, status=400)
+
 
 class TextureView(APIView):
     permission_classes = (AllowAny,)
