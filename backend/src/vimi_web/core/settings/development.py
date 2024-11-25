@@ -130,27 +130,8 @@ CACHES = {
             },
         }
     },
-    'authentication': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': f'redis://{environ['REDIS_USERNAME']}:{environ['REDIS_USER_PASSWORD']}@{environ['REDIS_HOST']}:{environ['REDIS_PORT']}/1',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'CONNECTION_POOL_KWARGS': {
-                'max_connections': 100,
-                'retry_on_timeout': True,
-            },
-        }
-    },
-    'data': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': f'redis://{environ['REDIS_USERNAME']}:{environ['REDIS_USER_PASSWORD']}@{environ['REDIS_HOST']}:{environ['REDIS_PORT']}/2',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'CONNECTION_POOL_KWARGS': {
-                'max_connections': 100,
-                'retry_on_timeout': True,
-            },
-        },
+    'in_memory': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     },
 }
 

@@ -22,6 +22,7 @@ from vimi_web.api.serializers import (
 )
 
 
+
 class ArchitectureAllView(APIView):
     """Returns all supported Neural-Network Architectures"""
 
@@ -129,6 +130,7 @@ class ColorMapNormalizationAllView(APIView):
 class ColorMapIndicatorView(APIView):
     permission_classes = (AllowAny,)
     serializer_class = ColorMapIndicatorSerializer
+    # TODO: Write custom negotiation of the renderer
     renderer_classes = (TextureFileRenderer, JSONRenderer,)
 
     @method_decorator(cache_page(60 * 60 * 24))

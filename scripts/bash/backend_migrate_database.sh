@@ -9,4 +9,5 @@ vimi-backend makemigrations;
 vimi-backend migrate;
 vimi-backend loaddata --settings=vimi_web.core.settings.testing initial_data;
 vimi-backend sync_layer;
+vimi-backend sync_color_map;
 vimi-backend createsuperuser --username "$DJANGO_SUPERUSER_USERNAME" --email "$DJANGO_SUPERUSER_EMAIL" --noinput;

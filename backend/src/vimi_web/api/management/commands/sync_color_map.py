@@ -14,7 +14,7 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **kwargs) -> None:
-        queryset = ColorMap.objects.exclude(attribute__isnull=False)
+        queryset = ColorMap.objects.filter(attribute__isnull=False)
 
         for color_map in queryset:
             cv2_color_map_attribute = color_map.get_color_map()

@@ -205,4 +205,4 @@ backend/test
 backend/src/vimi_web/api/migrations
 backend/src/vimi_web/authentication/migrations
 backend/secrets/
-backend/media/
+/.obsidian/

@@ -6,9 +6,10 @@ from uuid import uuid4
 import cv2
 import numpy as np
 import keras
-from django.urls import reverse
-from django.utils.http import urlencode
 from keras.api import layers
+from django.urls import reverse
+from django.core.cache import caches
+from django.utils.http import urlencode
 from django.core.files.base import ContentFile
 from django.db.models.functions import Lower
 from django.db import models
@@ -16,6 +17,8 @@ from django.core.files import File
 from django.contrib.postgres import fields as postgresql_fields
 from django.utils.translation import gettext_lazy as _
 from rest_framework.request import Request
+
+in_memory_cache = caches['in_memory']
 
 
 class Architecture(models.Model):
@@ -87,9 +90,9 @@ class NetworkInput(models.Model):
 
             case self.Transformation.RESCALE_NEAREST_NEIGHBOR:
                 model = architecture.get_model()
-                scaled_image =cv2.resize(image,
-                                         dsize=model.input.shape[1:3],
-                                         interpolation=cv2.INTER_NEAREST)
+                scaled_image = cv2.resize(image,
+                                          dsize=model.input.shape[1:3],
+                                          interpolation=cv2.INTER_NEAREST)
                 return np.expand_dims(scaled_image, axis=0), model
 
             case self.Transformation.RESCALE_LINEAR:
@@ -236,8 +239,16 @@ class Texture(models.Model):
 
         return file
 
+    def get_cache_key(self) -> str:
+        return f':{self.id}:{self.binary_data_file.name}'
+
     def to_numpy(self) -> np.ndarray:
-        return np.load(self.binary_data_file, allow_pickle=False)
+        texture_tensor = in_memory_cache.get(self.get_cache_key())
+        if texture_tensor is None:
+            texture_tensor = np.load(self.binary_data_file, allow_pickle=False)
+            in_memory_cache.set(self.get_cache_key(), texture_tensor)
+
+        return texture_tensor
 
     def get_available_urls(self, request: Request) -> List[List[str]]:
         colored_activations = self.to_numpy()
