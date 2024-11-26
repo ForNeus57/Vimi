@@ -39,7 +39,7 @@
         Upload
       </button>
       <p class="control-file-name">
-       {{ fileName ?? "File not provided"}}
+       {{ fileName ?? "File not provided" }}
       </p>
     </div>
     <select id="inputTransformation"
@@ -93,5 +93,36 @@
             (click)="onColorMapChange()">
       Apply
     </button>
+  </li>
+  <li class="control-background control-state-button standard-shadow display-classes">
+    <i class="bi bi-layers-half control display-classes"></i>
+    <div class="display-classes standard-shadow">
+      @if (predictions.length == 0) {
+        <p style="white-space: nowrap">
+          No predictions calculated
+        </p>
+      }
+      @for (prediction of predictions; track prediction.prediction_number) {
+        <div class="display-class">
+          <p>
+            {{prediction.prediction_number + 1}}.
+          </p>
+          <p style="white-space: nowrap">
+            {{prediction.class_name.replace('_', ' ') | titlecase }}
+          </p>
+          <p>
+            {{prediction.class_score | percent:'.2' }}
+          </p>
+        </div>
+      }
+    </div>
+  </li>
+  <li class="control-background control-state-button standard-shadow">
+    <a class="control"
+       routerLink="/comparator"
+       routerLinkActive="active"
+       ariaCurrentWhenActive="page">
+      <i class="bi bi-arrow-right control"></i>
+    </a>
   </li>
 </menu>

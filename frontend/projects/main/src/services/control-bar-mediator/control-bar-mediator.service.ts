@@ -3,6 +3,7 @@ import {BehaviorSubject} from "rxjs";
 import {Architecture} from "../../models/architecture";
 import {CalculatePayload} from "../../models/calculate-payload";
 import {ApplyPayload} from "../../models/apply-payload";
+import {Prediction} from "../../models/network-output";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class ControlBarMediatorService {
   private readonly calculatePayload = new BehaviorSubject<CalculatePayload | null>(null);
   private readonly applyPayload  = new BehaviorSubject<ApplyPayload | null>(null);
   private readonly indicator = new BehaviorSubject<string | null>(null);
+  private readonly predictions = new BehaviorSubject<Prediction[]>([]);
 
   constructor() {}
 
@@ -49,5 +51,12 @@ export class ControlBarMediatorService {
   }
   getIndicator() {
     return this.indicator.asObservable();
+  }
+
+  setPredictions(newPredictions: Prediction[]) {
+    this.predictions.next(newPredictions);
+  }
+  getPredictions() {
+    return this.predictions.asObservable();
   }
 }

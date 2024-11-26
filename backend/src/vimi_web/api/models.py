@@ -82,10 +82,10 @@ class NetworkInput(models.Model):
         RESCALE_LANCZOS3 = 'rescale_lanczos3', _("Lanczos kernel with radius 3")
         RESCALE_LANCZOS5 = 'rescale_lanczos5', _("Lanczos kernel with radius 5")
         RESCALE_BICUBIC = 'rescale_bicubic', _("Bicubic interpolation")
-        RESCALE_GAUSSIAN = 'rescale_gaussian', _("Gaussian kernel with radius 3, sigma = 0.5")
+        RESCALE_GAUSSIAN = 'rescale_gaussian', _("Gaussian kernel with radius 3")
         RESCALE_NEAREST = 'rescale_nearest', _("Nearest neighbor interpolation")
-        RESCALE_AREA = 'rescale_area', _("Anti-aliased resampling with area interpolation")
-        RESCALE_MITCHELLCUBIC = 'rescale_mitchellcubic', _("Mitchell-Netravali Cubic non-interpolating filter")
+        RESCALE_AREA = 'rescale_area', _("Anti-aliased resampling")
+        RESCALE_MITCHELLCUBIC = 'rescale_mitchellcubic', _("Mitchell-Netravali Cubic")
 
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     # TODO: Consider changing it to image file
@@ -108,7 +108,7 @@ class NetworkInput(models.Model):
         model = architecture.get_model()
         preprocess_input = architecture.get_preprocess_input_function()
 
-        processed_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).transpose(1, 0, 2)
+        processed_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         processed_image = np.expand_dims(processed_image, axis=0)
         processed_image = preprocess_input(processed_image, 'channels_last')
 
@@ -174,8 +174,6 @@ class Prediction(models.Model):
     class_name = models.CharField(max_length=32)
     class_score = models.FloatField()
 
-    def __str__(self) -> str:
-        return f'{self.class_id}({self.class_name}) - {self.class_score}'
 
 class Activation(models.Model):
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)

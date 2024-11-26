@@ -4,6 +4,5 @@
 	- Adjusted model imports paths in Architecture model
 	- Fixed incorrect input image loading:
 		- Added conversion from BGR to RGB
-		- Transposed the image, so X and Y are not switched
-		- 
+		- Added input data transposition
 - 

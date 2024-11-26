@@ -86,11 +86,12 @@ export class ViewerMenuGeneralComponent implements OnInit, OnDestroy {
             .subscribe({
               next: (networkOutput) => {
                 this.activations = networkOutput.activations;
+                this.controlBarMediator.setPredictions(networkOutput.predictions);
                 this.notificationHandler.success('Successfully calculated activations');
-
               },
               error: (error) => {
                 this.activations = null;
+                this.controlBarMediator.setPredictions([]);
                 this.notificationHandler.error(error);
                 this.notificationHandler.error('Failed to calculate activations');
               },

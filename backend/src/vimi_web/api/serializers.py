@@ -78,13 +78,11 @@ class NetworkInputProcessSerializer(serializers.ModelSerializer):
                        class_id=class_id,
                        class_name=class_name,
                        class_score=class_score)
-            for index, (class_id, class_name, class_score) in enumerate(decode_predictions(model_predictions[0], 10)[0])
+            for index, (class_id, class_name, class_score) in enumerate(decode_predictions(model_predictions[0], 5)[0])
         ])
         activations = Activation.objects.bulk_create([
-            Activation(architecture=architecture,
-                       network_input=network_input,
+            Activation(inference=inference,
                        layer=layer,
-                       transformation=transformation,
                        activation_binary=Activation.to_file(activation[0]))
             for activation, layer in zip(model_predictions[1:], layers)
         ])

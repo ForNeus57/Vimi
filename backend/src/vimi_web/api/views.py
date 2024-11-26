@@ -80,7 +80,7 @@ class NetworkInputProcessView(APIView):
             predictions, activations = serializer.save()
 
             return Response({
-                    'predictions': map(lambda x: {'prediction_number': x.prediction_number, 'info': str(x)},
+                    'predictions': map(lambda x: {'prediction_number': x.prediction_number, 'class_name': x.class_name, 'class_score': x.class_score},
                                        predictions),
                     'activations': map(lambda x: {'activation_uuid': x.uuid, 'layer_uuid': x.layer.uuid},
                                        activations),

@@ -10,7 +10,8 @@ export interface Activation {
 
 export interface Prediction {
   prediction_number: number;
-  info: string;
+  class_name: string;
+  class_score: number;
 }
 
 export class NetworkOutputRequestData {

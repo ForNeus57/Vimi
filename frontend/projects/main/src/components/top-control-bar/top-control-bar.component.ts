@@ -1,7 +1,7 @@
-import {Component, computed, effect, OnInit, signal} from '@angular/core';
+import {Component, computed, effect, OnDestroy, OnInit, signal} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {ControlBarMediatorService} from "../../services/control-bar-mediator/control-bar-mediator.service";
-import {NgClass} from "@angular/common";
+import {NgClass, PercentPipe, TitleCasePipe} from "@angular/common";
 import {Architecture} from "../../models/architecture";
 import {DataLayerService} from "../../services/data-layer/data-layer.service";
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
@@ -11,13 +11,20 @@ import {InputTransformation} from "../../models/input-transformation";
 import {NetworkInput} from "../../models/network-input";
 import {CalculatePayload} from "../../models/calculate-payload";
 import {ApplyPayload} from "../../models/apply-payload";
+import {RouterLink, RouterLinkActive} from "@angular/router";
+import {Prediction} from "../../models/network-output";
+import {filter, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-top-control-bar',
   standalone: true,
   imports: [
     FormsModule,
-    NgClass
+    NgClass,
+    RouterLink,
+    RouterLinkActive,
+    TitleCasePipe,
+    PercentPipe,
   ],
   templateUrl: './top-control-bar.component.html',
   styleUrls: [
@@ -25,7 +32,9 @@ import {ApplyPayload} from "../../models/apply-payload";
     '../model-viewer/model-viewer-list.scss',
   ]
 })
-export class TopControlBarComponent implements OnInit {
+export class TopControlBarComponent implements OnInit, OnDestroy {
+  private readonly ngUnsubscribe = new Subject<void>();
+
   selectedArchitectureUUID = signal<string | null>(null);
   selectedFileUUID = signal<string | null>(null);
   selectedInputTransformationId = signal<string | null>(null);
@@ -64,6 +73,7 @@ export class TopControlBarComponent implements OnInit {
   normalizations = Array<Normalization>();
 
   fileName: string | null = null;
+  predictions = Array<Prediction>();
 
   constructor(
     private controlBarMediator: ControlBarMediatorService,
@@ -123,6 +133,24 @@ export class TopControlBarComponent implements OnInit {
           this.notificationHandler.error('Failed to load normalizations');
         },
       });
+
+    this.controlBarMediator.getPredictions()
+      .pipe(
+        filter((value) => value.length != 0),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe({
+        next: (predictions) => {
+          this.predictions = predictions.sort((valA, valB) => {
+            return valA.prediction_number - valB.prediction_number
+          });
+        },
+      });
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   onFileChange(event: Event) {

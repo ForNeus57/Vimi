@@ -99,11 +99,12 @@ export class ViewerMenuFileComponent implements OnInit, OnDestroy {
             .subscribe({
               next: (networkOutput) => {
                 this.activation = networkOutput.activations[0];
+                this.controlBarMediator.setPredictions(networkOutput.predictions);
                 this.notificationHandler.success('Successfully calculated activations');
-
               },
               error: (error) => {
                 this.activation = null;
+                this.controlBarMediator.setPredictions([]);
                 this.notificationHandler.error(error);
                 this.notificationHandler.error('Failed to calculate activations');
               },
