@@ -6,4 +6,8 @@
   padding: var(--horizontal-menu-inner-padding) var(--horizontal-menu-border-radius);
 }
 
+h1.title {
+  color: white;
+}
+
 /*# sourceMappingURL=comparator-control-bar.component.css.map */
