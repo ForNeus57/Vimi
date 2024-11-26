@@ -105,13 +105,13 @@
       @for (prediction of predictions; track prediction.prediction_number) {
         <div class="display-class">
           <p>
-            {{prediction.prediction_number + 1}}.
+            {{ prediction.prediction_number + 1 }}.
           </p>
           <p style="white-space: nowrap">
-            {{prediction.class_name.replace('_', ' ') | titlecase }}
+            {{ prediction.class_name.replace('_', ' ') | titlecase }}
           </p>
           <p>
-            {{prediction.class_score | percent:'.2' }}
+            {{ prediction.class_score | percent:'.2' }}
           </p>
         </div>
       }
