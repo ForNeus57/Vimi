@@ -11,7 +11,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from vimi_web.api.models import Architecture, ColorMap, NetworkInput, Texture, Prediction, Activation
+from vimi_web.api.models import Architecture, ColorMap, NetworkInput, Texture, Prediction, Activation, Interference
 from vimi_web.api.renderers import TextureFileRenderer
 from vimi_web.api.serializers import (
     ArchitectureAllSerializer,
@@ -20,7 +20,7 @@ from vimi_web.api.serializers import (
     ColorMapAllSerializer,
     ColorMapProcessSerializer,
     ColorMapNormalizationAllSerializer, TextureSerializer, NetworkInputTransformationAllSerializer,
-    ColorMapIndicatorSerializer,
+    ColorMapIndicatorSerializer, ArchitectureProcessedAllSerializer,
 )
 
 
@@ -32,6 +32,17 @@ class ArchitectureAllView(APIView):
     serializer_class = ArchitectureAllSerializer
 
     @method_decorator(cache_page(60 * 60 * 24))
+    def get(self, request: Request) -> Response:
+        serializer = self.serializer_class(self.queryset.all(), many=True)
+
+        return Response(serializer.data, status=200)
+
+
+class ArchitectureProcessedAllView(APIView):
+    permission_classes = (AllowAny,)
+    queryset = Architecture.objects.filter(id__in=Interference.objects.values('architecture_id')).distinct().order_by('id')
+    serializer_class = ArchitectureProcessedAllSerializer
+
     def get(self, request: Request) -> Response:
         serializer = self.serializer_class(self.queryset.all(), many=True)
 

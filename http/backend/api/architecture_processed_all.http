@@ -1,0 +1,2 @@
+GET {{host}}/api/1/architecture/processed/ HTTP/1.1
+Accept: application/json

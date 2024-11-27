@@ -8,3 +8,7 @@
   justify-content: start;
   align-items: stretch;
 }
+
+div.container {
+  padding: var(--double-gap) 10vw;
+}

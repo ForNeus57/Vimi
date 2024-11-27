@@ -29,6 +29,13 @@ class ArchitectureAllSerializer(serializers.ModelSerializer):
         fields = ('uuid', 'name', 'layers',)
 
 
+class ArchitectureProcessedAllSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Architecture
+        fields= ('uuid', 'name',)
+
+
 class NetworkInputSerializer(serializers.Serializer):
     # TODO: Validate the file is not too big
     file = serializers.FileField(max_length=128)

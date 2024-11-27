@@ -8,4 +8,8 @@
   align-items: stretch;
 }
 
+div.container {
+  padding: var(--double-gap) 10vw;
+}
+
 /*# sourceMappingURL=comparator.component.css.map */
