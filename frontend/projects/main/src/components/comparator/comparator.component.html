@@ -1,5 +1,33 @@
 <app-comparator-control-bar class="standard-shadow"></app-comparator-control-bar>
 
-<div class="container">
-  AAAA
+<div class="container standard-shadow table-container">
+  <table class="table table-hover" style="margin-bottom: 0">
+    <thead>
+      <tr class="table-primary">
+        <th scope="col">No.</th>
+        <th scope="col">Architecture Name</th>
+        <th scope="col">UUID</th>
+        <th scope="col">Total Layer Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (architectureProcessed of architecturesProcessed; track architectureProcessed.uuid) {
+        <tr class="table-row-click"
+            (click)="fetchLayerInfo(architectureProcessed.uuid)">
+          <th scope="row">
+            {{architecturesProcessed.indexOf(architectureProcessed) + 1}}
+          </th>
+          <td>
+            {{architectureProcessed.name}}
+          </td>
+          <td>
+            {{architectureProcessed.uuid}}
+          </td>
+          <td>
+            {{architectureProcessed.layer_count}}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
 </div>

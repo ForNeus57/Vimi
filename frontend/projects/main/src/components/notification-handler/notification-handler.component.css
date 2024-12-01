@@ -32,4 +32,8 @@
   color: var(--primary-info-color);
 }
 
+.notification-header-text {
+  margin: 0;
+}
+
 /*# sourceMappingURL=notification-handler.component.css.map */

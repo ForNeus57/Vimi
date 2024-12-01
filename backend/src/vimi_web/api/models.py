@@ -58,6 +58,9 @@ class Architecture(models.Model):
                       dimensions=list(layer.output.shape[1:]) + [dimensions_default] * (dimensions_size - len(layer.output.shape[1:])))
                 for index, layer in enumerate(model.layers)]
 
+    def get_layer_count(self) -> int:
+        return self.layers.count()
+
 
 class Layer(models.Model):
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
@@ -74,6 +77,13 @@ class Layer(models.Model):
 
     def get_presentation_name(self) -> str:
         return str(self)
+
+    def get_presentation_dimensions(self) -> str:
+        # TODO: Fix this typing
+        dimension_field = self._meta.get_field('dimensions')
+        dimensions_default = dimension_field.base_field.default
+
+        return str(tuple(filter(lambda x: x != dimensions_default, self.dimensions)))
 
 
 class NetworkInput(models.Model):

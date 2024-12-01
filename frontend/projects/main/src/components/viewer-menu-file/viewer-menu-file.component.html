@@ -4,7 +4,7 @@
           class="control"
           [(ngModel)]="selectedLayerUUID">
     <option value="null">
-      Layer ...
+      Layer
     </option>
     @for(layer of layers; track layer.uuid) {
       <option [value]="layer.uuid">

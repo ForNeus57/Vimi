@@ -19,7 +19,7 @@
             class="control"
             [(ngModel)]="selectedArchitectureUUID">
       <option value="null">
-        Architecture ...
+        Architecture
       </option>
       @for(architecture of architectures; track architecture.uuid) {
         <option [value]="architecture.uuid">
@@ -38,7 +38,7 @@
       <button class="btn-small btn-primary">
         Upload
       </button>
-      <p class="control-file-name">
+      <p class="control-file-name" style="margin: 0">
        {{ fileName ?? "File not provided" }}
       </p>
     </div>
@@ -47,7 +47,7 @@
             class="control"
             [(ngModel)]="selectedInputTransformationId">
       <option value="null">
-        Input Transformation ...
+        Input Transformation
       </option>
         @for (transformation of inputTransformations; track transformation.id) {
           <option [value]="transformation.id">
@@ -67,7 +67,7 @@
             class="control"
             [(ngModel)]="selectedNormalizationId">
       <option value="null">
-        Normalization ...
+        Normalization
       </option>
         @for (normalization of normalizations; track normalization.id) {
           <option [value]="normalization.id">
@@ -80,7 +80,7 @@
             class="control"
             [(ngModel)]="selectedColorMapUUID">
       <option value="null">
-        Color Map ...
+        Color Map
       </option>
       @for(colorMap of colorMaps; track colorMap.uuid) {
         <option [value]="colorMap.uuid">
@@ -98,7 +98,7 @@
     <i class="bi bi-layers-half control display-classes"></i>
     <div class="display-classes standard-shadow">
       @if (predictions.length == 0) {
-        <p style="white-space: nowrap">
+        <p style="white-space: nowrap; margin: 0">
           No predictions calculated
         </p>
       }

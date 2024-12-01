@@ -11,7 +11,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from vimi_web.api.models import Architecture, ColorMap, NetworkInput, Texture, Prediction, Activation, Interference
+from vimi_web.api.models import Architecture, ColorMap, NetworkInput, Texture, Prediction, Activation, Interference, \
+    Layer
 from vimi_web.api.renderers import TextureFileRenderer
 from vimi_web.api.serializers import (
     ArchitectureAllSerializer,
@@ -20,7 +21,8 @@ from vimi_web.api.serializers import (
     ColorMapAllSerializer,
     ColorMapProcessSerializer,
     ColorMapNormalizationAllSerializer, TextureSerializer, NetworkInputTransformationAllSerializer,
-    ColorMapIndicatorSerializer, ArchitectureProcessedAllSerializer,
+    ColorMapIndicatorSerializer, ArchitectureProcessedAllSerializer, ArchitectureProcessedLayersSerializer,
+    LayerSerializer,
 )
 
 
@@ -47,6 +49,25 @@ class ArchitectureProcessedAllView(APIView):
         serializer = self.serializer_class(self.queryset.all(), many=True)
 
         return Response(serializer.data, status=200)
+
+
+class ArchitectureProcessedLayersView(APIView):
+    permission_classes = (AllowAny,)
+    queryset = Layer.objects.all()
+    serializer_class = ArchitectureProcessedLayersSerializer
+
+    def get(self, request: Request,) -> Response:
+        architecture_serializer = self.serializer_class(data=request.query_params)
+
+        if architecture_serializer.is_valid():
+            architecture = architecture_serializer.validated_data['architecture']
+            queryset = self.queryset.filter(activations__inference__architecture=architecture
+                                            ).distinct('layer_number').order_by('layer_number')
+            layer_serializer = LayerSerializer(queryset, many=True)
+
+            return Response(layer_serializer.data, status=200)
+
+        return Response(architecture_serializer.errors, status=400)
 
 
 class NetworkInputView(APIView):

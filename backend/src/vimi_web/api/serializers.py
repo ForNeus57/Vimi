@@ -15,10 +15,11 @@ from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation
 # TODO: Consider splitting this two serializers into two views
 class LayerSerializer(serializers.ModelSerializer):
     presentation_name = serializers.CharField(source='get_presentation_name', read_only=True)
+    presentation_dimensions = serializers.CharField(source='get_presentation_dimensions', read_only=True)
 
     class Meta:
         model = Layer
-        fields = ('uuid', 'layer_number', 'presentation_name',)
+        fields = ('uuid', 'layer_number', 'presentation_name', 'presentation_dimensions')
 
 
 class ArchitectureAllSerializer(serializers.ModelSerializer):
@@ -30,10 +31,16 @@ class ArchitectureAllSerializer(serializers.ModelSerializer):
 
 
 class ArchitectureProcessedAllSerializer(serializers.ModelSerializer):
+    layer_count = serializers.IntegerField(source='get_layer_count', read_only=True)
 
     class Meta:
         model = Architecture
-        fields= ('uuid', 'name',)
+        fields= ('uuid', 'name', 'layer_count')
+
+
+class ArchitectureProcessedLayersSerializer(serializers.Serializer):
+    architecture = serializers.SlugRelatedField(slug_field='uuid',
+                                                queryset=Architecture.objects.all())
 
 
 class NetworkInputSerializer(serializers.Serializer):

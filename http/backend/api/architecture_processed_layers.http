@@ -1,0 +1,2 @@
+GET {{host}}/api/1/architecture/processed/layers/?architecture=0126dd33-084d-46a7-a916-e99cc7ffb68f HTTP/1.1
+Accept: application/json

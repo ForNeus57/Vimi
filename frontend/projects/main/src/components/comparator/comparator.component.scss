@@ -9,6 +9,16 @@
   align-items: stretch;
 }
 
-div.container {
+div.main-container {
   padding: var(--double-gap) 10vw;
+}
+
+div.table-container {
+  margin-top: 5vh;
+  padding: var(--standard-gap);
+  border-radius: var(--standard-gap);
+}
+
+tr.table-row-click {
+  cursor: pointer;
 }
