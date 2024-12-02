@@ -56,11 +56,6 @@ class NetworkInputSerializer(serializers.ModelSerializer):
         fields = ('uuid', 'filename', 'interferences')
 
 
-class NetworkInputByLayerSerializer(serializers.Serializer):
-    processed_layer = serializers.SlugRelatedField(slug_field='uuid',
-                                         queryset=Layer.objects.all())
-
-
 class NetworkInputCreateSerializer(serializers.Serializer):
     # TODO: Validate the file is not too big
     file = serializers.FileField(max_length=128)
@@ -95,7 +90,8 @@ class NetworkInputProcessSerializer(serializers.ModelSerializer):
         model = Activation
         fields = ('architecture', 'network_input', 'transformation', 'layers')
 
-    def create(self, validated_data: Mapping[str, Any]) -> Tuple[List[Prediction], List[Activation]]:
+    def create(self, validated_data: Mapping[str, Any]) -> Tuple:
+        # TODO: Fix type hinting in method signature
         architecture: Architecture = validated_data['architecture']
         network_input: NetworkInput = validated_data['network_input']
         transformation: NetworkInput.Transformation = validated_data['transformation']
@@ -108,31 +104,58 @@ class NetworkInputProcessSerializer(serializers.ModelSerializer):
         activation_model = keras.Model(inputs=model.input, outputs=layer_outputs)
         model_predictions = activation_model.predict(image)
 
-        inference = Interference(architecture=architecture,
-                                 network_input=network_input,
-                                 transformation=transformation)
+        if (queryset := Interference.objects.filter(architecture=architecture,
+                                                    network_input=network_input,
+                                                    transformation=transformation)).exists():
+            inference = queryset.first()
+            predictions = list(Prediction.objects.filter(inference=inference))
+        else:
+            inference = Interference(architecture=architecture,
+                                     network_input=network_input,
+                                     transformation=transformation)
 
-        inference.save()
-        predictions = Prediction.objects.bulk_create([
-            Prediction(inference=inference,
-                       prediction_number=index,
-                       class_id=class_id,
-                       class_name=class_name,
-                       class_score=class_score)
-            for index, (class_id, class_name, class_score) in enumerate(decode_predictions(model_predictions[0], 5)[0])
-        ])
+            inference.save()
+            predictions = Prediction.objects.bulk_create([
+                Prediction(inference=inference,
+                           prediction_number=index,
+                           class_id=class_id,
+                           class_name=class_name,
+                           class_score=class_score)
+                for index, (class_id, class_name, class_score) in enumerate(decode_predictions(model_predictions[0], 5)[0])
+            ])
+
+        computed_activations = Activation.objects.filter(layer__in=layers, inference=inference)
+
         activations = Activation.objects.bulk_create([
             Activation(inference=inference,
                        layer=layer,
                        activation_binary=Activation.to_file(ensure_3d(activation[0])))
             for activation, layer in zip(model_predictions[1:], layers)
+            if not computed_activations.filter(layer=layer).exists()
         ])
+
+        activations = computed_activations.union(Activation.objects.filter(id__in=map(lambda x: x.id,
+                                                                                        activations))).order_by('id')
+
         return predictions, activations
 
 
 class NetworkInputTransformationAllSerializer(serializers.Serializer):
     id = serializers.CharField(max_length=64)
     name = serializers.CharField(max_length=64)
+
+
+class ActivationByLayerSerializer(serializers.Serializer):
+    layer = serializers.SlugRelatedField(slug_field='uuid',
+                                         queryset=Layer.objects.all())
+
+
+class ActivationSerializer(serializers.ModelSerializer):
+    presentation_name = serializers.CharField(source='get_presentation_name')
+
+    class Meta:
+        model = Activation
+        fields = ('uuid', 'presentation_name',)
 
 
 class ColorMapAllSerializer(serializers.ModelSerializer):

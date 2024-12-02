@@ -27,12 +27,12 @@
             {{architectureProcessed.layer_count}}
           </td>
         </tr>
-        @if (architectureProcessed.layers.length != 0) {
+        @if (architectureProcessed.showDetails) {
           <tr>
             <td colspan="4">
               <table class="table">
                 <thead>
-                <tr class="table-info">
+                  <tr class="table-info">
                   <th scope="col">No.</th>
                   <th scope="col">Layer Name</th>
                   <th scope="col">UUID</th>
@@ -41,7 +41,7 @@
                 </thead>
                 <tbody>
                   @for (layer of architectureProcessed.layers; track layer.uuid) {
-                    <tr class="table-row-click">
+                    <tr class="table-row-click" (click)="fetchNetworkInputInfo(architectureProcessed.uuid, layer.uuid)">
                       <td>
                         {{layer.layer_number}}
                       </td>
@@ -55,6 +55,15 @@
                         {{layer.presentation_dimensions}}
                       </td>
                     </tr>
+                    @if (layer.showDetails) {
+                     <tr>
+                       <td colspan="4">
+                        <app-comparator-viewer [architectureUUID]="architectureProcessed.uuid"
+                                               [layerUUID]="layer.uuid"
+                                               [networkInputs]="layer.network_inputs"></app-comparator-viewer>
+                       </td>
+                     </tr>
+                    }
                   }
                 </tbody>
               </table>

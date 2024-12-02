@@ -1,5 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="API - Network Input By Processed Layer" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" folderName="Backend" path="$PROJECT_DIR$/http/backend/api/network_input_by_processed_layer.http">
-    <method v="2" />
-  </configuration>
-</component>

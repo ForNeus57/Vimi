@@ -102,8 +102,9 @@ class NetworkInput(models.Model):
         # TODO: Automatically determine 'api' prefix
         db_table = 'api_network_input'
 
-    def get_base_filename(self) -> str | None:
-        return self.file.name
+    def get_base_filename(self) -> str:
+        _, base_name = self.file.name.split('/', maxsplit=1)
+        return base_name
 
     def transform_input_adjust_model(self,
                                      architecture: Architecture,
@@ -190,6 +191,7 @@ class Activation(models.Model):
     inference = models.ForeignKey(to=Interference, related_name='activations', on_delete=models.CASCADE)
     layer = models.ForeignKey(to=Layer, related_name='activations', on_delete=models.PROTECT)
     # TODO: Validate this size
+    # TODO: Change the order of number of channels / filters so the filters are first
     activation_binary = models.FileField(upload_to='activation/', max_length=64)
 
     # TODO: Do something with code duplication
@@ -206,6 +208,11 @@ class Activation(models.Model):
 
     def to_numpy(self) -> np.ndarray:
         return np.load(self.activation_binary, allow_pickle=False)
+
+    def get_presentation_name(self) -> str:
+        transformation = NetworkInput.Transformation(self.inference.transformation).label
+        filename = self.inference.network_input.get_base_filename()
+        return f"{filename} | {transformation}"
 
 
 class ColorMap(models.Model):

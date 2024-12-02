@@ -132,7 +132,7 @@ export class ViewerMenuFileComponent implements OnInit, OnDestroy {
             applyPayload.normalization,
           );
 
-          this.dataLayer.post<ColorMapProcessOutput>('api/1/color_map/process/', endpointData)
+          this.dataLayer.post<ColorMapProcessOutput>('api/1/color_map/process/3d/', endpointData)
             .subscribe({
               next: (colorMapOutput) => {
                 this.viewerControl.setNewImage(new ImageSet(

@@ -1,0 +1,55 @@
+<div class="viewer">
+  <div class="controls">
+    <select id="file0"
+            name="file0"
+            [(ngModel)]="file0UUID">
+      <option value="null">
+        First File
+      </option>
+      @for (normalization of normalizations; track normalization.id) {
+        <option [value]="normalization.id">
+          {{normalization.name}}
+        </option>
+      }
+    </select>
+    <select id="file1"
+            name="file1"
+            [(ngModel)]="file1UUID">
+      <option value="null">
+        Second File
+      </option>
+      @for (normalization of normalizations; track normalization.id) {
+        <option [value]="normalization.id">
+          {{normalization.name}}
+        </option>
+      }
+    </select>
+    <select id="colorMapUUID"
+            name="colorMapName"
+            class="control"
+            [(ngModel)]="selectedColorMapUUID">
+      <option value="null">
+        Color Map
+      </option>
+      @for(colorMap of colorMaps; track colorMap.uuid) {
+        <option [value]="colorMap.uuid">
+          {{colorMap.name}}
+        </option>
+      }
+    </select>
+  </div>
+  <div class="images">
+    <div class="image0">
+
+    </div>
+    <div class="image1">
+
+    </div>
+  </div>
+  <div class="metrics">
+
+  </div>
+  <div class="classes">
+
+  </div>
+</div>

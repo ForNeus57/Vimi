@@ -122,7 +122,7 @@ export class ViewerMenuGeneralComponent implements OnInit, OnDestroy {
               applyPayload.normalization,
             );
 
-            return this.dataLayer.post<ColorMapProcessOutput>('api/1/color_map/process/', endpointData)
+            return this.dataLayer.post<ColorMapProcessOutput>('api/1/color_map/process/3d/', endpointData)
           }))
             .subscribe({
               next: (colorMapOutputs) => {

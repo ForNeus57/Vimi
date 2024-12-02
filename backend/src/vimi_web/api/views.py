@@ -1,5 +1,6 @@
 """All views for Django API Application"""
-from typing import Tuple, List
+
+from functools import reduce
 
 from django.core.files.base import ContentFile
 from django.utils.decorators import method_decorator
@@ -11,8 +12,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from vimi_web.api.models import Architecture, ColorMap, NetworkInput, Texture, Prediction, Activation, Interference, \
-    Layer
+from vimi_web.api.models import Architecture, ColorMap, NetworkInput, Texture, Interference, \
+    Layer, Activation
 from vimi_web.api.renderers import TextureFileRenderer
 from vimi_web.api.serializers import (
     ArchitectureAllSerializer,
@@ -22,7 +23,7 @@ from vimi_web.api.serializers import (
     ColorMapProcessSerializer,
     ColorMapNormalizationAllSerializer, TextureSerializer, NetworkInputTransformationAllSerializer,
     ColorMapIndicatorSerializer, ArchitectureProcessedAllSerializer, LayersByProcessedArchitectureSerializer,
-    LayerSerializer, NetworkInputByLayerSerializer, NetworkInputSerializer,
+    LayerSerializer, ActivationByLayerSerializer, ActivationSerializer,
 )
 
 
@@ -73,22 +74,11 @@ class NetworkInputView(APIView):
     permission_classes = (AllowAny,)
     queryset = NetworkInput.objects.all()
     parser_classes = (MultiPartParser, FormParser,)
-
-    def get(self, request: Request) -> Response:
-        network_input_by_layer_serializer = NetworkInputByLayerSerializer(data=request.query_params)
-
-        if network_input_by_layer_serializer.is_valid():
-            layer = network_input_by_layer_serializer.validated_data['processed_layer']
-            queryset = self.queryset.filter(interferences__activations__layer=layer).distinct()
-            network_input_serializer = NetworkInputSerializer(queryset, many=True)
-
-            return Response(network_input_serializer.data, status=200)
-
-        return Response(network_input_by_layer_serializer.errors, status=400)
+    serializer_class = NetworkInputCreateSerializer
 
     def post(self, request: Request) -> Response:
         # TODO: change this so it uses ListSerializer and argument many=True and data=request.data
-        serializer = NetworkInputCreateSerializer(data={'file': request.FILES['file']})
+        serializer = self.serializer_class(data={'file': request.FILES['file']})
 
         if serializer.is_valid():
             instance: NetworkInput = serializer.save()
@@ -132,6 +122,30 @@ class NetworkInputProcessView(APIView):
             )
 
         return Response(serializer.errors, status=400)
+
+
+class ActivationView(APIView):
+    permission_classes = (AllowAny,)
+    queryset = Activation.objects.all()
+    serializer_class = ActivationByLayerSerializer
+
+    def get(self, request: Request) -> Response:
+        layer_serializer = self.serializer_class(data=request.query_params)
+
+        if layer_serializer.is_valid():
+            layer = layer_serializer.validated_data['layer']
+            queryset = self.queryset.filter(layer=layer)
+            # TODO: assert minimum filters!
+            min_filters = queryset.first().to_numpy().shape[-1]
+            activation_serializer = ActivationSerializer(queryset, many=True)
+
+            return Response({
+                'filter_number': min_filters,
+                'activations': activation_serializer.data
+            }, status=200)
+
+
+        return Response(layer_serializer.errors, status=400)
 
 
 class ColorMapAllView(APIView):

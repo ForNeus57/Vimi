@@ -17,8 +17,11 @@ urlpatterns = [
          view=views.NetworkInputTransformationAllView.as_view(),
          name='api-network-input-transformation'),
 
+    path('activation/', views.ActivationView.as_view(), name='api-activation'),
+
     path('color_map/', views.ColorMapAllView.as_view(), name='api-color-map'),
-    path('color_map/process/', view=views.ColorMapProcessView.as_view(), name='api-color-map-process'),
+    path('color_map/process/3d/', view=views.ColorMapProcessView.as_view(), name='api-color-map-process'),
+    path('color_map/process/2d/', view=views.ColorMapProcessView.as_view(), name='api-color-map-process'),
     path('color_map/normalization/',
          view=views.ColorMapNormalizationAllView.as_view(),
          name='api-color-map-normalization'),

@@ -1,4 +1,4 @@
-import {Layer} from "./layer";
+import {LayerWithMetadata} from "./layer";
 
 export interface ArchitectureProcessedRequest {
   uuid: string;
@@ -11,7 +11,8 @@ export class ArchitectureProcessed {
     public uuid: string,
     public name: string,
     public layer_count: number,
-    public layers: Array<Layer> = [],
+    public layers: Array<LayerWithMetadata> = [],
+    public showDetails: boolean = false,
   ) {
   }
 }

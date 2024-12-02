@@ -1,4 +1,4 @@
-POST {{host}}/api/1/color_map/process/ HTTP/1.1
+POST {{host}}/api/1/color_map/process/3d/ HTTP/1.1
 Content-Type: application/json
 
 {
