@@ -23,7 +23,7 @@ from vimi_web.api.serializers import (
     ColorMapProcessSerializer,
     ColorMapNormalizationAllSerializer, TextureSerializer, NetworkInputTransformationAllSerializer,
     ColorMapIndicatorSerializer, ArchitectureProcessedAllSerializer, LayersByProcessedArchitectureSerializer,
-    LayerSerializer, ActivationByLayerSerializer, ActivationSerializer,
+    LayerSerializer, ActivationByLayerSerializer, ActivationSerializer, ActivationCompareSerializer,
 )
 
 
@@ -133,19 +133,30 @@ class ActivationView(APIView):
         layer_serializer = self.serializer_class(data=request.query_params)
 
         if layer_serializer.is_valid():
-            layer = layer_serializer.validated_data['layer']
+            layer = layer_serializer.validated_data['processed_layer']
             queryset = self.queryset.filter(layer=layer)
             # TODO: assert minimum filters!
             min_filters = queryset.first().to_numpy().shape[-1]
             activation_serializer = ActivationSerializer(queryset, many=True)
 
-            return Response({
-                'filter_number': min_filters,
-                'activations': activation_serializer.data
-            }, status=200)
-
+            return Response({'filter_number': min_filters, 'activations': activation_serializer.data}, status=200)
 
         return Response(layer_serializer.errors, status=400)
+
+
+class ActivationCompareView(APIView):
+    permission_classes = (AllowAny,)
+    serializer_class = ActivationCompareSerializer
+
+    def post(self, request: Request) -> Response:
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            instance = serializer.save()
+
+            return Response(instance, status=200)
+
+        return Response(serializer.errors, status=400)
 
 
 class ColorMapAllView(APIView):

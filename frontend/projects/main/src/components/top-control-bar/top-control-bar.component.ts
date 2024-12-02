@@ -69,8 +69,8 @@ export class TopControlBarComponent implements OnInit, OnDestroy {
 
   architectures = Array<Architecture>();
   inputTransformations = Array<InputTransformation>();
-  colorMaps = Array<ColorMap>();
   normalizations = Array<Normalization>();
+  colorMaps = Array<ColorMap>();
 
   fileName: string | null = null;
   predictions = Array<Prediction>();

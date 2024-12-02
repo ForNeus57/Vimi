@@ -19,10 +19,15 @@ import {ActivationFromLayer} from "../../models/activation";
 export class ComparatorViewerComponent implements OnInit {
   @Input({required: true}) architectureUUID: string = "";
   @Input({required: true}) layerUUID: string = "";
-  @Input({required: true}) networkInputs: Array<ActivationFromLayer> = [];
+  @Input({required: true}) activations: ActivationFromLayer | null = null;
 
+  selectedFile0UUID = signal<string | null>(null);
+  selectedFile1UUID = signal<string | null>(null);
+  selectedFilterIndex = signal<string | null>(null);
+  selectedNormalizationId = signal<string | null>(null);
   selectedColorMapUUID = signal<string | null>(null);
 
+  normalizations = Array<Normalization>();
   colorMaps = Array<ColorMap>();
 
   constructor(
@@ -32,6 +37,17 @@ export class ComparatorViewerComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.dataLayer.get<Normalization[]>('/api/1/color_map/normalization/')
+      .subscribe({
+        next: (normalizations) => {
+          this.normalizations = normalizations;
+        },
+        error: (error) => {
+          this.notificationHandler.error(error);
+          this.notificationHandler.error('Failed to load normalizations');
+        },
+      });
 
     this.dataLayer.get<ColorMap[]>('/api/1/color_map/')
       .subscribe({
@@ -44,5 +60,4 @@ export class ComparatorViewerComponent implements OnInit {
         },
       });
   }
-
 }

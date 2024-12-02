@@ -13,7 +13,7 @@ export class LayerWithMetadata {
     public layer_number: number,
     public presentation_name: string,
     public presentation_dimensions: string,
-    public network_inputs: Array<ActivationFromLayer> = [],
+    public network_inputs: ActivationFromLayer | null,
     public showDetails: boolean = false,
   ) {
   }

@@ -1,6 +1,6 @@
 import hashlib
 from collections.abc import Mapping
-from typing import Any, List, Tuple
+from typing import Any, List, Tuple, Dict
 
 import numpy as np
 import keras
@@ -146,8 +146,8 @@ class NetworkInputTransformationAllSerializer(serializers.Serializer):
 
 
 class ActivationByLayerSerializer(serializers.Serializer):
-    layer = serializers.SlugRelatedField(slug_field='uuid',
-                                         queryset=Layer.objects.all())
+    processed_layer = serializers.SlugRelatedField(slug_field='uuid',
+                                                   queryset=Layer.objects.all())
 
 
 class ActivationSerializer(serializers.ModelSerializer):
@@ -156,6 +156,70 @@ class ActivationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Activation
         fields = ('uuid', 'presentation_name',)
+
+
+class ActivationCompareSerializer(serializers.Serializer):
+    # TODO: Validation
+    first_activation = serializers.SlugRelatedField(slug_field='uuid',
+                                                    queryset=Activation.objects.all())
+    second_activation = serializers.SlugRelatedField(slug_field='uuid',
+                                                     queryset=Activation.objects.all())
+    filter_index = serializers.IntegerField(min_value=0)
+    normalization = serializers.ChoiceField(choices=ColorMap.Normalization.choices)
+    color_map = serializers.SlugRelatedField(slug_field='uuid',
+                                             queryset=ColorMap.objects.all())
+
+    def create(self, validated_data: Dict[str, Any]) -> Dict[str, Any]:
+        first_activation: Activation = validated_data['first_activation']
+        second_activation: Activation = validated_data['second_activation']
+        filter_index: int = validated_data['filter_index']
+        normalization: ColorMap.Normalization = validated_data['normalization']
+        color_map: ColorMap = validated_data['color_map']
+        request = self.context.get('request')
+
+        prediction_1 = Prediction.objects.filter(inference=first_activation.inference).values('prediction_number', 'class_name', 'class_score')
+        prediction_2 = Prediction.objects.filter(inference=second_activation.inference).values('prediction_number', 'class_name', 'class_score')
+
+        image_1 = first_activation.to_numpy()[:, :, filter_index]
+        image_2 = second_activation.to_numpy()[:, :, filter_index]
+
+        mse = keras.metrics.MeanSquaredError()
+        mae = keras.metrics.MeanAbsoluteError()
+
+        mse.update_state(image_1, image_2)
+        mae.update_state(image_1, image_2)
+
+
+        normalized_data = color_map.normalize_activations(np.expand_dims(image_1, axis=-1), normalization)
+        activations_colored = color_map.apply_color_map(normalized_data)
+
+        texture_1 = Texture.objects.create(activation=first_activation,
+                                          color_map=color_map,
+                                          normalization=normalization,
+                                          binary_data_file=Texture.to_file(activations_colored),
+                                          shape=activations_colored.shape)
+        texture_1.save()
+
+        normalized_data = color_map.normalize_activations(np.expand_dims(image_2, axis=-1), normalization)
+        activations_colored = color_map.apply_color_map(normalized_data)
+
+        texture_2 = Texture.objects.create(activation=second_activation,
+                                          color_map=color_map,
+                                          normalization=normalization,
+                                          binary_data_file=Texture.to_file(activations_colored),
+                                          shape=activations_colored.shape)
+        texture_2.save()
+
+        return {
+            'image0': texture_1.get_available_urls(request)[0][Texture.CubeSide.POS_Z],
+            'image1': texture_2.get_available_urls(request)[0][Texture.CubeSide.POS_Z],
+            'classes0': prediction_1,
+            'classes1': prediction_2,
+            'metrics': {
+                'mse': mse.result().numpy().item(),
+                'mae': mae.result().numpy().item(),
+            }
+        }
 
 
 class ColorMapAllSerializer(serializers.ModelSerializer):
@@ -235,5 +299,3 @@ class TextureSerializer(serializers.Serializer):
 
         filter_slice = texture.get_slice(filter_index, cube_size)
         return texture.get_file(filter_slice, compression_level)
-
-

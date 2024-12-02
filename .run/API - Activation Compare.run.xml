@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="API - Activation Compare" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" folderName="Backend" path="$PROJECT_DIR$/http/backend/api/activation_compare.http" executionIdentifier="#1">
+    <method v="2" />
+  </configuration>
+</component>

@@ -1,8 +1,20 @@
-export class ActivationFromLayer {
+export class Activation {
   public constructor(
     public uuid: string,
-    public filename: string,
-    public interfaces: Array<string>,
+    public presentation_name: string,
+  ) {
+  }
+}
+
+export interface ActivationFromLayerEndpoint {
+  filter_number: number;
+  activations: Array<Activation>;
+}
+
+export class ActivationFromLayer {
+  public constructor(
+    public filter_number: Array<number>,
+    public activations: Array<Activation>,
   ) {
   }
 }

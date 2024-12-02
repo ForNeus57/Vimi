@@ -1,2 +1,0 @@
-GET {{host}}/api/1/activation/?layer=0f895eb5-c260-4815-a2b7-12bc023a58b2 HTTP/1.1
-Accept: application/json

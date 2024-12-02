@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="API - Activation By Processed Layer" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" folderName="Backend" path="$PROJECT_DIR$/http/backend/api/activation_by_processed_layer.http" executionIdentifier="#1">
+    <method v="2" />
+  </configuration>
+</component>

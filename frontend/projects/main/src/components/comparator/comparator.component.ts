@@ -5,7 +5,7 @@ import {ArchitectureProcessed, ArchitectureProcessedRequest} from "../../models/
 import {NotificationHandlerService} from "../../services/notification-handler/notification-handler.service";
 import {Layer, LayerWithMetadata} from "../../models/layer";
 import {ComparatorViewerComponent} from "../comparator-viewer/comparator-viewer.component";
-import {ActivationFromLayer} from "../../models/activation";
+import {ActivationFromLayer, ActivationFromLayerEndpoint} from "../../models/activation";
 
 @Component({
   selector: 'app-comparator',
@@ -67,6 +67,7 @@ export class ComparatorComponent implements OnInit {
               value.layer_number,
               value.presentation_name,
               value.presentation_dimensions,
+              null
             );
           }));
           this.architecturesProcessed[architectureIndex].showDetails = true;
@@ -105,10 +106,13 @@ export class ComparatorComponent implements OnInit {
       return;
     }
 
-    this.dataLayer.get<ActivationFromLayer[]>(`api/1/network_input/?processed_layer=${layer.uuid}`)
+    this.dataLayer.get<ActivationFromLayerEndpoint>(`api/1/activation/?processed_layer=${layer.uuid}`)
       .subscribe({
-        next: (networkInputs) => {
-          layer.network_inputs = networkInputs;
+        next: (activation) => {
+          layer.network_inputs = new ActivationFromLayer(
+            [...Array(activation.filter_number).keys()],
+            activation.activations,
+          );
           layer.showDetails = true;
           this.notificationHandler.success('Network Input info loaded');
         },
