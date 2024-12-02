@@ -1,3 +1,4 @@
+import hashlib
 from collections.abc import Mapping
 from typing import Any, List, Tuple
 
@@ -8,6 +9,7 @@ from django.urls import reverse
 from django.utils.http import urlencode
 from rest_framework import serializers
 
+from vimi_lib.data.arr import ensure_3d
 from vimi_web.api.models import Architecture, NetworkInput, ColorMap, Activation, Texture, Layer, Interference, \
     Prediction
 
@@ -20,6 +22,11 @@ class LayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Layer
         fields = ('uuid', 'layer_number', 'presentation_name', 'presentation_dimensions')
+
+
+class LayersByProcessedArchitectureSerializer(serializers.Serializer):
+    processed_architecture = serializers.SlugRelatedField(slug_field='uuid',
+                                                          queryset=Architecture.objects.filter(id__in=Interference.objects.values('architecture_id')).distinct())
 
 
 class ArchitectureAllSerializer(serializers.ModelSerializer):
@@ -35,20 +42,40 @@ class ArchitectureProcessedAllSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Architecture
-        fields= ('uuid', 'name', 'layer_count')
+        fields = ('uuid', 'name', 'layer_count')
 
 
-class ArchitectureProcessedLayersSerializer(serializers.Serializer):
-    architecture = serializers.SlugRelatedField(slug_field='uuid',
-                                                queryset=Architecture.objects.all())
+class NetworkInputSerializer(serializers.ModelSerializer):
+    filename = serializers.CharField(source='get_base_filename', read_only=True)
+    interferences = serializers.SlugRelatedField(slug_field='transformation',
+                                                 read_only=True,
+                                                 many=True)
+
+    class Meta:
+        model = NetworkInput
+        fields = ('uuid', 'filename', 'interferences')
 
 
-class NetworkInputSerializer(serializers.Serializer):
+class NetworkInputByLayerSerializer(serializers.Serializer):
+    processed_layer = serializers.SlugRelatedField(slug_field='uuid',
+                                         queryset=Layer.objects.all())
+
+
+class NetworkInputCreateSerializer(serializers.Serializer):
     # TODO: Validate the file is not too big
     file = serializers.FileField(max_length=128)
 
     def create(self, validated_data: Mapping[str, Any]) -> NetworkInput:
-        instance = NetworkInput.objects.create(file=validated_data['file'])
+        sha256_alg = hashlib.sha256()
+        for chunk in validated_data['file'].chunks():
+            sha256_alg.update(chunk)
+
+        file_sha256_hash = sha256_alg.digest()
+        if (queryset := NetworkInput.objects.filter(sha256_hash=file_sha256_hash)).exists():
+            return queryset.first()
+
+        instance = NetworkInput.objects.create(file=validated_data['file'],
+                                               sha256_hash=file_sha256_hash)
         instance.save()
         return instance
 
@@ -97,7 +124,7 @@ class NetworkInputProcessSerializer(serializers.ModelSerializer):
         activations = Activation.objects.bulk_create([
             Activation(inference=inference,
                        layer=layer,
-                       activation_binary=Activation.to_file(activation[0]))
+                       activation_binary=Activation.to_file(ensure_3d(activation[0])))
             for activation, layer in zip(model_predictions[1:], layers)
         ])
         return predictions, activations

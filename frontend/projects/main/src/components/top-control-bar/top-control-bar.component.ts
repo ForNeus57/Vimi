@@ -167,7 +167,6 @@ export class TopControlBarComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // TODO: Check if the files change and if not do not make an request
     const selectedFile = files[0];
     this.fileName = selectedFile.name;
     const formData = new FormData();

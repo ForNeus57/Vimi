@@ -7,9 +7,9 @@ urlpatterns = [
     path('architecture/processed/',
          view=views.ArchitectureProcessedAllView.as_view(),
          name='api-architecture-processed-all'),
-    path('architecture/processed/layers/',
-         view=views.ArchitectureProcessedLayersView.as_view(),
-         name='api-architecture-processed-layers'),
+    path('layers/',
+         view=views.LayersByProcessedArchitectureView.as_view(),
+         name='api-layers'),
 
     path('network_input/', views.NetworkInputView.as_view(), name='api-upload-network-input'),
     path('network_input/process/', views.NetworkInputProcessView.as_view(), name='api-network-input-process'),

@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="API - Layers By Processed Architecture" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" folderName="Backend" path="$PROJECT_DIR$/http/backend/api/layers_by_processed_architecture.http" executionIdentifier="#1">
+    <method v="2" />
+  </configuration>
+</component>

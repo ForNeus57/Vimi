@@ -98,19 +98,19 @@
     <i class="bi bi-layers-half control display-classes"></i>
     <div class="display-classes standard-shadow">
       @if (predictions.length == 0) {
-        <p style="white-space: nowrap; margin: 0">
+        <p style="white-space: nowrap; margin: 0;">
           No predictions calculated
         </p>
       }
       @for (prediction of predictions; track prediction.prediction_number) {
         <div class="display-class">
-          <p>
+          <p style="margin: 0">
             {{ prediction.prediction_number + 1 }}.
           </p>
-          <p style="white-space: nowrap">
+          <p style="white-space: nowrap; margin: 0;">
             {{ prediction.class_name.replace('_', ' ') | titlecase }}
           </p>
-          <p>
+          <p style="margin: 0">
             {{ prediction.class_score | percent:'.2' }}
           </p>
         </div>

@@ -16,13 +16,13 @@ from vimi_web.api.models import Architecture, ColorMap, NetworkInput, Texture, P
 from vimi_web.api.renderers import TextureFileRenderer
 from vimi_web.api.serializers import (
     ArchitectureAllSerializer,
-    NetworkInputSerializer,
+    NetworkInputCreateSerializer,
     NetworkInputProcessSerializer,
     ColorMapAllSerializer,
     ColorMapProcessSerializer,
     ColorMapNormalizationAllSerializer, TextureSerializer, NetworkInputTransformationAllSerializer,
-    ColorMapIndicatorSerializer, ArchitectureProcessedAllSerializer, ArchitectureProcessedLayersSerializer,
-    LayerSerializer,
+    ColorMapIndicatorSerializer, ArchitectureProcessedAllSerializer, LayersByProcessedArchitectureSerializer,
+    LayerSerializer, NetworkInputByLayerSerializer, NetworkInputSerializer,
 )
 
 
@@ -51,18 +51,17 @@ class ArchitectureProcessedAllView(APIView):
         return Response(serializer.data, status=200)
 
 
-class ArchitectureProcessedLayersView(APIView):
+class LayersByProcessedArchitectureView(APIView):
     permission_classes = (AllowAny,)
     queryset = Layer.objects.all()
-    serializer_class = ArchitectureProcessedLayersSerializer
+    serializer_class = LayersByProcessedArchitectureSerializer
 
     def get(self, request: Request,) -> Response:
         architecture_serializer = self.serializer_class(data=request.query_params)
 
         if architecture_serializer.is_valid():
-            architecture = architecture_serializer.validated_data['architecture']
-            queryset = self.queryset.filter(activations__inference__architecture=architecture
-                                            ).distinct('layer_number').order_by('layer_number')
+            architecture = architecture_serializer.validated_data['processed_architecture']
+            queryset = self.queryset.filter(activations__inference__architecture=architecture).distinct('layer_number').order_by('layer_number')
             layer_serializer = LayerSerializer(queryset, many=True)
 
             return Response(layer_serializer.data, status=200)
@@ -72,12 +71,24 @@ class ArchitectureProcessedLayersView(APIView):
 
 class NetworkInputView(APIView):
     permission_classes = (AllowAny,)
-    serializer_class = NetworkInputSerializer
+    queryset = NetworkInput.objects.all()
     parser_classes = (MultiPartParser, FormParser,)
+
+    def get(self, request: Request) -> Response:
+        network_input_by_layer_serializer = NetworkInputByLayerSerializer(data=request.query_params)
+
+        if network_input_by_layer_serializer.is_valid():
+            layer = network_input_by_layer_serializer.validated_data['processed_layer']
+            queryset = self.queryset.filter(interferences__activations__layer=layer).distinct()
+            network_input_serializer = NetworkInputSerializer(queryset, many=True)
+
+            return Response(network_input_serializer.data, status=200)
+
+        return Response(network_input_by_layer_serializer.errors, status=400)
 
     def post(self, request: Request) -> Response:
         # TODO: change this so it uses ListSerializer and argument many=True and data=request.data
-        serializer = self.serializer_class(data={'file': request.FILES['file']})
+        serializer = NetworkInputCreateSerializer(data={'file': request.FILES['file']})
 
         if serializer.is_valid():
             instance: NetworkInput = serializer.save()

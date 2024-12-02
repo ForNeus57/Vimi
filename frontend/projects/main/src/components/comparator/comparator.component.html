@@ -27,6 +27,40 @@
             {{architectureProcessed.layer_count}}
           </td>
         </tr>
+        @if (architectureProcessed.layers.length != 0) {
+          <tr>
+            <td colspan="4">
+              <table class="table">
+                <thead>
+                <tr class="table-info">
+                  <th scope="col">No.</th>
+                  <th scope="col">Layer Name</th>
+                  <th scope="col">UUID</th>
+                  <th scope="col">Input Shape</th>
+                </tr>
+                </thead>
+                <tbody>
+                  @for (layer of architectureProcessed.layers; track layer.uuid) {
+                    <tr class="table-row-click">
+                      <td>
+                        {{layer.layer_number}}
+                      </td>
+                      <td>
+                        {{layer.presentation_name}}
+                      </td>
+                      <td>
+                        {{layer.uuid}}
+                      </td>
+                      <td>
+                        {{layer.presentation_dimensions}}
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        }
       }
     </tbody>
   </table>

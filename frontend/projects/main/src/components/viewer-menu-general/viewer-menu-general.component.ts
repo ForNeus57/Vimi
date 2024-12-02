@@ -55,6 +55,7 @@ export class ViewerMenuGeneralComponent implements OnInit, OnDestroy {
           this.isSliderDisabled = newArchitecture == null;
           this.selectedSliderMax = this.architecture == null? 1: (this.architecture.layers.length - 1)
           this.selectedSliderEnd = Math.max(Math.floor(this.selectedSliderMax * 0.25), 1);
+          this.sliderEndValue = this.selectedSliderEnd;
         },
       });
 

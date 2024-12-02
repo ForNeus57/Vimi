@@ -79,11 +79,7 @@ class Layer(models.Model):
         return str(self)
 
     def get_presentation_dimensions(self) -> str:
-        # TODO: Fix this typing
-        dimension_field = self._meta.get_field('dimensions')
-        dimensions_default = dimension_field.base_field.default
-
-        return str(tuple(filter(lambda x: x != dimensions_default, self.dimensions)))
+        return str(tuple(self.dimensions))
 
 
 class NetworkInput(models.Model):
@@ -100,10 +96,14 @@ class NetworkInput(models.Model):
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     # TODO: Consider changing it to image file
     file = models.FileField(upload_to='upload/', max_length=128, editable=False)
+    sha256_hash = models.BinaryField(max_length=32, unique=True, editable=False)    # 256 / 8 = 32
 
     class Meta:
         # TODO: Automatically determine 'api' prefix
         db_table = 'api_network_input'
+
+    def get_base_filename(self) -> str | None:
+        return self.file.name
 
     def transform_input_adjust_model(self,
                                      architecture: Architecture,
@@ -243,7 +243,7 @@ class ColorMap(models.Model):
         return np.frombuffer(self.user_map_binary, dtype=np.uint8).reshape((256, 3))
 
     def normalize_activations(self, activation: np.ndarray, normalization: Normalization) -> np.ndarray:
-        assert len(activation.shape) == 3, 'activations must be grayscale stream'
+        assert len(activation.shape) == 3, f'{len(activation.shape)=} must be grayscale stream'
 
         match normalization:
             case self.Normalization.GLOBAL:
