@@ -210,7 +210,7 @@ class Activation(models.Model):
         return np.load(self.activation_binary, allow_pickle=False)
 
     def get_presentation_name(self) -> str:
-        transformation = NetworkInput.Transformation(self.inference.transformation).label
+        transformation = ' '.join(NetworkInput.Transformation(self.inference.transformation).name.split('_')).title()
         filename = self.inference.network_input.get_base_filename()
         return f"{filename} | {transformation}"
 

@@ -61,22 +61,85 @@
         </option>
       }
     </select>
-    <button>
+    <button (click)="onCompareClick()">
       Compare
     </button>
   </div>
-  <div class="images">
-    <div class="image0">
-
+  @if (comparisonResults != null) {
+    <div class="images">
+      <!-- TODO: Fix this warning -->
+      <div class="image-slot">
+        <p class="image-text">
+          First Image
+        </p>
+        <img [src]="comparisonResults.image0" class="image-preview">
+      </div>
+      <div class="image-slot">
+        <p class="image-text">
+          Second Image
+        </p>
+        <img [src]="comparisonResults.image1" class="image-preview">
+      </div>
+      <app-viewer-canvas-color-map-indicator style="position: static; transform: translate(0%)"></app-viewer-canvas-color-map-indicator>
     </div>
-    <div class="image1">
-
+    <div class="metrics">
+      <table class="table">
+        <thead>
+          <tr class="table-success">
+          <th scope="col">Metric</th>
+          <th scope="col">Score</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              MSE
+            </td>
+            <td>
+              MAE
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{comparisonResults.metrics.mse}}
+            </td>
+            <td>
+              {{comparisonResults.metrics.mae}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </div>
-  <div class="metrics">
-
-  </div>
-  <div class="classes">
-
-  </div>
+    <div class="classes-a">
+      First Image Predictions
+      @for (prediction of comparisonResults.classes0; track prediction.prediction_number) {
+        <div class="display-class">
+          <p style="margin: 0">
+            {{ prediction.prediction_number + 1 }}.
+          </p>
+          <p style="white-space: nowrap; margin: 0;">
+            {{ prediction.class_name.replace('_', ' ') | titlecase }}
+          </p>
+          <p style="margin: 0">
+            {{ prediction.class_score | percent:'.2' }}
+          </p>
+        </div>
+      }
+    </div>
+    <div class="classes-b">
+      Second Image Predictions
+      @for (prediction of comparisonResults.classes1; track prediction.prediction_number) {
+        <div class="display-class">
+          <p style="margin: 0">
+            {{ prediction.prediction_number + 1 }}.
+          </p>
+          <p style="white-space: nowrap; margin: 0;">
+            {{ prediction.class_name.replace('_', ' ') | titlecase }}
+          </p>
+          <p style="margin: 0">
+            {{ prediction.class_score | percent:'.2' }}
+          </p>
+        </div>
+      }
+    </div>
+  }
 </div>

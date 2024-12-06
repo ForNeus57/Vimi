@@ -1,3 +1,56 @@
 div.viewer {
   display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 5vh 1fr auto;
+  grid-template-areas:
+    "header header header"
+    "main main main"
+    "metrics classes-a classes-b";
+}
+
+div.controls {
+  grid-area: header;
+}
+
+div.images {
+  grid-area: main;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--standard-gap);
+}
+
+div.image-slot {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+img.image-preview {
+  display: block;
+  width: 100%;
+  height: auto;
+
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+p.image-text {
+  font-size: 1.5rem;
+}
+
+div.metrics {
+  grid-area: metrics;
+}
+div.classes-a {
+  grid-area: classes-a;
+  margin: var(--standard-gap);
+}
+div.classes-b {
+  grid-area: classes-b;
+  margin: var(--standard-gap);
 }
