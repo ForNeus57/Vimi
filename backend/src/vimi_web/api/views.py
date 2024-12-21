@@ -239,3 +239,10 @@ class TextureView(APIView):
                             content_type='image/png')
 
         return Response(serializer.errors, status=400)
+
+
+class HealthCheckView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request: Request) -> Response:
+        return Response("OK", status=200)

@@ -19,7 +19,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
-from vimi_lib.crypto.rsa_key_reader import generate_rsa_private_key
+from vimi_lib.crypto.rsa_key_generator import generate_rsa_private_key
 
 
 keras.config.disable_interactive_logging()
@@ -37,7 +37,7 @@ SECRET_KEY = environ['DJANGO_SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = environ['DJANGO_DEBUG'] == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 

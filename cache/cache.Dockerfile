@@ -1,4 +1,4 @@
-FROM redis:latest
+FROM redis:7.4.1
 
 RUN apt-get update \
     && apt-get -y install gettext-base \

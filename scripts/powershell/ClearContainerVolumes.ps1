@@ -2,6 +2,7 @@ $projectRoot = "C:\Users\domin\PycharmProjects\Vimi"
 
 $volumes = docker volume ls --format '{{.Name}}' | Where-Object { $_ -like "vimi*" }
 $directoriesToRemove = @(
+#    "\.containers\backend\**",
     "\.containers\ftp-server\**",
     "\.containers\database\**",
     "\.containers\cache\**",

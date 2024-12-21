@@ -27,5 +27,6 @@ urlpatterns = [
          name='api-color-map-normalization'),
     path('color_map/indicator/',view=views.ColorMapIndicatorView.as_view(), name='api-color-map-indicator'),
 
-    path('texture/', views.TextureView.as_view(), name='api-texture')
+    path('texture/', views.TextureView.as_view(), name='api-texture'),
+    path('health/', views.HealthCheckView.as_view(), name='api-health')
 ]

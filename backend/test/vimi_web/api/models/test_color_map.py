@@ -41,6 +41,6 @@ def test_attribute_to_user_map_binary_mapping(tested_image: str) -> None:
         assert cv2_color_map_attribute is not None, 'queryset cannot contain records with no cv2 attribute'
 
         image_by_attribute = cv2.applyColorMap(tested_image, colormap=cv2_color_map_attribute)
-        image_by_user_map_binary = color_map.apply_color_map(tested_image)
+        image_by_user_map_binary = np.squeeze(color_map.apply_color_map(np.expand_dims(tested_image, axis=-1)), axis=-1)
 
         assert np.all(image_by_attribute == image_by_user_map_binary), 'Methods should be equivalent'

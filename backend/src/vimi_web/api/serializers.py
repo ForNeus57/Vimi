@@ -135,7 +135,7 @@ class NetworkInputProcessSerializer(serializers.ModelSerializer):
         ])
 
         activations = computed_activations.union(Activation.objects.filter(id__in=map(lambda x: x.id,
-                                                                                        activations))).order_by('id')
+                                                                                      activations))).order_by('id')
 
         return predictions, activations
 

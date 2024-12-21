@@ -1,21 +1,21 @@
-FROM node:latest AS frontend-built
+FROM node:23 AS frontend-build
 
 SHELL ["/bin/bash", "-c"]
 WORKDIR /opt/frontend
 
 RUN npm install -g @angular/cli
 
-COPY package*.json ./
+COPY ./frontend/package*.json ./
 RUN npm install
 
-COPY . .
-RUN ng build --prod
+COPY ./frontend/ .
+RUN ng build --configuration production
 
-FROM nginx:latest
+FROM nginx:1.27.3
 
-COPY --from=frontend-built /opt/frontend /usr/share/nginx/html
+COPY --from=frontend-build /opt/frontend/dist/main/browser /usr/share/nginx/html
+#COPY --from=frontend-build /opt/frontend/nginx.conf /etc/nginx/conf.d/frontend.conf
 
 EXPOSE 80
-EXPOSE 443
 
-CMD [ "nginx", "-g", "daemon off;" ]
+CMD ["nginx", "-g", "daemon off;"]

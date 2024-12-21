@@ -7,13 +7,15 @@ services:
     container_name: vimi-backend
     env_file:
       - backend/backend.env
+    volumes:
+      - backend:/root/.keras/
     restart: always
     pull_policy: build
     ports:
       - "127.0.0.1:8000:8000"
     depends_on:
       vimi.database:
-        condition: service_started
+        condition: service_healthy
       vimi.cache:
         condition: service_started
       vimi.ftp-server:
@@ -21,6 +23,17 @@ services:
     networks:
       - backend-net
       - frontend-net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'curl --fail http://localhost:8000/api/1/health/ || exit 1'" ]
+      interval: 30s
+      timeout: 10s
 
   vimi.frontend:
     image: vimi-frontend:latest
@@ -33,7 +46,7 @@ services:
     restart: always
     pull_policy: build
     ports:
-      - "127.0.0.1:4200:4200"
+      - "127.0.0.1:80:80"
     depends_on:
       vimi.backend:
         condition: service_healthy
@@ -46,6 +59,7 @@ services:
       context: .
       dockerfile: database/database.Dockerfile
     container_name: vimi-database
+    user: postgres
     env_file:
       - database/database.env
     volumes:
@@ -56,6 +70,10 @@ services:
       - "127.0.0.1:5432:5432"
     networks:
       - backend-net
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -d $$POSTGRES_DB -U $$POSTGRES_USER'" ]
+      interval: 30s
+      timeout: 60s
 
   vimi.cache:
     image: vimi-cache:latest
@@ -93,6 +111,13 @@ services:
       - backend-net
 
 volumes:
+  backend:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./.containers/backend
+      o: bind
+
   database:
     driver: local
     driver_opts:

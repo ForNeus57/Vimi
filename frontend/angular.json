@@ -37,7 +37,7 @@
             ],
             "scripts": [],
             "server": "projects/main/src/main.server.ts",
-            "prerender": true,
+            "prerender": false,
             "ssr": {
               "entry": "projects/main/server.ts"
             }
