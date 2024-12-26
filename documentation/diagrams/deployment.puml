@@ -1,0 +1,50 @@
+@startuml
+
+frame DiagramFrame as "Diagram rozlokowania systemu wizualizacji działania konwolucyjnych sieci neuronowych" {
+
+  skinparam linetype ortho
+  skinparam nodesep 25
+  skinparam ranksep 130
+
+  node "Serwer Systemu Wizualizacji" <<serwer>> as s {
+    component "Ubuntu 24.04 (LTS)" <<system operacyjny>> as so #lightblue;line:black;line.bold;text:black
+    component "docker.service" <<systemd service>> as sd #lightblue;line:black;line.bold;text:black
+    component "nginx.service" <<systemd service>> as sn #lightblue;line:black;line.bold;text:black
+
+    component "backend.Dockerfile" <<kontener docker>> as sb #lightblue;line:black;line.bold;text:black
+    component "backend.exe" <<plik wykonywalny>> as sbb #lightblue;line:black;line.bold;text:black
+
+    component "frontend.Dockerfile" <<kontener docker>> as sf #lightblue;line:black;line.bold;text:black
+    component "index.csr.html" <<plik>> as sfi #lightblue;line:black;line.bold;text:black
+
+    component "cache.Dockerfile" <<kontener docker>> as sc #lightblue;line:black;line.bold;text:black
+    component "database.Dockerfile" <<kontener docker>> as sdd #lightblue;line:black;line.bold;text:black
+
+
+    so <-[dashed;thickness=2]- sd : <<deploy>>
+    so <-[dashed;thickness=2]- sn : <<deploy>>
+    sd <-[dashed;thickness=2]- sb : <<deploy>>
+    sd <-[dashed;thickness=2]- sf : <<deploy>>
+    sd <-[dashed;thickness=2]- sdd : <<deploy>>
+    sd <-[dashed;thickness=2]- sc : <<deploy>>
+
+    sb <-[dashed;thickness=2]- sbb : <<deploy>>
+    sf <-[dashed;thickness=2]- sfi : <<deploy>>
+
+  }
+
+  node "Komputer klienta" <<klient>> as k {
+    component "Przeglądarka internetowa" as p #lightblue;line:black;line.bold;text:black
+  }
+
+  s -[thickness=2]- k : <<TCP/IP>>
+
+  sbb <-[dashed;norank;thickness=2]- sc : <<manifest>>
+  sbb <-[dashed;norank;thickness=2]- sdd : <<manifest>>
+
+  p <-[dashed;norank;thickness=2]- sbb : <<manifest>>
+  p <-[dashed;norank;thickness=2]- sfi : <<manifest>>
+
+}
+
+@enduml

@@ -208,3 +208,4 @@ backend/src/vimi_web/authentication/migrations
 !/backend/src/vimi_web/authentication/migrations/__init__.py
 backend/secrets/
 /.obsidian/
+/frontend/package-lock.json

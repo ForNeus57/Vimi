@@ -22,7 +22,7 @@ Issues = "https://github.com/ForNeus57/Vimi/issues"
 vimi-backend = "vimi_web.manage:main"
 
 [build-system]
-requires = ["setuptools>=70.0"]
+requires = ["setuptools>=72.1.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
@@ -31,7 +31,7 @@ dependencies = {file = ["requirements.txt"]}
 [tool.pytest.ini_options]
 addopts = [
     "--cov=vimi_web",
-#    "--cov=vimi_lib",
+    "--cov=vimi_lib",
     "--cov-report=term-missing",
 ]
 testpaths = ["test"]

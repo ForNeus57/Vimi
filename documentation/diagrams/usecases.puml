@@ -1,0 +1,52 @@
+@startuml
+
+frame DiagramFrame as "Diagram przypadków użycia dla warstwy prezentacji" {
+  actor "Użytkownik" as u #lightblue;line:black;line.bold;text:black
+
+  skinparam linetype polyline
+  skinparam nodesep 15
+  skinparam ranksep 20
+  left to right direction
+
+  rectangle SWDSK as "System Wizualizacji Działania Konwolucyjnych Sieci Neuronowych" {
+
+    usecase "Wybierz \n warstwę sieci" as wybierz_warstwę_sieci #lightblue;line:black;line.bold;text:black
+    usecase "Wybierz zakres \n warstw sieci" as wybierz_zakres_warstw_sieci #lightblue;line:black;line.bold;text:black
+    usecase "Wybierz \n architekturę \n sieci" as wybierz_architekturę_sieci #lightblue;line:black;line.bold;text:black
+    usecase "Przekaż \n obraz \n wejściowy" as przekaż_obraz_wejściowy #lightblue;line:black;line.bold;text:black
+    usecase "Przeglądnij \n wyniki \n predykcji" as przeglądnij_wyniki_predykcji #lightblue;line:black;line.bold;text:black
+    usecase "Przelicz \n aktywacje" as przelicz_aktywacje #lightblue;line:black;line.bold;text:black
+    usecase "Ustaw \n kolorowanie \n aktywacji" as ustaw_kolorowanie_aktywacji #lightblue;line:black;line.bold;text:black
+    usecase "Manipuluj \n kamerą" as manipuluj_kamerą #lightblue;line:black;line.bold;text:black
+    usecase "Porównaj \n zapamiętane \n aktywacje" as porównaj_zapamiętane_aktywacje #lightblue;line:black;line.bold;text:black
+    usecase "Resetuj \n pozycję \n kamery" as resetuj_pozycję_kamery #lightblue;line:black;line.bold;text:black
+    usecase "Wyczyść \n środowisko 3D" as wyczyść_środowisko_3d #lightblue;line:black;line.bold;text:black
+    usecase "Zmień \n sterowanie \n kamery" as zmień_sterowanie_kamery #lightblue;line:black;line.bold;text:black
+    usecase "Badaj \n aktywacje" as badaj_aktywacje #lightblue;line:black;line.bold;text:black
+
+  }
+
+  u -- manipuluj_kamerą
+  manipuluj_kamerą <-[dashed;thickness=2]left- resetuj_pozycję_kamery : <<extend>>
+  manipuluj_kamerą <-[dashed;thickness=2]- wyczyść_środowisko_3d : <<extend>>
+  manipuluj_kamerą <-[dashed;thickness=2]- zmień_sterowanie_kamery : <<extend>>
+
+  u -- badaj_aktywacje
+  badaj_aktywacje -[dashed;thickness=2]-> ustaw_kolorowanie_aktywacji : <<include>>
+  badaj_aktywacje -[dashed;thickness=2]-> przelicz_aktywacje : <<include>>
+
+  przelicz_aktywacje <-[dashed;thickness=2]down- wybierz_warstwę_sieci : <<extend>>
+  przelicz_aktywacje <-[dashed;thickness=2]down- wybierz_zakres_warstw_sieci : <<extend>>
+  przelicz_aktywacje -[dashed;thickness=2]down-> przekaż_obraz_wejściowy : <<include>>
+  przelicz_aktywacje <-[dashed;thickness=2]up- przeglądnij_wyniki_predykcji : <<extend>>
+  przelicz_aktywacje -[dashed;thickness=2]right-> wybierz_architekturę_sieci : <<include>>
+
+  u -- porównaj_zapamiętane_aktywacje
+  porównaj_zapamiętane_aktywacje -[dashed;thickness=2]down-> przekaż_obraz_wejściowy : <<include>>
+  porównaj_zapamiętane_aktywacje -[dashed;thickness=2]-> przeglądnij_wyniki_predykcji : <<include>>
+  porównaj_zapamiętane_aktywacje -[dashed;thickness=2]-> wybierz_architekturę_sieci : <<include>>
+  porównaj_zapamiętane_aktywacje -[dashed;thickness=2]-> ustaw_kolorowanie_aktywacji : <<include>>
+
+}
+
+@enduml

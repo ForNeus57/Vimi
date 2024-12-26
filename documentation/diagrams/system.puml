@@ -1,9 +1,12 @@
 @startuml
-'https://plantuml.com/component-diagram
 
+artifact a {
+
+}
 
 package "Some Group" {
-  HTTP - [First Component]
+  component "First Component" <<AAA>> as first
+  HTTP )- first
   [Another Component]
 }
 

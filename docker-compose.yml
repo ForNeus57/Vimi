@@ -28,7 +28,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              count: 1
+              count: all
               capabilities: [ gpu ]
     healthcheck:
       test: [ "CMD-SHELL", "sh -c 'curl --fail http://localhost:8000/api/1/health/ || exit 1'" ]
