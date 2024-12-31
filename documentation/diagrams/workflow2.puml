@@ -1,0 +1,43 @@
+@startuml
+
+partition "czn Proces badania CNN w podstronie do porównywania" {
+start
+
+#lightblue:Wybierz widok porównywania przeliczonych aktywacji;
+repeat
+
+  #lightblue:Wybierz architekturę sieci;
+
+  if () then ([obliczono wcześniej aktywacje architektury])
+
+    #lightblue:Wybierz warstwę do porównania;
+
+
+    if () then ([obliczono wcześniej aktywacje warstwy])
+
+      fork
+        #lightblue:Przekaż obraz wejściowy;
+        #lightblue:Określ transformacje \n  wejścia;
+      fork again
+        #lightblue:Wyznacz numer filtru mapy cech;
+      fork again
+        #lightblue:Ustal mapę kolorów oraz \n normalizacje aktywacji;
+      end fork {and}
+
+      #lightblue:Porównaj wyjścia sieci i analizuj metryki;
+
+    else ([else])
+      end
+    endif
+
+
+  else ([else])
+    end
+  endif
+
+repeat while () is ([wynik nie satysfakcjonują]) not ([else])
+
+stop
+}
+
+@enduml

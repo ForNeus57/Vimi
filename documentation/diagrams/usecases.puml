@@ -1,6 +1,6 @@
 @startuml
 
-frame DiagramFrame as "Diagram przypadków użycia dla warstwy prezentacji" {
+frame DiagramFrame as "uzc Warstwy prezentacji" {
   actor "Użytkownik" as u #lightblue;line:black;line.bold;text:black
 
   skinparam linetype polyline

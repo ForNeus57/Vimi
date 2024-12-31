@@ -1,0 +1,34 @@
+@startuml
+
+partition "czn Proces badania CNN w edytorze 3D" {
+start
+
+#lightblue:Wybierz edytor 3D;
+repeat
+  fork
+    fork
+      #lightblue:Wybierz architekturę sieci \n i warstwy do analizy;
+      if () then ([dokładnie 1 warstwa])
+        #lightblue:Określ pojedyńczą \n warstwę sieci;
+        #lightblue:Ustal ułożenie \n aktywacji w przestrzeni;
+      else ([więcej niż 1 warstwa])
+        #lightblue:Określ zakres \n warstw sieci;
+      endif
+    fork again
+      #lightblue:Przekaż obraz wejściowy;
+      #lightblue:Określ transformacje \n  wejścia;
+    end fork {and}
+    #lightblue:Zleć przeliczenie aktywacji aktywacje;
+  fork again
+    #lightblue:Ustal mapę kolorów oraz \n normalizacje aktywacji;
+  fork end {and}
+
+  #lightblue:Przelicz aktywacje do mapy kolorów;
+  #lightblue:Poruszaj się w przestrzeni 3D;
+  #lightblue:Porównaj i przeanalizuj wyniki sieci;
+repeat while () is ([wynik nie satysfakcjonują]) not ([else])
+
+stop
+}
+
+@enduml

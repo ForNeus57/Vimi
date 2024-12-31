@@ -1,6 +1,6 @@
 @startuml
 
-frame DiagramFrame as "Diagram rozlokowania systemu wizualizacji działania konwolucyjnych sieci neuronowych" {
+frame DiagramFrame as "rzk Systemu wizualizacji działania CNN" {
 
   skinparam linetype ortho
   skinparam nodesep 25

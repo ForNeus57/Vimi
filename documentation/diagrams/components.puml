@@ -1,0 +1,33 @@
+@startuml
+
+skinparam frame {
+  padding 56000
+}
+frame DiagramFrame as "cod Systemu wizualizacji działania CNN" {
+
+  skinparam linetype ortho
+  skinparam nodesep 50
+  skinparam ranksep 50
+  left to right direction
+
+  component "Wizualizacja" <<service>> as w #lightblue;line:black;line.bold;text:black
+  component "Obliczenia" <<service>> as o #lightblue;line:black;line.bold;text:black
+  component "Relacyjna Baza Danych" <<baza danych>> as p #lightblue;line:black;line.bold;text:black
+  component "Cache-ująca Baza Danych" <<baza danych>> as r #lightblue;line:black;line.bold;text:black
+
+  interface IMapperObiektowoRelacyjny as ip #lightblue;line:black;line.bold;text:black
+  interface ICacheFramework as ir #lightblue;line:black;line.bold;text:black
+  interface IObliczenia as io #lightblue;line:black;line.bold;text:black
+  interface IWizualizacja as iw #lightblue;line:black;line.bold;text:black
+
+  iw -- w
+  w -( io
+  io -- o
+  o --( ip
+  o -( ir
+
+  ip - p
+  ir - r
+}
+
+@enduml
