@@ -161,6 +161,6 @@ export class ViewerMenuGeneralComponent implements OnInit, OnDestroy {
   }
 
   formatSlider(value: number) {
-    return `L${value + 1}`;
+    return `L${value}`;
   }
 }

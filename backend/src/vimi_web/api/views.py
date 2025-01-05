@@ -57,7 +57,7 @@ class LayersByProcessedArchitectureView(APIView):
     queryset = Layer.objects.all()
     serializer_class = LayersByProcessedArchitectureSerializer
 
-    def get(self, request: Request,) -> Response:
+    def get(self, request: Request) -> Response:
         architecture_serializer = self.serializer_class(data=request.query_params)
 
         if architecture_serializer.is_valid():

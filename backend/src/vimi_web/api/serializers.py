@@ -91,7 +91,6 @@ class NetworkInputProcessSerializer(serializers.ModelSerializer):
         fields = ('architecture', 'network_input', 'transformation', 'layers')
 
     def create(self, validated_data: Mapping[str, Any]) -> Tuple:
-        # TODO: Fix type hinting in method signature
         architecture: Architecture = validated_data['architecture']
         network_input: NetworkInput = validated_data['network_input']
         transformation: NetworkInput.Transformation = validated_data['transformation']

@@ -18,7 +18,7 @@ repeat
       #lightblue:Przekaż obraz wejściowy;
       #lightblue:Określ transformacje \n  wejścia;
     end fork {and}
-    #lightblue:Zleć przeliczenie aktywacji aktywacje;
+    #lightblue:Zleć przeliczenie aktywacji;
   fork again
     #lightblue:Ustal mapę kolorów oraz \n normalizacje aktywacji;
   fork end {and}

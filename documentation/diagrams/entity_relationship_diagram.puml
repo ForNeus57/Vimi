@@ -1,0 +1,89 @@
+@startuml
+
+skinparam linetype ortho
+
+entity "**Architecture**" as arc #lightblue;line:black;line.bold;text:black {
+  * **id** : bigint <<Primary Key>>
+  * **uuid** : uuid <<Unique>>
+  * **name** : varchar(64) <<Unique>>
+  --
+  * **module** : varchar(64)
+}
+
+entity "**Network Input**" as inp #lightblue;line:black;line.bold;text:black {
+  * **id** : bigint <<Primary Key>>
+  * **uuid** : uuid <<Unique>>
+  * **sha256_hash** : bytea <<Unique>>
+  --
+  * **file** : varchar(128)
+}
+
+entity "**Layer**" as lay #lightblue;line:black;line.bold;text:black {
+  * **id** : bigint <<Primary Key>>
+  * **uuid** : uuid <<Unique>>
+  * **architecture_id** : bigint <<Foreign Key>>
+  --
+  * **layer_number** : integer
+  * **name** : varchar(128)
+  * **type** : varchar(64)
+  * **dimensions** : integer[]
+}
+
+entity "**Inference**" as inf #lightblue;line:black;line.bold;text:black {
+  * **id** : bigint <<Primary Key>>
+  * **architecture_id** : bigint <<Foreign Key>>
+  * **network_input_id** : bigint <<Foreign Key>>
+  --
+  * **interpolation** : varchar(32)
+}
+
+entity "**Activation**" as act #lightblue;line:black;line.bold;text:black {
+  * **id** : bigint <<Primary Key>>
+  * **uuid** : uuid <<Unique>>
+  * **inference_id** : bigint <<Foreign Key>>
+  * **layer_id** : bigint <<Foreign Key>>
+  --
+  * **activation_binary** : varchar(64)
+}
+
+entity "**Prediction**" as pre #lightblue;line:black;line.bold;text:black {
+  * **id** : bigint <<Primary Key>>
+  * **inference_id** : bigint <<Foreign Key>>
+  --
+  * **prediction_number** : integer
+  * **class_id** : varchar(32)
+  * **class_name** : varchar(32)
+  * **class_score** : double precision
+}
+
+entity "**Color Map**" as col #lightblue;line:black;line.bold;text:black {
+  * **id** : bigint <<Primary Key>>
+  * **uuid** : uuid <<Unique>>
+  * **name** : varchar(32) <<Unique>>
+  --
+  * **user_map_binary** : bytea
+}
+
+entity "**Texture**" as tex #lightblue;line:black;line.bold;text:black {
+  * **id** : bigint <<Primary Key>>
+  * **uuid** : uuid <<Unique>>
+  * **activation_id** : bigint <<Foreign Key>>
+  * **color_map_id** : bigint <<Foreign Key>>
+  --
+  * **normalization** : varchar(32)
+  * **binary_data_file** : varchar(64)
+  * **shape** : integer[]
+}
+
+arc ||-[thickness=2]-|{ lay
+arc ||-[thickness=2]-o{ inf
+inp ||-[thickness=2]-o{ inf
+inf ||-[thickness=2]-|{ pre
+
+inf ||-[thickness=2]-|{ act
+lay ||-[thickness=2]-o{ act
+
+act ||-[thickness=2]-o{ tex
+col ||-[thickness=2]-o{ tex
+
+@enduml

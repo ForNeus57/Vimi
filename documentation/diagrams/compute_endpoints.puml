@@ -1,0 +1,58 @@
+@startmindmap
+
+<style>
+  node {
+    Padding 8
+    Margin 8
+    HorizontalAlignment center
+    LineThickness 1.5
+  }
+  arrow {
+    LineThickness 1
+  }
+</style>
+
+
+*[#lightblue] **/**
+**[#lightblue] **api/**
+***[#lightblue] **1/**
+
+****[#lightblue] **architecture/**
+*****[#lightgreen] GET
+*****[#lightblue] **processed/**
+******[#lightgreen] GET
+
+****[#lightblue] **layers/**
+*****[#lightgreen] GET
+
+****[#lightblue] **network_input/**
+*****[#orange] POST
+*****[#lightblue] **process/**
+******[#orange] POST
+*****[#lightblue] **transformation/**
+******[#lightgreen] GET
+
+****[#lightblue] **activation/**
+*****[#lightgreen] GET
+*****[#lightblue] **compare/**
+******[#orange] POST
+
+****[#lightblue] **color_map/**
+*****[#lightgreen] GET
+*****[#lightblue] **process/**
+******[#lightblue] **3d/**
+*******[#orange] POST
+*****[#lightblue] **normalization/**
+******[#lightgreen] GET
+*****[#lightblue] **indicator/**
+******[#lightgreen] GET
+
+****[#lightblue] **texture/**
+*****[#lightgreen] GET
+
+****[#lightblue] **health/**
+*****[#lightgreen] GET
+
+**[#lightblue] **admin/**
+***[#lightgreen] GET
+@endmindmap
