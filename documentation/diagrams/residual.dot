@@ -1,0 +1,33 @@
+digraph NeuralNetwork {
+    node [shape=box, style=filled, color=white];
+    x1 [label=<X<SUB>L-1</SUB>>, width=0.3];
+    hidden2 [label="H(x)"];
+
+    subgraph cluster_0 {
+    style=filled;
+    color=lightgrey;
+    label="F(x)";
+    labeljust=l
+
+    node [shape=box, style=filled, color=lightblue];
+
+    layer1 [label=<Conv2D>];
+    layer2 [label=<Conv2D>];
+    }
+
+    node [shape=box, style=invis];
+    hidden1 [label=<H<SUB>1</SUB>>];
+
+    node [shape=circle, style=filled, color=yellow];
+    plus [label="+"];
+
+    hidden1 -> x1
+
+    x1 -> plus [label=<    X<SUB>L-1</SUB>>, tailport=e, headport=e];
+
+    x1 -> layer1 [tailport=w, headport=n]
+    layer1 -> layer2
+    layer2 -> plus [label=<   X<SUB>L</SUB>>, tailport=s, headport=w]
+
+    plus -> hidden2
+}

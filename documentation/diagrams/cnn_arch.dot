@@ -1,0 +1,18 @@
+digraph CNN {
+    rankdir=LR;
+    node [shape=record, fontsize=12, fontname="Helvetica"];
+
+    Input [label="Input\n(32x32x3)", shape=record, style=filled, fillcolor=lightblue];
+
+    Conv1 [label="Conv2D\n(3x3x3, 32)\nOutput: 32x32x32", shape=record, style=filled, fillcolor=lightgray];
+    Pool1 [label="MaxPool\n(2x2)\nOutput: 16x16x32", shape=record, style=filled, fillcolor=lightyellow];
+
+    Conv2 [label="Conv2D\n(3x3x32, 64)\nOutput: 16x16x64", shape=record, style=filled, fillcolor=lightgray];
+    Pool2 [label="MaxPool\n(2x2)\nOutput: 8x8x64", shape=record, style=filled, fillcolor=lightyellow];
+
+    Flatten [label="Flatten\n(4x4x128 -> 2048)", shape=record, style=filled, fillcolor=lightpink];
+    FC1 [label="Fully Connected\n(2048 -> 256)", shape=record, style=filled, fillcolor=lightgreen];
+    Output [label="Output\n(10 classes)", shape=record, style=filled, fillcolor=lightblue];
+
+    Input -> Conv1 -> Pool1 -> Conv2 -> Pool2 -> Flatten -> FC1 -> Output;
+}

@@ -1,0 +1,43 @@
+digraph NeuralNetwork {
+    rankdir=LR;
+
+    // Input layer
+    node [shape=circle, style=filled, color=lightblue];
+    Input1 [label=<X<SUB>1</SUB>>];
+    Input2 [label=<X<SUB>2</SUB>>];
+    Bias [label=1, color=lightgray]; // Bias neuron
+
+    // Hidden layer
+    node [shape=circle, style=filled, color=yellow];
+    Hidden1 [label=<O<SUB>1</SUB>>];
+    Hidden2 [label=<O<SUB>2</SUB>>];
+    Hidden3 [label=<O<SUB>3</SUB>>];
+    Hidden4 [label=<O<SUB>4</SUB>>];
+
+    // Output
+    node [shape=circle, style=filled, color=lightgreen];
+    Output1 [label="y"  style = invis];
+    Output2 [label="y"  style = invis];
+    Output3 [label="y"  style = invis];
+    Output4 [label="y"  style = invis];
+
+    // Connections from input layer to hidden layer
+    Input1 -> Hidden1;
+    Input1 -> Hidden2;
+    Input1 -> Hidden3;
+    Input1 -> Hidden4;
+    Input2 -> Hidden1;
+    Input2 -> Hidden2;
+    Input2 -> Hidden3;
+    Input2 -> Hidden4;
+    Bias -> Hidden1;
+    Bias -> Hidden2;
+    Bias -> Hidden3;
+    Bias -> Hidden4;
+
+    // Connections from hidden layer to output
+    Hidden1 -> Output1;
+    Hidden2 -> Output2;
+    Hidden3 -> Output3;
+    Hidden4 -> Output4;
+}

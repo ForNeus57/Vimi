@@ -1,0 +1,31 @@
+digraph Neuron {
+    rankdir=LR;
+
+    // Input nodes
+    node [shape=circle, style=filled, color=lightblue];
+    Input1 [label=<X<SUB>1</SUB>>];
+    Input2 [label=<X<SUB>2</SUB>>];
+    Input3 [label=<X<SUB>3</SUB>>];
+
+    // Weights
+    node [shape=none, label="", width=0, height=0];
+    W1 [label=<W<SUB>1</SUB>>, shape=plaintext];
+    W2 [label=<W<SUB>2</SUB>>, shape=plaintext];
+    W3 [label=<W<SUB>3</SUB>>, shape=plaintext];
+
+    // Sum and activation
+    node [shape=circle, style=filled, color=yellow];
+    Sum [label="∑"];
+    Activation [label=<a(z)>];
+
+    // Output
+    node [shape=circle, style=filled, color=lightgreen];
+    Output [label="y"];
+
+    // Connections
+    Input1 -> W1 -> Sum;
+    Input2 -> W2 -> Sum;
+    Input3 -> W3 -> Sum;
+    Sum -> Activation;
+    Activation -> Output;
+}
