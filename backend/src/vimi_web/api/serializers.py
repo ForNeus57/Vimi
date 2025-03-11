@@ -185,8 +185,8 @@ class ActivationCompareSerializer(serializers.Serializer):
         mse = keras.metrics.MeanSquaredError()
         mae = keras.metrics.MeanAbsoluteError()
 
-        mse.update_state(image_1, image_2)
-        mae.update_state(image_1, image_2)
+        mse.update_state(first_activation.to_numpy(), second_activation.to_numpy())
+        mae.update_state(first_activation.to_numpy(), second_activation.to_numpy())
 
 
         normalized_data = color_map.normalize_activations(np.expand_dims(image_1, axis=-1), normalization)
@@ -217,7 +217,7 @@ class ActivationCompareSerializer(serializers.Serializer):
             'metrics': {
                 'mse': mse.result().numpy().item(),
                 'mae': mae.result().numpy().item(),
-            }
+            },
         }
 
 

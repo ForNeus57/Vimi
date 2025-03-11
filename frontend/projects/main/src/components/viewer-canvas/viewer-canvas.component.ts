@@ -37,7 +37,7 @@ export class ViewerCanvasComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly platform = inject(PLATFORM_ID);
   private continueAnimation = true;
   private objectsToDisposal = Array();
-  private standardGap = 10;
+  private standardGap = 3;
 
   editorCanvas = viewChild.required<ElementRef<HTMLCanvasElement>>('editorCanvas');
 

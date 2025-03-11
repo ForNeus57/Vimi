@@ -45,7 +45,7 @@ class Architecture(models.Model):
         return getattr(module, 'decode_predictions')
 
     def get_layers(self) -> List:
-        # TODO: Fix this typing
+        # TODO: Fix this type hinting
         dimension_field = Layer._meta.get_field('dimensions')
         dimensions_default = dimension_field.base_field.default
         dimensions_size = dimension_field.size
